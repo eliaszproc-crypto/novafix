@@ -6,15 +6,17 @@ class AdminController {
         global $pdo;
 
         $stats = [
-            'total'    => $pdo->query('SELECT COUNT(*) FROM repairs')->fetchColumn(),
-            'new'      => $pdo->query("SELECT COUNT(*) FROM repairs r JOIN repair_statuses rs ON r.status_id = rs.id WHERE rs.code = 'new'")->fetchColumn(),
-            'active'   => $pdo->query("SELECT COUNT(*) FROM repairs r JOIN repair_statuses rs ON r.status_id = rs.id WHERE rs.code NOT IN ('completed','initial_quote_rejected','final_quote_rejected')")->fetchColumn(),
-            'clients'  => $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'client'")->fetchColumn(),
+            'total'   => $pdo->query('SELECT COUNT(*) FROM repairs')->fetchColumn(),
+            'new'     => $pdo->query("SELECT COUNT(*) FROM repairs r JOIN repair_statuses rs ON r.status_id = rs.id WHERE rs.code = 'new'")->fetchColumn(),
+            'active'  => $pdo->query("SELECT COUNT(*) FROM repairs r JOIN repair_statuses rs ON r.status_id = rs.id WHERE rs.code NOT IN ('completed','initial_quote_rejected','final_quote_rejected')")->fetchColumn(),
+            'clients' => $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'client'")->fetchColumn(),
         ];
 
         $recent = $pdo->query('
-            SELECT r.*, rs.label as status_label, rs.color as status_color,
-                   dt.name as device_type, u.first_name, u.last_name
+            SELECT r.id, r.rma_number, r.created_at,
+                   rs.label as status_label, rs.color as status_color,
+                   dt.name as device_type,
+                   u.first_name, u.last_name
             FROM repairs r
             JOIN repair_statuses rs ON r.status_id = rs.id
             JOIN device_types dt ON r.device_type_id = dt.id
@@ -22,7 +24,7 @@ class AdminController {
             ORDER BY r.created_at DESC LIMIT 8
         ')->fetchAll();
 
-        $pageTitle = 'Panel admina';
+        $pageTitle = 'Dashboard';
         ob_start();
         include VIEW_PATH . '/admin/dashboard.php';
         $content = ob_get_clean();
@@ -33,35 +35,40 @@ class AdminController {
         requireAdmin();
         global $pdo;
 
-        $status_filter = $_GET['status'] ?? '';
-        $search = trim($_GET['q'] ?? '');
+        $status_filter = trim($_GET['status'] ?? '');
+        $search        = trim($_GET['q'] ?? '');
 
-        $where = '1=1';
-        $params = [];
-        if ($status_filter) {
-            $where .= ' AND rs.code = ?';
-            $params[] = $status_filter;
-        }
-        if ($search) {
-            $where .= ' AND (r.rma_number LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ?)';
-            $s = "%$search%";
-            $params = array_merge($params, [$s, $s, $s, $s]);
-        }
-
-        $stmt = $pdo->prepare("
-            SELECT r.*, rs.label as status_label, rs.color as status_color,
-                   dt.name as device_type, db.name as device_brand,
+        $sql = '
+            SELECT r.id, r.rma_number, r.created_at,
+                   rs.label as status_label, rs.color as status_color,
+                   dt.name as device_type,
+                   COALESCE(db.name, \'\') as device_brand,
+                   COALESCE(r.device_model, \'\') as device_model,
                    u.first_name, u.last_name, u.email
             FROM repairs r
             JOIN repair_statuses rs ON r.status_id = rs.id
             JOIN device_types dt ON r.device_type_id = dt.id
             LEFT JOIN device_brands db ON r.device_brand_id = db.id
             JOIN users u ON r.user_id = u.id
-            WHERE $where
-            ORDER BY r.created_at DESC
-        ");
+            WHERE 1=1
+        ';
+        $params = [];
+
+        if ($status_filter) {
+            $sql .= ' AND rs.code = ?';
+            $params[] = $status_filter;
+        }
+        if ($search) {
+            $sql .= ' AND (r.rma_number LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ?)';
+            $s = "%$search%";
+            $params = array_merge($params, [$s, $s, $s, $s]);
+        }
+        $sql .= ' ORDER BY r.created_at DESC';
+
+        $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
         $repairs = $stmt->fetchAll();
+
         $statuses = $pdo->query('SELECT * FROM repair_statuses ORDER BY sort_order')->fetchAll();
 
         $pageTitle = 'Zgłoszenia';
@@ -76,8 +83,10 @@ class AdminController {
         global $pdo;
 
         $stmt = $pdo->prepare('
-            SELECT r.*, rs.label as status_label, rs.color as status_color,
-                   dt.name as device_type, db.name as device_brand,
+            SELECT r.*,
+                   rs.label as status_label, rs.color as status_color,
+                   dt.name as device_type,
+                   COALESCE(db.name, \'\') as device_brand,
                    u.first_name, u.last_name, u.email, u.phone
             FROM repairs r
             JOIN repair_statuses rs ON r.status_id = rs.id
@@ -120,12 +129,10 @@ class AdminController {
 
         $status_id = (int)($_POST['status_id'] ?? 0);
         $note      = trim($_POST['note'] ?? '');
-
         if (!$status_id) redirect('/admin/naprawa/' . $id);
 
         $pdo->prepare('UPDATE repairs SET status_id = ?, updated_at = NOW() WHERE id = ?')
             ->execute([$status_id, (int)$id]);
-
         $pdo->prepare('INSERT INTO repair_status_history (repair_id, status_id, changed_by, note) VALUES (?, ?, ?, ?)')
             ->execute([(int)$id, $status_id, $_SESSION['user_id'], $note]);
 
@@ -136,23 +143,27 @@ class AdminController {
         requireAdmin();
         global $pdo;
 
-        $type   = $_POST['quote_type'] ?? '';
-        $amount = (float)($_POST['amount'] ?? 0);
+        $type   = $_POST['quote_type'] ?? 'initial';
+        $amount = (float)str_replace(',', '.', $_POST['amount'] ?? 0);
         $note   = trim($_POST['note'] ?? '');
 
         if ($type === 'initial') {
-            $pdo->prepare('UPDATE repairs SET initial_quote_amount = ?, initial_quote_note = ?, initial_quote_sent_at = NOW() WHERE id = ?')
+            $pdo->prepare('UPDATE repairs SET initial_quote_amount=?, initial_quote_note=?, initial_quote_sent_at=NOW() WHERE id=?')
                 ->execute([$amount, $note, (int)$id]);
-            $status = $pdo->query("SELECT id FROM repair_statuses WHERE code = 'initial_quote_sent'")->fetch();
+            $code = 'initial_quote_sent';
         } else {
-            $pdo->prepare('UPDATE repairs SET final_quote_amount = ?, final_quote_note = ?, final_quote_sent_at = NOW() WHERE id = ?')
+            $pdo->prepare('UPDATE repairs SET final_quote_amount=?, final_quote_note=?, final_quote_sent_at=NOW() WHERE id=?')
                 ->execute([$amount, $note, (int)$id]);
-            $status = $pdo->query("SELECT id FROM repair_statuses WHERE code = 'final_quote_sent'")->fetch();
+            $code = 'final_quote_sent';
         }
 
-        $pdo->prepare('UPDATE repairs SET status_id = ? WHERE id = ?')->execute([$status['id'], (int)$id]);
-        $pdo->prepare('INSERT INTO repair_status_history (repair_id, status_id, changed_by, note) VALUES (?, ?, ?, ?)')
-            ->execute([(int)$id, $status['id'], $_SESSION['user_id'], 'Wycena: ' . number_format($amount, 2) . ' zł. ' . $note]);
+        $status = $pdo->prepare('SELECT id FROM repair_statuses WHERE code = ?');
+        $status->execute([$code]);
+        $status_id = $status->fetchColumn();
+
+        $pdo->prepare('UPDATE repairs SET status_id=? WHERE id=?')->execute([$status_id, (int)$id]);
+        $pdo->prepare('INSERT INTO repair_status_history (repair_id, status_id, changed_by, note) VALUES (?,?,?,?)')
+            ->execute([(int)$id, $status_id, $_SESSION['user_id'], 'Wycena: ' . number_format($amount, 2) . ' zł. ' . $note]);
 
         redirect('/admin/naprawa/' . $id);
     }
@@ -162,7 +173,8 @@ class AdminController {
         global $pdo;
 
         $repairs = $pdo->query("
-            SELECT r.*, rs.label as status_label, rs.color as status_color,
+            SELECT r.id, r.rma_number, r.updated_at,
+                   rs.label as status_label, rs.color as status_color,
                    u.first_name, u.last_name
             FROM repairs r
             JOIN repair_statuses rs ON r.status_id = rs.id
@@ -190,7 +202,7 @@ class AdminController {
             ORDER BY p.created_at DESC
         ")->fetchAll();
 
-        $total_paid = $pdo->query("SELECT SUM(amount) FROM payments WHERE status = 'paid'")->fetchColumn() ?: 0;
+        $total_paid = $pdo->query("SELECT COALESCE(SUM(amount),0) FROM payments WHERE status='paid'")->fetchColumn();
 
         $pageTitle = 'Płatności';
         ob_start();
