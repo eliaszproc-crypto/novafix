@@ -206,3 +206,28 @@ img{max-width:100%;display:block}
     .section{padding:60px 0}
     .hero__stats{flex-wrap:wrap;gap:16px}
 }
+
+/* ---- AUTH ---- */
+.auth-section{position:relative;min-height:100vh;display:flex;align-items:center;padding:80px 0}
+.auth-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 40%,rgba(0,60,160,0.3) 0%,transparent 60%),var(--bg1)}
+.auth-inner{position:relative;display:flex;justify-content:center}
+.auth-card{background:var(--bg3);border:1px solid var(--bd);border-radius:24px;padding:48px;width:100%;max-width:440px}
+.auth-card--wide{max-width:560px}
+.auth-card__header{text-align:center;margin-bottom:32px}
+.auth-logo{font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;color:#fff;display:inline-block;margin-bottom:24px}
+.auth-logo span{color:var(--c)}
+.auth-card h1{font-family:'Outfit',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:8px}
+.auth-card p{font-size:14px;color:var(--tm)}
+.auth-error{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:14px;color:#f87171;margin-bottom:24px}
+.auth-form{display:flex;flex-direction:column;gap:20px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group label{font-size:13px;font-weight:500;color:var(--t)}
+.required{color:var(--c)}
+.form-group input{padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--bd);border-radius:10px;color:var(--t);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color var(--transition)}
+.form-group input:focus{border-color:rgba(0,229,255,0.4);background:rgba(0,229,255,0.03)}
+.form-group input::placeholder{color:var(--tm)}
+.btn--full{width:100%;justify-content:center;padding:14px;font-size:15px;margin-top:4px}
+.auth-footer{text-align:center;margin-top:24px;font-size:14px;color:var(--tm)}
+.auth-footer a{color:var(--c);font-weight:500}
+.auth-footer a:hover{text-decoration:underline}
