@@ -1,1 +1,0 @@
-# NovaFix - Serwis internetowy
