@@ -1,8 +1,6 @@
 <header class="navbar" id="navbar">
     <div class="container navbar__inner">
-        <a href="/" class="navbar__logo">
-            <img src="/images/logo.png" alt="NovaFix" height="48">
-        </a>
+        <a href="/" class="navbar__logo">Nova<span>Fix</span></a>
         <nav class="navbar__nav" id="navMenu">
             <a href="/">Start</a>
             <a href="/uslugi">Usługi</a>
@@ -13,7 +11,7 @@
         </nav>
         <div class="navbar__actions">
             <?php if (isLoggedIn()): ?>
-                <a href="/panel" class="btn btn--outline">Panel klienta</a>
+                <a href="/panel" class="btn btn--primary">Panel klienta</a>
             <?php else: ?>
                 <a href="/login" class="btn btn--outline">Zaloguj się</a>
                 <a href="/rejestracja" class="btn btn--primary">Rejestracja</a>
