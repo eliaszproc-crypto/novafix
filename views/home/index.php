@@ -1,6 +1,7 @@
 <!-- HERO -->
 <section class="hero">
     <div class="hero__bg"></div>
+    <div class="hero__img"></div>
     <div class="hero__grid"></div>
     <div class="container hero__inner">
         <div class="hero__content">
@@ -74,7 +75,7 @@
                 <div class="steps__number">01</div>
                 <div class="steps__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
                 <h3>Zgłoszenie</h3>
-                <p>Wypełniasz formularz online w kilka minut. Opisujesz problem i dodajesz zdjęcia.</p>
+                <p>Wypełniasz formularz online w kilka minut. Opisujesz problem i dodajesz zdjęcia urządzenia.</p>
                 <div class="steps__connector">→</div>
             </div>
             <div class="steps__item">
@@ -88,7 +89,7 @@
                 <div class="steps__number">03</div>
                 <div class="steps__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
                 <h3>Diagnostyka</h3>
-                <p>Sprawdzamy usterkę i kontaktujemy się z Tobą. Przedstawiamy wycenę naprawy.</p>
+                <p>Sprawdzamy usterkę i kontaktujemy się z Tobą. Przedstawiamy szczegółową wycenę naprawy.</p>
                 <div class="steps__connector">→</div>
             </div>
             <div class="steps__item">
@@ -101,18 +102,15 @@
     </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-banner section">
-    <div class="container">
-        <div class="cta-banner__inner">
-            <div class="cta-banner__content">
-                <h2>Zgłoś swoje urządzenie do serwisu</h2>
-                <p>Wypełnij formularz, a my zajmiemy się resztą.</p>
-                <a href="/panel/nowe-zgloszenie" class="btn btn--primary btn--lg">Przejdź do formularza</a>
-            </div>
-            <div class="cta-banner__deco">
-                <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-            </div>
+<!-- ZDJĘCIE + CTA -->
+<section class="photo-section">
+    <img class="photo-section__img" src="https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=1600&q=80" alt="Akwarium">
+    <div class="photo-section__overlay"></div>
+    <div class="photo-section__content container">
+        <div class="photo-section__text">
+            <h2>Zgłoś swoje urządzenie do serwisu</h2>
+            <p>Wypełnij formularz online, a my zajmiemy się resztą. Bezpieczna wysyłka, szybka diagnoza, uczciwa wycena.</p>
+            <a href="/panel/nowe-zgloszenie" class="btn btn--primary btn--lg">Przejdź do formularza</a>
         </div>
     </div>
 </section>
@@ -142,19 +140,19 @@
         <div class="features__grid">
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                <div><h4>Doświadczenie</h4><p>Naprawiamy od 2010 roku.</p></div>
+                <div><h4>Doświadczenie</h4><p>Naprawiamy od 2010 roku. Setki zadowolonych klientów.</p></div>
             </div>
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
-                <div><h4>Profesjonalizm</h4><p>Najlepsze narzędzia i części.</p></div>
+                <div><h4>Profesjonalizm</h4><p>Korzystamy z najlepszych narzędzi i oryginalnych części.</p></div>
             </div>
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                <div><h4>Gwarancja</h4><p>Na wykonane usługi udzielamy gwarancji.</p></div>
+                <div><h4>Gwarancja</h4><p>Na każdą wykonaną naprawę udzielamy gwarancji.</p></div>
             </div>
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-                <div><h4>Szybka obsługa</h4><p>Twój czas i sprzęt są ważne.</p></div>
+                <div><h4>Szybka obsługa</h4><p>Wiemy że ważny jest Twój czas i sprawny sprzęt.</p></div>
             </div>
         </div>
     </div>
