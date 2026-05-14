@@ -11,7 +11,12 @@
         </nav>
         <div class="navbar__actions">
             <?php if (isLoggedIn()): ?>
-                <a href="/panel" class="btn btn--primary">Panel klienta</a>
+                <?php if (isAdmin()): ?>
+                    <a href="/admin" class="btn btn--outline">Panel admina</a>
+                <?php else: ?>
+                    <a href="/panel" class="btn btn--outline">Moje zgłoszenia</a>
+                <?php endif; ?>
+                <a href="/logout" class="btn btn--ghost">Wyloguj</a>
             <?php else: ?>
                 <a href="/login" class="btn btn--outline">Zaloguj się</a>
                 <a href="/rejestracja" class="btn btn--primary">Rejestracja</a>

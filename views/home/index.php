@@ -1,7 +1,11 @@
 <!-- HERO -->
 <section class="hero">
     <div class="hero__bg"></div>
+    <?php if (file_exists(ROOT_PATH . '/public/images/hero/hero-bg.jpg') || file_exists(ROOT_PATH . '/public/images/hero/hero-bg.png') || file_exists(ROOT_PATH . '/public/images/hero/hero-bg.webp')): ?>
+    <div class="hero__img" style="background-image:url('/images/hero/hero-bg.<?= file_exists(ROOT_PATH.'/public/images/hero/hero-bg.webp') ? 'webp' : (file_exists(ROOT_PATH.'/public/images/hero/hero-bg.png') ? 'png' : 'jpg') ?>')"></div>
+    <?php else: ?>
     <div class="hero__img"></div>
+    <?php endif; ?>
     <div class="hero__grid"></div>
     <div class="container hero__inner">
         <div class="hero__content">
@@ -104,7 +108,12 @@
 
 <!-- ZDJĘCIE + CTA -->
 <section class="photo-section">
-    <img class="photo-section__img" src="https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=1600&q=80" alt="Akwarium">
+    <?php
+    $cta_img = file_exists(ROOT_PATH . '/public/images/sections/aquarium-cta.jpg') ? '/images/sections/aquarium-cta.jpg'
+             : (file_exists(ROOT_PATH . '/public/images/sections/aquarium-cta.webp') ? '/images/sections/aquarium-cta.webp'
+             : 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=1600&q=80');
+    ?>
+    <img class="photo-section__img" src="<?= $cta_img ?>" alt="Akwarium">
     <div class="photo-section__overlay"></div>
     <div class="photo-section__content container">
         <div class="photo-section__text">

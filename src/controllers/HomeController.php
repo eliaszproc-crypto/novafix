@@ -1,34 +1,59 @@
 <?php
 class HomeController {
-    public function index(): void {
-        $pageTitle = 'Strona główna';
+
+    private function render(string $view, string $title): void {
+        $pageTitle = $title;
         ob_start();
-        include VIEW_PATH . '/home/index.php';
+        include VIEW_PATH . '/home/' . $view . '.php';
         $content = ob_get_clean();
         include VIEW_PATH . '/layout.php';
     }
 
+    public function index(): void {
+        $this->render('index', 'Strona główna');
+    }
+
     public function services(): void {
-        $pageTitle = 'Usługi';
-        $content = '<section class="section"><div class="container"><h1 style="color:white;font-family:var(--font-head)">Usługi — wkrótce</h1></div></section>';
-        include VIEW_PATH . '/layout.php';
+        $this->render('services', 'Usługi');
     }
 
     public function pricing(): void {
-        $pageTitle = 'Cennik';
-        $content = '<section class="section"><div class="container"><h1 style="color:white;font-family:var(--font-head)">Cennik — wkrótce</h1></div></section>';
-        include VIEW_PATH . '/layout.php';
+        $this->render('pricing', 'Cennik');
     }
 
     public function contact(): void {
-        $pageTitle = 'Kontakt';
-        $content = '<section class="section"><div class="container"><h1 style="color:white;font-family:var(--font-head)">Kontakt — wkrótce</h1></div></section>';
+        $this->render('contact', 'Kontakt');
+    }
+
+    public function statusPage(): void {
+        $rma    = trim($_GET['rma'] ?? '');
+        $repair = null;
+        $error  = '';
+
+        if ($rma) {
+            global $pdo;
+            $stmt = $pdo->prepare('
+                SELECT r.*, rs.label as status_label, rs.color as status_color,
+                       rs.sort_order, dt.name as device_type
+                FROM repairs r
+                JOIN repair_statuses rs ON r.status_id = rs.id
+                JOIN device_types dt ON r.device_type_id = dt.id
+                WHERE r.rma_number = ?
+            ');
+            $stmt->execute([$rma]);
+            $repair = $stmt->fetch();
+            if (!$repair) $error = 'Nie znaleziono zgłoszenia o numerze ' . htmlspecialchars($rma);
+        }
+
+        $pageTitle = 'Status naprawy';
+        ob_start();
+        include VIEW_PATH . '/home/status.php';
+        $content = ob_get_clean();
         include VIEW_PATH . '/layout.php';
     }
 
-    public function checkStatus(string $rma = ''): void {
-        $pageTitle = 'Status naprawy';
-        $content = '<section class="section"><div class="container"><h1 style="color:white;font-family:var(--font-head)">Status: ' . htmlspecialchars($rma) . '</h1></div></section>';
-        include VIEW_PATH . '/layout.php';
+    public function checkStatus(string $rma): void {
+        header('Location: /status?rma=' . urlencode($rma));
+        exit;
     }
 }
