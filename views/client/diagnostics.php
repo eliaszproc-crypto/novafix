@@ -1,117 +1,124 @@
+<?php
+global $pdo;
+// Pobierz węzeł startowy lub wybrany
+$node_id = (int)($_GET['node'] ?? 1);
+$history = $_GET['history'] ?? '';
+
+$node = $pdo->prepare('SELECT * FROM diag_nodes WHERE id=?');
+$node->execute([$node_id]);
+$node = $node->fetch();
+
+$children = [];
+if ($node && $node['result_type'] === 'continue') {
+    $stmt = $pdo->prepare('SELECT * FROM diag_nodes WHERE parent_id=? ORDER BY sort_order');
+    $stmt->execute([$node_id]);
+    $children = $stmt->fetchAll();
+}
+
+// Historia ścieżki
+$path = [];
+if ($history) {
+    $ids = array_filter(array_map('intval', explode(',', $history)));
+    if ($ids) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $pdo->prepare("SELECT id, answer FROM diag_nodes WHERE id IN ($placeholders) ORDER BY FIELD(id,".implode(',',$ids).")");
+        $stmt->execute($ids);
+        $path = $stmt->fetchAll();
+    }
+}
+?>
 <section class="panel-section">
-<div class="container" style="max-width:800px">
+<div class="container" style="max-width:760px">
     <div class="panel-header">
         <div>
-            <h1>Diagnoza AI</h1>
-            <p>Opisz problem ze swoim sprzętem akwarystycznym — asystent pomoże wstępnie zidentyfikować usterkę.</p>
+            <h1>Diagnoza wstępna</h1>
+            <p>Odpowiedz na pytania — system pomoże określić możliwą przyczynę usterki.</p>
         </div>
         <a href="/panel" class="btn btn--ghost">← Panel</a>
     </div>
 
-    <div class="diag-chat" id="diagChat">
-        <div class="diag-messages" id="diagMessages">
-            <div class="diag-msg diag-msg--bot">
-                <div class="diag-msg__avatar">AI</div>
-                <div class="diag-msg__bubble">
-                    Cześć! Jestem asystentem diagnostycznym NovaFix. Specjalizuję się w sprzęcie akwarystycznym — lampach LED, falownikach, sterownikach i pompach.<br><br>
-                    Opisz mi co się dzieje z Twoim urządzeniem, a postaram się pomóc wstępnie zidentyfikować problem. Możesz też od razu
-                    <a href="/panel/nowe-zgloszenie" style="color:var(--c)">złożyć zlecenie naprawy</a>.
+    <!-- Ścieżka -->
+    <?php if (!empty($path)): ?>
+    <div class="diag-path">
+        <a href="/panel/diagnostyka" class="diag-path__item">Start</a>
+        <?php foreach ($path as $p): ?>
+            <span class="diag-path__sep">›</span>
+            <span class="diag-path__item diag-path__item--done"><?= sanitize($p['answer']) ?></span>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($node): ?>
+    <div class="diag-card">
+
+        <?php if ($node['result_type'] === 'continue' && !empty($children)): ?>
+            <!-- Pytanie z odpowiedziami -->
+            <div class="diag-question">
+                <div class="diag-question__icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 </div>
+                <h2><?= sanitize($node['question']) ?></h2>
             </div>
-        </div>
-        <div class="diag-input-wrap">
-            <textarea id="diagInput" placeholder="Np. Lampa AI Hydra przestała działać, migają tylko dwie diody..." rows="2"></textarea>
-            <button id="diagSend" class="btn btn--primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
-        </div>
-        <p class="diag-disclaimer">Diagnoza AI ma charakter poglądowy. Ostateczną diagnozę wykonujemy po otrzymaniu sprzętu.</p>
+            <div class="diag-answers">
+                <?php foreach ($children as $child): ?>
+                <?php
+                    $new_history = $history ? $history.','.$child['id'] : $child['id'];
+                    $url = '/panel/diagnostyka?node='.$child['id'].'&history='.$new_history;
+                ?>
+                <a href="<?= $url ?>" class="diag-answer">
+                    <div class="diag-answer__text"><?= sanitize($child['answer']) ?></div>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </a>
+                <?php endforeach; ?>
+            </div>
+
+        <?php elseif ($node['result']): ?>
+            <!-- Wynik diagnozy -->
+            <?php
+            $colors = [
+                'repair'     => ['#00e5ff', 'rgba(0,229,255,0.08)', 'rgba(0,229,255,0.2)'],
+                'no_repair'  => ['#f87171', 'rgba(239,68,68,0.08)', 'rgba(239,68,68,0.2)'],
+                'contact'    => ['#8b5cf6', 'rgba(139,92,246,0.08)', 'rgba(139,92,246,0.2)'],
+                'continue'   => ['#00e5ff', 'rgba(0,229,255,0.08)', 'rgba(0,229,255,0.2)'],
+            ];
+            $c = $colors[$node['result_type']] ?? $colors['repair'];
+            ?>
+            <div class="diag-result" style="border-color:<?= $c[2] ?>;background:<?= $c[1] ?>">
+                <div class="diag-result__icon" style="color:<?= $c[0] ?>">
+                    <?php if ($node['result_type'] === 'repair'): ?>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    <?php else: ?>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <?php endif; ?>
+                </div>
+                <h3>Wstępna diagnoza</h3>
+                <p><?= nl2br(sanitize($node['result'])) ?></p>
+
+                <?php if ($node['result_type'] === 'repair'): ?>
+                <div class="diag-result__actions">
+                    <a href="/panel/nowe-zgloszenie" class="btn btn--primary">Zgłoś urządzenie do naprawy →</a>
+                    <a href="/panel/diagnostyka" class="btn btn--ghost">Zacznij od nowa</a>
+                </div>
+                <?php elseif ($node['result_type'] === 'contact'): ?>
+                <div class="diag-result__actions">
+                    <a href="/kontakt" class="btn btn--primary">Napisz do nas</a>
+                    <a href="/panel/diagnostyka" class="btn btn--ghost">Zacznij od nowa</a>
+                </div>
+                <?php else: ?>
+                <div class="diag-result__actions">
+                    <a href="/panel/diagnostyka" class="btn btn--ghost">Zacznij od nowa</a>
+                </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+    </div>
+    <?php endif; ?>
+
+    <div class="panel-card" style="margin-top:24px;text-align:center">
+        <p style="color:var(--tm);font-size:14px;margin-bottom:16px">Diagnoza ma charakter poglądowy. Nie zastąpi oceny specjalisty po otrzymaniu sprzętu.</p>
+        <a href="/panel/nowe-zgloszenie" class="btn btn--primary">Zgłoś urządzenie →</a>
     </div>
 
-    <div class="panel-card" style="margin-top:24px">
-        <h3>Gotowy do wysłania sprzętu?</h3>
-        <p style="color:var(--tm);font-size:14px;margin-bottom:16px">Złóż zlecenie online — opisz problem, wyślij zdjęcia, a my zajmiemy się resztą.</p>
-        <a href="/panel/nowe-zgloszenie" class="btn btn--primary">Zgłoś urządzenie do naprawy →</a>
-    </div>
 </div>
 </section>
-
-<script>
-const messages = [];
-const diagMessages = document.getElementById('diagMessages');
-const diagInput   = document.getElementById('diagInput');
-const diagSend    = document.getElementById('diagSend');
-
-const SYSTEM = `Jesteś asystentem diagnostycznym firmy NovaFix, która naprawia sprzęt elektroniczny do akwariów morskich i słodkowodnych. 
-Specjalizujesz się w: lampach LED (AI, Kessil, Hydra, Maxspect), falownikach (Ecotech, Tunze, Jebao), sterownikach (Neptune Apex, GHL, CoralBox), pompach, skimmerach, chiller'ach.
-
-Twoja rola:
-- Zadawaj pytania diagnostyczne żeby zidentyfikować usterkę
-- Sugeruj możliwe przyczyny problemu
-- Podpowiedz co klient może sprawdzić samodzielnie (bezpieczne czynności)
-- Jeśli problem wymaga naprawy - zachęć do złożenia zlecenia w NovaFix
-- Odpowiadaj po polsku, zwięźle i konkretnie
-- Nie sugeruj napraw wymagających lutowania lub otwierania urządzenia - to zostawia specjalistom
-
-Zawsze pytaj o: markę i model urządzenia, opis objawów, od kiedy problem występuje, co było robione przed awarią.`;
-
-async function sendMessage() {
-    const text = diagInput.value.trim();
-    if (!text) return;
-
-    diagInput.value = '';
-    diagSend.disabled = true;
-
-    // Dodaj wiadomość użytkownika
-    addMsg('user', text);
-    messages.push({ role: 'user', content: text });
-
-    // Wskaźnik ładowania
-    const loadingEl = addMsg('bot', '...');
-
-    try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 1000,
-                system: SYSTEM,
-                messages: messages
-            })
-        });
-
-        const data = await res.json();
-        const reply = data.content?.[0]?.text || 'Przepraszam, wystąpił błąd. Spróbuj ponownie.';
-
-        loadingEl.querySelector('.diag-msg__bubble').innerHTML = reply.replace(/\n/g, '<br>');
-        messages.push({ role: 'assistant', content: reply });
-
-    } catch (err) {
-        loadingEl.querySelector('.diag-msg__bubble').textContent = 'Błąd połączenia. Spróbuj ponownie.';
-    }
-
-    diagSend.disabled = false;
-    diagInput.focus();
-}
-
-function addMsg(type, text) {
-    const el = document.createElement('div');
-    el.className = `diag-msg diag-msg--${type === 'user' ? 'user' : 'bot'}`;
-    el.innerHTML = type === 'user'
-        ? `<div class="diag-msg__bubble">${escHtml(text)}</div><div class="diag-msg__avatar">Ty</div>`
-        : `<div class="diag-msg__avatar">AI</div><div class="diag-msg__bubble">${escHtml(text)}</div>`;
-    diagMessages.appendChild(el);
-    diagMessages.scrollTop = diagMessages.scrollHeight;
-    return el;
-}
-
-function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-diagSend.addEventListener('click', sendMessage);
-diagInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
-</script>

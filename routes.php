@@ -29,9 +29,13 @@ $router->post('panel/naprawa/{id}/odrzuc-wycene',   ['ClientController', 'reject
 $router->post('panel/naprawa/{id}/akceptuj-koszt',  ['ClientController', 'acceptFinalQuote']);
 $router->post('panel/naprawa/{id}/odrzuc-koszt',    ['ClientController', 'rejectFinalQuote']);
 $router->post('panel/naprawa/{id}/usun-zdjecie/{photo_id}',   ['ClientController', 'deletePhoto']);
+$router->post('panel/naprawa/{id}/nadanie-paczki',  ['ClientController', 'submitTracking']);
 $router->post('panel/naprawa/{id}/adres-zwrotny',   ['ClientController', 'updateReturnAddress']);
 
 $router->get('panel/diagnostyka',               ['ClientController', 'diagnostics']);
+
+// ---- Diagnostyka klienta ----
+$router->get('panel/diagnostyka',                   ['ClientController',  'diagnostics']);
 
 // ---- Panel admina ----
 $router->get('admin',                               ['AdminController',  'dashboard']);
@@ -43,6 +47,10 @@ $router->post('admin/naprawa/{id}/oplacone',        ['AdminController',  'markPa
 $router->post('admin/naprawa/{id}/zwrot',           ['AdminController',  'markReturning']);
 $router->post('admin/naprawa/{id}/usun',            ['AdminController',  'deleteRepair']);
 $router->get('admin/kalendarz',                     ['AdminController',  'calendar']);
+$router->get('admin/diagnostyka',                   ['AdminController',   'diagnostics']);
+$router->post('admin/diagnostyka/dodaj',            ['AdminController',   'diagAdd']);
+$router->post('admin/diagnostyka/edytuj/{id}',      ['AdminController',   'diagEdit']);
+$router->post('admin/diagnostyka/usun/{id}',        ['AdminController',   'diagDelete']);
 $router->get('admin/platnosci',                     ['AdminController',  'payments']);
 $router->get('admin/uzytkownicy',                   ['AdminController',  'users']);
 $router->post('admin/uzytkownik/{id}/usun',         ['AdminController',  'deleteUser']);

@@ -51,6 +51,14 @@ class ClientController {
         include VIEW_PATH.'/layout.php';
     }
 
+
+    public function diagnostics(): void {
+        requireLogin(); global $pdo;
+        $pageTitle = 'Diagnoza wstępna';
+        ob_start(); include VIEW_PATH.'/client/diagnostics.php'; $content = ob_get_clean();
+        include VIEW_PATH.'/layout.php';
+    }
+
     public function newRepairForm(): void {
         requireLogin(); global $pdo;
         $device_types  = $pdo->query('SELECT * FROM device_types WHERE is_active=1')->fetchAll();
@@ -243,6 +251,43 @@ class ClientController {
         redirect('/panel/naprawa/'.$id.'?success=Adres zwrotny zapisany');
     }
 
+
+
+    public function submitTracking(string $id): void {
+        requireLogin(); global $pdo;
+        $this->verifyOwnership((int)$id);
+
+        $tracking = trim($_POST['tracking_number'] ?? '');
+        $carrier  = trim($_POST['carrier'] ?? 'InPost');
+
+        if (!$tracking) {
+            redirect('/panel/naprawa/'.$id.'?error=Podaj numer przesyłki');
+        }
+
+        // Zapisz numer śledzenia
+        $pdo->prepare('UPDATE repairs SET tracking_number=?, updated_at=NOW() WHERE id=?')
+            ->execute([$tracking, (int)$id]);
+
+        // Automatycznie zmień status na "paczka w drodze" jeśli był initial_quote_accepted
+        $current = $pdo->prepare('SELECT rs.code FROM repairs r JOIN repair_statuses rs ON r.status_id=rs.id WHERE r.id=?');
+        $current->execute([(int)$id]);
+        $code = $current->fetchColumn();
+
+        if ($code === 'initial_quote_accepted') {
+            $status_id = $pdo->query("SELECT id FROM repair_statuses WHERE code='parcel_received'")->fetchColumn();
+            // Tworzymy nowy status "paczka w drodze" lub używamy istniejącego
+            // Sprawdź czy istnieje status parcel_sent
+            $parcel_sent = $pdo->query("SELECT id FROM repair_statuses WHERE code='parcel_sent'")->fetchColumn();
+            if ($parcel_sent) {
+                $status_id = $parcel_sent;
+            }
+            $pdo->prepare('UPDATE repairs SET status_id=? WHERE id=?')->execute([$status_id, (int)$id]);
+            $pdo->prepare('INSERT INTO repair_status_history (repair_id,status_id,changed_by,note) VALUES (?,?,?,?)')
+                ->execute([(int)$id, $status_id, $_SESSION['user_id'], 'Klient nadał paczkę. '.$carrier.': '.$tracking]);
+        }
+
+        redirect('/panel/naprawa/'.$id.'?success=Numer przesyłki zapisany — dziękujemy za nadanie paczki!');
+    }
 
     public function deleteRepair(string $id): void {
         requireLogin(); global $pdo;

@@ -215,6 +215,47 @@ class AdminController {
         redirect('/admin/platnosci?success=Płatność usunięta');
     }
 
+
+    public function diagnostics(): void {
+        requireAdmin(); global $pdo;
+        $pageTitle = 'Drzewo diagnostyczne';
+        ob_start(); include VIEW_PATH.'/admin/diagnostics.php'; $content = ob_get_clean();
+        include VIEW_PATH.'/admin/layout.php';
+    }
+
+    public function diagAdd(): void {
+        requireAdmin(); global $pdo;
+        $parent_id   = (int)($_POST['parent_id'] ?? 0) ?: null;
+        $question    = trim($_POST['question'] ?? '');
+        $answer      = trim($_POST['answer'] ?? '') ?: null;
+        $result      = trim($_POST['result'] ?? '') ?: null;
+        $result_type = $_POST['result_type'] ?? 'continue';
+        $sort_order  = (int)($_POST['sort_order'] ?? 0);
+        if (!$question) redirect('/admin/diagnostyka?error=Pytanie jest wymagane');
+        $pdo->prepare('INSERT INTO diag_nodes (parent_id,question,answer,result,result_type,sort_order) VALUES (?,?,?,?,?,?)')
+            ->execute([$parent_id,$question,$answer,$result,$result_type,$sort_order]);
+        redirect('/admin/diagnostyka?success=Węzeł dodany');
+    }
+
+    public function diagEdit(string $id): void {
+        requireAdmin(); global $pdo;
+        $question    = trim($_POST['question'] ?? '');
+        $answer      = trim($_POST['answer'] ?? '') ?: null;
+        $result      = trim($_POST['result'] ?? '') ?: null;
+        $result_type = $_POST['result_type'] ?? 'continue';
+        $sort_order  = (int)($_POST['sort_order'] ?? 0);
+        if (!$question) redirect('/admin/diagnostyka?error=Pytanie jest wymagane');
+        $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,result_type=?,sort_order=? WHERE id=?')
+            ->execute([$question,$answer,$result,$result_type,$sort_order,(int)$id]);
+        redirect('/admin/diagnostyka?success=Węzeł zaktualizowany');
+    }
+
+    public function diagDelete(string $id): void {
+        requireAdmin(); global $pdo;
+        $pdo->prepare('DELETE FROM diag_nodes WHERE id=?')->execute([(int)$id]);
+        redirect('/admin/diagnostyka?success=Węzeł usunięty');
+    }
+
     public function calendar(): void {
         requireAdmin(); global $pdo;
         $repairs = $pdo->query("

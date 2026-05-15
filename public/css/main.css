@@ -858,3 +858,170 @@ img{max-width:100%;display:block}
     .pricing-table tbody td:last-child { display: none; }
     .pricing-table thead th:last-child { display: none; }
 }
+
+/* ---- PAYMENT INFO ---- */
+.payment-info { margin-top: 8px; }
+.payment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.payment-details div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--bd);
+    font-size: 14px;
+    gap: 12px;
+}
+.payment-details div:last-child { border-bottom: none; }
+.payment-details span { color: var(--tm); flex-shrink: 0; }
+.payment-details strong { color: #fff; text-align: right; word-break: break-all; }
+
+/* ---- DIAGNOSTYKA ---- */
+.diag-path {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--tm);
+}
+.diag-path__item { color: var(--tm); text-decoration: none; }
+.diag-path__item:hover { color: var(--c); }
+.diag-path__item--done { color: var(--t); }
+.diag-path__sep { color: var(--bd); }
+.diag-card {
+    background: var(--bg3);
+    border: 1px solid var(--bd);
+    border-radius: 20px;
+    overflow: hidden;
+}
+.diag-question {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid var(--bd);
+}
+.diag-question__icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c); flex-shrink: 0;
+}
+.diag-question h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: #fff; line-height: 1.4;
+    margin: 0; padding-top: 6px;
+}
+.diag-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.diag-answer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--bd);
+    transition: all 0.2s;
+    text-decoration: none;
+    gap: 12px;
+}
+.diag-answer:last-child { border-bottom: none; }
+.diag-answer:hover {
+    background: rgba(0,229,255,0.04);
+    color: var(--c);
+}
+.diag-answer:hover svg { color: var(--c); }
+.diag-answer__text { font-size: 15px; color: var(--t); }
+.diag-answer svg { color: var(--tm); flex-shrink: 0; }
+.diag-result {
+    padding: 32px;
+    border-radius: 16px;
+    margin: 20px;
+    text-align: center;
+}
+.diag-result__icon {
+    margin: 0 auto 16px;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.2);
+    display: flex; align-items: center; justify-content: center;
+}
+.diag-result h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: #fff; margin-bottom: 12px;
+}
+.diag-result p {
+    font-size: 15px; color: var(--tm);
+    line-height: 1.7; margin-bottom: 24px;
+    max-width: 480px; margin-left: auto; margin-right: auto;
+}
+.diag-result__actions {
+    display: flex; gap: 12px;
+    justify-content: center; flex-wrap: wrap;
+}
+
+/* Drzewo w adminie */
+.diag-tree { display: flex; flex-direction: column; gap: 4px; }
+.diag-tree__node { }
+.diag-tree__line {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid;
+    border-radius: 8px;
+    background: var(--bg4);
+}
+.diag-tree__dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+.diag-tree__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+.diag-tree__answer {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--c);
+}
+.diag-tree__question {
+    font-size: 13px;
+    color: var(--t);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.diag-tree__result {
+    font-size: 11px;
+    color: var(--tm);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.diag-tree__actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+}

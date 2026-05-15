@@ -1,5 +1,6 @@
 <section class="panel-section">
 <div class="container">
+<?php $sc = $repair['status_code']; ?>
 
     <div class="panel-header">
         <div>
@@ -29,7 +30,6 @@
     <?php if ($error): ?><div class="alert alert--error"><?= sanitize($error) ?></div><?php endif; ?>
 
     <?php
-    $sc = $repair['status_code'];
     $sa = $config['service_address'];
     $has_return_address = $repair['return_first_name'] && $repair['return_city'];
     ?>
@@ -99,6 +99,43 @@
                 </div>
                 <?php endforeach; ?>
             </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- NADANIE PACZKI - po akceptacji wstępnej wyceny -->
+        <?php if (in_array($sc, ['initial_quote_accepted','parcel_sent'])): ?>
+        <div class="panel-card" style="border-color:rgba(6,182,212,0.2)">
+            <h3><?= $sc === 'parcel_sent' ? '📦 Paczka w drodze' : '📦 Nadaj paczkę' ?></h3>
+            <?php if ($sc === 'parcel_sent' && $repair['tracking_number']): ?>
+                <div class="address-display" style="margin-bottom:16px">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                    <div>Numer przesyłki: <strong style="color:var(--c)"><?= sanitize($repair['tracking_number']) ?></strong></div>
+                </div>
+                <p class="detail-text">Paczka nadana — czekam na jej odbiór. Możesz zaktualizować numer jeśli podałeś błędny.</p>
+            <?php else: ?>
+                <p class="detail-text" style="margin-bottom:16px">Zapakuj starannie sprzęt i nadaj na paczkomat <strong style="color:var(--c)">SCZ04M</strong> w Szczecinku. Podaj numer przesyłki żeby automatycznie zaktualizować status.</p>
+            <?php endif; ?>
+            <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/nadanie-paczki">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Numer przesyłki / paczkomatu</label>
+                        <input type="text" name="tracking_number" value="<?= sanitize($repair['tracking_number'] ?? '') ?>" placeholder="np. 123456789012345678" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Przewoźnik</label>
+                        <select name="carrier">
+                            <option value="InPost">InPost / Paczkomat</option>
+                            <option value="DPD">DPD</option>
+                            <option value="DHL">DHL</option>
+                            <option value="UPS">UPS</option>
+                            <option value="Poczta Polska">Poczta Polska</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn--primary" style="margin-top:4px">
+                    <?= $sc === 'parcel_sent' ? 'Zaktualizuj numer' : '📦 Potwierdzam nadanie paczki' ?>
+                </button>
+            </form>
         </div>
         <?php endif; ?>
 
@@ -237,6 +274,36 @@
         </div>
 
     </div>
+
+        <!-- OCZEKUJE NA PŁATNOŚĆ -->
+        <?php if ($sc === 'awaiting_payment'): ?>
+        <?php
+            $payment_info = $pdo->query("SELECT method FROM payments WHERE repair_id={$repair['id']} ORDER BY id DESC LIMIT 1")->fetch();
+            $method = $payment_info['method'] ?? 'transfer';
+        ?>
+        <div class="panel-card" style="border-color:rgba(234,179,8,0.25)">
+            <h3 style="color:#eab308">💳 Oczekuje na płatność</h3>
+            <div class="quote-amount" style="margin-bottom:12px"><?= formatMoney((float)$repair['final_quote_amount']) ?></div>
+            <?php if ($method === 'transfer'): ?>
+                <div class="payment-info">
+                    <p><strong>Forma płatności:</strong> Przelew bankowy</p>
+                    <div class="payment-details">
+                        <div><span>Numer konta:</span><strong>PL 00 0000 0000 0000 0000 0000 0000</strong></div>
+                        <div><span>Odbiorca:</span><strong>Eliasz Proć — NovaFix</strong></div>
+                        <div><span>Tytuł przelewu:</span><strong><?= sanitize($repair['rma_number']) ?></strong></div>
+                        <div><span>Kwota:</span><strong style="color:#eab308"><?= formatMoney((float)$repair['final_quote_amount']) ?></strong></div>
+                    </div>
+                    <p class="detail-text" style="margin-top:12px">Po zaksięgowaniu płatności zmienię status i wyślę sprzęt.</p>
+                </div>
+            <?php elseif ($method === 'cash'): ?>
+                <p class="detail-text"><strong>Forma płatności:</strong> Gotówka przy odbiorze</p>
+            <?php elseif ($method === 'card'): ?>
+                <p class="detail-text"><strong>Forma płatności:</strong> Karta płatnicza</p>
+            <?php else: ?>
+                <p class="detail-text"><strong>Forma płatności:</strong> Skontaktuję się w sprawie płatności.</p>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
 
     <!-- Historia statusów -->
     <div class="detail-side">
