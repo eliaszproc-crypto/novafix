@@ -45,14 +45,6 @@ class ClientController {
 
 
     public function diagnostics(): void {
-        requireLogin();
-        $pageTitle = 'Diagnoza AI';
-        ob_start(); include VIEW_PATH.'/client/diagnostics.php'; $content = ob_get_clean();
-        include VIEW_PATH.'/layout.php';
-    }
-
-
-    public function diagnostics(): void {
         requireLogin(); global $pdo;
         $pageTitle = 'Diagnoza wstępna';
         ob_start(); include VIEW_PATH.'/client/diagnostics.php'; $content = ob_get_clean();
