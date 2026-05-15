@@ -26,11 +26,11 @@ return [
         'path'     => ROOT_PATH . '/public/uploads/',
     ],
     'service_address' => [
-        'name'    => 'NovaFix — Eliasz Proć',
-        'street'  => 'ul. Przykładowa 1',
-        'postal'  => '00-000',
-        'city'    => 'Miasto',
-        'phone'   => '+48 000 000 000',
-        'email'   => 'serwis@novafix.pl',
+        'name'    => 'Eliasz Proć — NovaFix',
+        'street'  => 'Paczkomat SCZ04M',
+        'postal'  => '78-400',
+        'city'    => 'Szczecinek',
+        'phone'   => '',
+        'email'   => 'eliasz.proc@gmail.com',
     ],
 ];

@@ -43,8 +43,9 @@
             </div>
             <div class="footer__col">
                 <h4>Kontakt</h4>
-                <p>serwis@novafix.pl</p>
-                <p>Eliasz Proć</p>
+                <p>eliasz.proc@gmail.com</p>
+                <p>Eliasz Proć — Inżynier elektronik</p>
+                <p>Szczecinek 78-400</p>
             </div>
         </div>
         <div class="footer__bottom">

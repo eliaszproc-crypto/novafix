@@ -1,9 +1,9 @@
 <section class="page-hero">
     <div class="page-hero__bg"></div>
     <div class="container">
-        <p class="section__label">Jesteśmy do dyspozycji</p>
+        <p class="section__label">Napisz do mnie</p>
         <h1>Kontakt</h1>
-        <p>Masz pytania? Napisz do nas lub skorzystaj z formularza zgłoszenia naprawy.</p>
+        <p>Masz pytanie przed zgłoszeniem? Nie wiesz czy naprawa ma sens? Napisz — odpiszę szczerze.</p>
     </div>
 </section>
 
@@ -11,24 +11,28 @@
     <div class="container">
         <div class="contact-grid">
             <div class="contact-info">
+
                 <div class="contact-card">
                     <div class="contact-card__icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
                     </div>
                     <div>
                         <h4>Email</h4>
-                        <a href="mailto:serwis@novafix.pl">serwis@novafix.pl</a>
+                        <a href="mailto:eliasz.proc@gmail.com">eliasz.proc@gmail.com</a>
                     </div>
                 </div>
+
                 <div class="contact-card">
                     <div class="contact-card__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                     </div>
                     <div>
-                        <h4>Telefon</h4>
-                        <p>Kontakt przez email lub formularz</p>
+                        <h4>Adres paczkomatu</h4>
+                        <p><strong>SCZ04M</strong> — Szczecinek 78-400</p>
+                        <p style="font-size:12px;margin-top:4px">Preferowana forma dostawy sprzętu</p>
                     </div>
                 </div>
+
                 <div class="contact-card">
                     <div class="contact-card__icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -38,30 +42,38 @@
                         <p>Do 24h w dni robocze</p>
                     </div>
                 </div>
+
                 <div class="contact-card">
                     <div class="contact-card__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
                     <div>
-                        <h4>Serwis</h4>
-                        <p>NovaFix — Eliasz Proć<br>Polska</p>
+                        <h4>Eliasz Proć</h4>
+                        <p>Inżynier elektronik<br>NovaFix — Szczecinek</p>
                     </div>
                 </div>
 
                 <div class="contact-cta">
-                    <h3>Chcesz zgłosić naprawę?</h3>
-                    <p>Skorzystaj z naszego systemu zgłoszeń — szybko, wygodnie, online.</p>
+                    <h3>Wolisz od razu zgłosić sprzęt?</h3>
+                    <p>Złóż zlecenie online — opisz problem, wyślij zdjęcia. Odezwę się ze wstępną wyceną.</p>
                     <a href="/panel/nowe-zgloszenie" class="btn btn--primary btn--lg">Zgłoś urządzenie</a>
                 </div>
+
+                <div class="contact-cta" style="background:rgba(0,229,255,0.04);border-color:rgba(0,229,255,0.15)">
+                    <h3>📦 Jak zapakować sprzęt?</h3>
+                    <p>Zawiń urządzenie w folię bąbelkową, zabezpiecz w kartonie. Dołącz kartkę z numerem zgłoszenia RMA. Nadaj na paczkomat <strong>SCZ04M</strong> w Szczecinku.</p>
+                </div>
+
             </div>
 
             <div class="contact-form-wrap">
                 <div class="panel-card">
                     <h3>Wyślij wiadomość</h3>
                     <?php if ($_GET['sent'] ?? false): ?>
-                        <div style="padding:24px;text-align:center;color:#22c55e">
+                        <div style="padding:32px;text-align:center;color:#22c55e">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 12px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                            <p>Wiadomość wysłana! Odpiszemy wkrótce.</p>
+                            <p style="font-size:16px;font-weight:600">Wiadomość wysłana!</p>
+                            <p style="color:var(--tm);margin-top:8px">Odezwę się w ciągu 24h.</p>
                         </div>
                     <?php else: ?>
                     <form class="auth-form" method="POST" action="/kontakt">
@@ -77,11 +89,11 @@
                         </div>
                         <div class="form-group">
                             <label>Temat</label>
-                            <input type="text" name="subject" placeholder="Pytanie o naprawę...">
+                            <input type="text" name="subject" placeholder="Np. pytanie o naprawę lampy AI Hydra 32...">
                         </div>
                         <div class="form-group">
                             <label>Wiadomość</label>
-                            <textarea name="message" rows="6" placeholder="Opisz swoje pytanie..." required></textarea>
+                            <textarea name="message" rows="6" placeholder="Opisz swoje pytanie lub problem — im więcej szczegółów, tym lepsza odpowiedź." required></textarea>
                         </div>
                         <button type="submit" class="btn btn--primary btn--full">Wyślij wiadomość</button>
                     </form>
