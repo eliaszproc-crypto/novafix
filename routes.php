@@ -34,5 +34,9 @@ $router->post('admin/naprawa/{id}/status',          ['AdminController',  'update
 $router->post('admin/naprawa/{id}/wycena',          ['AdminController',  'sendQuote']);
 $router->post('admin/naprawa/{id}/oplacone',        ['AdminController',  'markPaid']);
 $router->post('admin/naprawa/{id}/zwrot',           ['AdminController',  'markReturning']);
+$router->post('admin/naprawa/{id}/usun',            ['AdminController',  'deleteRepair']);
 $router->get('admin/kalendarz',                     ['AdminController',  'calendar']);
 $router->get('admin/platnosci',                     ['AdminController',  'payments']);
+$router->get('admin/uzytkownicy',                   ['AdminController',  'users']);
+$router->post('admin/uzytkownik/{id}/usun',         ['AdminController',  'deleteUser']);
+$router->post('admin/platnosc/{id}/usun',           ['AdminController',  'deletePayment']);

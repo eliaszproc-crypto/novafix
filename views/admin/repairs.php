@@ -17,39 +17,34 @@
     </form>
 </div>
 
+<?php if ($success): ?><div class="a-alert a-alert--success"><?= sanitize($success) ?></div><?php endif; ?>
+
 <div class="admin-card">
     <h2>Zgłoszenia (<?= count($repairs) ?>)</h2>
     <?php if (empty($repairs)): ?>
-        <p style="color:var(--tm);text-align:center;padding:24px">Brak zgłoszeń spełniających kryteria.</p>
+        <p style="color:var(--tm);text-align:center;padding:24px">Brak zgłoszeń.</p>
     <?php else: ?>
     <div class="admin-table-wrap">
         <table class="admin-table">
             <thead>
-                <tr>
-                    <th>RMA</th>
-                    <th>Klient</th>
-                    <th>Email</th>
-                    <th>Urządzenie</th>
-                    <th>Status</th>
-                    <th>Data</th>
-                    <th></th>
-                </tr>
+                <tr><th>RMA</th><th>Klient</th><th>Email</th><th>Urządzenie</th><th>Status</th><th>Data</th><th></th></tr>
             </thead>
             <tbody>
             <?php foreach ($repairs as $r): ?>
             <tr>
                 <td><strong style="color:#fff"><?= sanitize($r['rma_number']) ?></strong></td>
-                <td><?= sanitize($r['first_name'] . ' ' . $r['last_name']) ?></td>
-                <td style="color:var(--tm);font-size:13px"><?= sanitize($r['email']) ?></td>
-                <td>
-                    <?= sanitize($r['device_type']) ?>
-                    <?php if ($r['device_brand']): ?>
-                        <span style="color:var(--tm)"> — <?= sanitize($r['device_brand']) ?></span>
-                    <?php endif; ?>
-                </td>
+                <td><?= sanitize($r['first_name'].' '.$r['last_name']) ?></td>
+                <td style="color:var(--tm);font-size:12px"><?= sanitize($r['email']) ?></td>
+                <td><?= sanitize($r['device_type']) ?><?= $r['device_brand'] ? ' — <span style="color:var(--tm)">'.sanitize($r['device_brand']).'</span>' : '' ?></td>
                 <td><span class="status-pill" style="background:<?= $r['status_color'] ?>22;color:<?= $r['status_color'] ?>"><?= sanitize($r['status_label']) ?></span></td>
                 <td style="color:var(--tm);font-size:13px"><?= date('d.m.Y', strtotime($r['created_at'])) ?></td>
-                <td><a href="/admin/naprawa/<?= $r['id'] ?>" class="table-link">Otwórz →</a></td>
+                <td style="display:flex;gap:8px;align-items:center">
+                    <a href="/admin/naprawa/<?= $r['id'] ?>" class="table-link">Otwórz →</a>
+                    <form method="POST" action="/admin/naprawa/<?= $r['id'] ?>/usun"
+                          onsubmit="return confirm('Usunąć zgłoszenie <?= sanitize($r['rma_number']) ?>? Tej operacji nie można cofnąć.')">
+                        <button type="submit" class="del-btn" title="Usuń">✕</button>
+                    </form>
+                </td>
             </tr>
             <?php endforeach; ?>
             </tbody>

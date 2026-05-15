@@ -1,3 +1,5 @@
+<?php if ($success): ?><div class="a-alert a-alert--success"><?= sanitize($success) ?></div><?php endif; ?>
+
 <div class="admin-stats" style="grid-template-columns:repeat(2,1fr);max-width:460px;margin-bottom:20px">
     <div class="admin-stat">
         <div class="admin-stat__icon" style="background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.2);color:#22c55e">
@@ -12,23 +14,28 @@
         <div><strong><?= count($payments) ?></strong><span>Płatności</span></div>
     </div>
 </div>
+
 <div class="admin-card">
     <?php if (empty($payments)): ?>
         <p style="color:var(--tm);text-align:center;padding:24px">Brak płatności.</p>
     <?php else: ?>
     <div class="admin-table-wrap">
         <table class="admin-table">
-            <thead><tr><th>RMA</th><th>Klient</th><th>Kwota</th><th>Metoda</th><th>Status</th><th>Data</th></tr></thead>
+            <thead><tr><th>RMA</th><th>Klient</th><th>Kwota</th><th>Metoda</th><th>Data</th><th></th></tr></thead>
             <tbody>
             <?php foreach ($payments as $p): ?>
-            <?php $pc = $p['status']==='paid' ? '#22c55e' : ($p['status']==='refunded' ? '#f87171' : '#eab308') ?>
             <tr>
                 <td><strong style="color:#fff"><?= sanitize($p['rma_number']) ?></strong></td>
-                <td><?= sanitize($p['first_name'] . ' ' . $p['last_name']) ?></td>
+                <td><?= sanitize($p['first_name'].' '.$p['last_name']) ?></td>
                 <td><strong style="color:#00e5ff"><?= formatMoney((float)$p['amount']) ?></strong></td>
                 <td style="color:var(--tm)"><?= sanitize($p['method']) ?></td>
-                <td><span class="status-pill" style="background:<?= $pc ?>22;color:<?= $pc ?>"><?= sanitize($p['status']) ?></span></td>
                 <td style="color:var(--tm)"><?= date('d.m.Y', strtotime($p['created_at'])) ?></td>
+                <td>
+                    <form method="POST" action="/admin/platnosc/<?= $p['id'] ?>/usun"
+                          onsubmit="return confirm('Usunąć tę płatność z historii?')">
+                        <button type="submit" class="del-btn" title="Usuń">✕</button>
+                    </form>
+                </td>
             </tr>
             <?php endforeach; ?>
             </tbody>
