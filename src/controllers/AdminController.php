@@ -256,6 +256,66 @@ class AdminController {
         redirect('/admin/diagnostyka?success=Węzeł usunięty');
     }
 
+
+    public function pricing(): void {
+        requireAdmin(); global $pdo;
+        $items = $pdo->query('SELECT * FROM pricing_items ORDER BY sort_order,id')->fetchAll();
+        $categories = array_unique(array_column($items, 'category'));
+        $by_cat = [];
+        foreach ($items as $item) $by_cat[$item['category']][] = $item;
+        $success = $_GET['success'] ?? '';
+        $error   = $_GET['error'] ?? '';
+        $edit_id = (int)($_GET['edit'] ?? 0);
+        $edit_item = null;
+        if ($edit_id) {
+            $s = $pdo->prepare('SELECT * FROM pricing_items WHERE id=?');
+            $s->execute([$edit_id]);
+            $edit_item = $s->fetch();
+        }
+        $pageTitle = 'Cennik';
+        ob_start(); include VIEW_PATH.'/admin/pricing.php'; $content = ob_get_clean();
+        include VIEW_PATH.'/admin/layout.php';
+    }
+
+    public function pricingAdd(): void {
+        requireAdmin(); global $pdo;
+        $pdo->prepare('INSERT INTO pricing_items (category,name,price_from,price_to,unit,note,is_active,sort_order) VALUES (?,?,?,?,?,?,?,?)')
+            ->execute([
+                trim($_POST['category'] ?? ''),
+                trim($_POST['name'] ?? ''),
+                (float)str_replace(',','.',$_POST['price_from'] ?? 0),
+                $_POST['price_to'] ? (float)str_replace(',','.',$_POST['price_to']) : null,
+                trim($_POST['unit'] ?? '') ?: null,
+                trim($_POST['note'] ?? '') ?: null,
+                isset($_POST['is_active']) ? 1 : 0,
+                (int)($_POST['sort_order'] ?? 0),
+            ]);
+        redirect('/admin/cennik?success=Pozycja dodana');
+    }
+
+    public function pricingEdit(string $id): void {
+        requireAdmin(); global $pdo;
+        $pdo->prepare('UPDATE pricing_items SET category=?,name=?,price_from=?,price_to=?,unit=?,note=?,is_active=?,sort_order=? WHERE id=?')
+            ->execute([
+                trim($_POST['category'] ?? ''),
+                trim($_POST['name'] ?? ''),
+                (float)str_replace(',','.',$_POST['price_from'] ?? 0),
+                $_POST['price_to'] ? (float)str_replace(',','.',$_POST['price_to']) : null,
+                trim($_POST['unit'] ?? '') ?: null,
+                trim($_POST['note'] ?? '') ?: null,
+                isset($_POST['is_active']) ? 1 : 0,
+                (int)($_POST['sort_order'] ?? 0),
+                (int)$id,
+            ]);
+        redirect('/admin/cennik?success=Pozycja zaktualizowana');
+    }
+
+    public function pricingDelete(string $id): void {
+        requireAdmin(); global $pdo;
+        $pdo->prepare('DELETE FROM pricing_items WHERE id=?')->execute([(int)$id]);
+        redirect('/admin/cennik?success=Pozycja usunięta');
+    }
+
     public function calendar(): void {
         requireAdmin(); global $pdo;
         $repairs = $pdo->query("

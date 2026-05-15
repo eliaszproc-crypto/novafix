@@ -51,6 +51,10 @@ $router->get('admin/diagnostyka',                   ['AdminController',   'diagn
 $router->post('admin/diagnostyka/dodaj',            ['AdminController',   'diagAdd']);
 $router->post('admin/diagnostyka/edytuj/{id}',      ['AdminController',   'diagEdit']);
 $router->post('admin/diagnostyka/usun/{id}',        ['AdminController',   'diagDelete']);
+$router->get('admin/cennik',                        ['AdminController',   'pricing']);
+$router->post('admin/cennik/dodaj',                 ['AdminController',   'pricingAdd']);
+$router->post('admin/cennik/edytuj/{id}',           ['AdminController',   'pricingEdit']);
+$router->post('admin/cennik/usun/{id}',             ['AdminController',   'pricingDelete']);
 $router->get('admin/platnosci',                     ['AdminController',  'payments']);
 $router->get('admin/uzytkownicy',                   ['AdminController',  'users']);
 $router->post('admin/uzytkownik/{id}/usun',         ['AdminController',  'deleteUser']);

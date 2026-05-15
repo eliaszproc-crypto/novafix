@@ -1025,3 +1025,67 @@ img{max-width:100%;display:block}
     align-items: center;
     flex-shrink: 0;
 }
+
+/* ---- PRICING SECTIONS ---- */
+.pricing-section { margin-bottom: 40px; }
+.pricing-section__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+}
+.pricing-section__icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(0,100,255,0.1);
+    border: 1px solid rgba(0,150,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c); flex-shrink: 0;
+}
+.pricing-section__header h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 18px; font-weight: 700; color: #fff; margin: 0;
+}
+.hide-mobile { }
+@media(max-width:768px){ .hide-mobile { display: none; } }
+
+/* ---- DEKORACJE NA PODSTRONACH ---- */
+.page-hero {
+    position: relative;
+    overflow: hidden;
+}
+.page-hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,100,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+.page-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; left: 10%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* ---- FLOATING ORBS NA PODSTRONACH ---- */
+.page-deco {
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 40%;
+    pointer-events: none;
+    overflow: hidden;
+}
+.page-deco__ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0,229,255,0.08);
+}
+.page-deco__ring--1 { width: 300px; height: 300px; top: -50px; right: -80px; animation: rot 25s linear infinite; }
+.page-deco__ring--2 { width: 200px; height: 200px; top: 60px; right: 60px; border-style: dashed; animation: rot 18s linear infinite reverse; }
+.page-deco__ring--3 { width: 400px; height: 400px; top: -100px; right: -140px; border-color: rgba(0,100,255,0.05); animation: rot 35s linear infinite; }

@@ -1,5 +1,10 @@
 <section class="page-hero">
     <div class="page-hero__bg"></div>
+    <div class="page-deco">
+        <div class="page-deco__ring page-deco__ring--1"></div>
+        <div class="page-deco__ring page-deco__ring--2"></div>
+        <div class="page-deco__ring page-deco__ring--3"></div>
+    </div>
     <div class="container">
         <p class="section__label">Co naprawiam</p>
         <h1>Usługi serwisowe</h1>
