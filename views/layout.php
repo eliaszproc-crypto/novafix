@@ -17,5 +17,6 @@ $appName = $config['app']['name'];
     <main><?= $content ?? '' ?></main>
     <?php include VIEW_PATH . '/partials/footer.php'; ?>
     <script src="/js/main.js"></script>
+    <script src="/js/upload.js"></script>
 </body>
 </html>
