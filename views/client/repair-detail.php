@@ -68,10 +68,22 @@
 
         <?php if (!empty($photos)): ?>
         <div class="panel-card">
-            <h3>Zdjęcia</h3>
-            <div class="photos-grid">
+            <h3>Zdjęcia (<?= count($photos) ?>/5)</h3>
+            <div class="photos-grid-editable">
                 <?php foreach ($photos as $p): ?>
-                    <a href="/uploads/<?= $p['filename'] ?>" target="_blank"><img src="/uploads/<?= $p['filename'] ?>" alt=""></a>
+                <div class="photo-thumb">
+                    <a href="/uploads/<?= $p['filename'] ?>" target="_blank">
+                        <img src="/uploads/<?= $p['filename'] ?>" alt="">
+                    </a>
+                    <?php if ($repair['status_code'] === 'new'): ?>
+                    <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/usun-zdjecie/<?= $p['id'] ?>"
+                          onsubmit="return confirm('Usunąć to zdjęcie?')">
+                        <button type="submit" class="photo-thumb__del" title="Usuń zdjęcie">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </form>
+                    <?php endif; ?>
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>

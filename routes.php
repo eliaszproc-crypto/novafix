@@ -24,6 +24,7 @@ $router->post('panel/naprawa/{id}/akceptuj-wycene', ['ClientController', 'accept
 $router->post('panel/naprawa/{id}/odrzuc-wycene',   ['ClientController', 'rejectInitialQuote']);
 $router->post('panel/naprawa/{id}/akceptuj-koszt',  ['ClientController', 'acceptFinalQuote']);
 $router->post('panel/naprawa/{id}/odrzuc-koszt',    ['ClientController', 'rejectFinalQuote']);
+$router->post('panel/naprawa/{id}/usun-zdjecie/{photo_id}',   ['ClientController', 'deletePhoto']);
 $router->post('panel/naprawa/{id}/adres-zwrotny',   ['ClientController', 'updateReturnAddress']);
 
 // ---- Panel admina ----

@@ -1,9 +1,10 @@
 <?php
 class ClientController {
 
+    private const MAX_PHOTOS = 5;
+
     public function dashboard(): void {
-        requireLogin();
-        global $pdo;
+        requireLogin(); global $pdo;
         $user_id = $_SESSION['user_id'];
         $stmt = $pdo->prepare('
             SELECT r.*, rs.label as status_label, rs.color as status_color, rs.code as status_code,
@@ -25,8 +26,7 @@ class ClientController {
     }
 
     public function repairs(): void {
-        requireLogin();
-        global $pdo;
+        requireLogin(); global $pdo;
         $stmt = $pdo->prepare('
             SELECT r.*, rs.label as status_label, rs.color as status_color, rs.code as status_code,
                    dt.name as device_type, COALESCE(db.name,\'\') as device_brand
@@ -44,8 +44,7 @@ class ClientController {
     }
 
     public function newRepairForm(): void {
-        requireLogin();
-        global $pdo;
+        requireLogin(); global $pdo;
         $device_types  = $pdo->query('SELECT * FROM device_types WHERE is_active=1')->fetchAll();
         $device_brands = $pdo->query('SELECT * FROM device_brands WHERE is_active=1')->fetchAll();
         $error = $_GET['error'] ?? '';
@@ -55,21 +54,18 @@ class ClientController {
     }
 
     public function newRepairSubmit(): void {
-        requireLogin();
-        global $pdo;
+        requireLogin(); global $pdo;
         $user_id         = $_SESSION['user_id'];
         $device_type_id  = (int)($_POST['device_type_id'] ?? 0);
         $device_brand_id = (int)($_POST['device_brand_id'] ?? 0) ?: null;
         $device_model    = trim($_POST['device_model'] ?? '');
         $problem         = trim($_POST['problem_description'] ?? '');
-
-        // Adres zwrotny
-        $ret_first = trim($_POST['return_first_name'] ?? '');
-        $ret_last  = trim($_POST['return_last_name'] ?? '');
-        $ret_phone = trim($_POST['return_phone'] ?? '');
-        $ret_street= trim($_POST['return_street'] ?? '');
-        $ret_postal= trim($_POST['return_postal'] ?? '');
-        $ret_city  = trim($_POST['return_city'] ?? '');
+        $ret_first       = trim($_POST['return_first_name'] ?? '');
+        $ret_last        = trim($_POST['return_last_name'] ?? '');
+        $ret_phone       = trim($_POST['return_phone'] ?? '');
+        $ret_street      = trim($_POST['return_street'] ?? '');
+        $ret_postal      = trim($_POST['return_postal'] ?? '');
+        $ret_city        = trim($_POST['return_city'] ?? '');
 
         if (!$device_type_id || !$problem) {
             redirect('/panel/nowe-zgloszenie?error=Wypełnij wymagane pola');
@@ -90,17 +86,8 @@ class ClientController {
                         $ret_first, $ret_last, $ret_phone, $ret_street, $ret_postal, $ret_city]);
         $repair_id = $pdo->lastInsertId();
 
-        if (!empty($_FILES['photos']['name'][0])) {
-            foreach ($_FILES['photos']['tmp_name'] as $i => $tmp) {
-                if ($_FILES['photos']['error'][$i] !== 0) continue;
-                $ext = strtolower(pathinfo($_FILES['photos']['name'][$i], PATHINFO_EXTENSION));
-                if (!in_array($ext, ['jpg','jpeg','png','webp'])) continue;
-                $filename = 'repair_'.$repair_id.'_'.uniqid().'.'.$ext;
-                if (move_uploaded_file($tmp, ROOT_PATH.'/public/uploads/'.$filename)) {
-                    $pdo->prepare('INSERT INTO repair_photos (repair_id,filename) VALUES (?,?)')->execute([$repair_id, $filename]);
-                }
-            }
-        }
+        // Upload zdjęć - max 5, skalowanie do 800x600
+        $this->handlePhotoUpload($repair_id, $pdo);
 
         $pdo->prepare('INSERT INTO repair_status_history (repair_id,status_id,changed_by,note) VALUES (?,?,?,?)')
             ->execute([$repair_id, $status_id, $user_id, 'Zgłoszenie utworzone przez klienta']);
@@ -108,9 +95,56 @@ class ClientController {
         redirect('/panel/naprawa/'.$repair_id);
     }
 
+    private function handlePhotoUpload(int $repair_id, $pdo): void {
+        if (empty($_FILES['photos']['name'][0])) return;
+
+        $upload_path = ROOT_PATH.'/public/uploads/';
+        $count = 0;
+
+        foreach ($_FILES['photos']['tmp_name'] as $i => $tmp) {
+            if ($count >= self::MAX_PHOTOS) break;
+            if ($_FILES['photos']['error'][$i] !== UPLOAD_ERR_OK) continue;
+
+            $ext      = strtolower(pathinfo($_FILES['photos']['name'][$i], PATHINFO_EXTENSION));
+            $allowed  = ['jpg','jpeg','png','webp'];
+            if (!in_array($ext, $allowed)) continue;
+
+            $size = $_FILES['photos']['size'][$i];
+            if ($size > 10 * 1024 * 1024) continue; // max 10MB wejściowy
+
+            $filename = 'repair_'.$repair_id.'_'.uniqid().'.jpg'; // zawsze JPEG po skalowaniu
+            $dest     = $upload_path.$filename;
+
+            if (ImageHelper::resizeAndSave($tmp, $dest, 800, 600)) {
+                $pdo->prepare('INSERT INTO repair_photos (repair_id,filename) VALUES (?,?)')->execute([$repair_id, $filename]);
+                $count++;
+            }
+        }
+    }
+
+    public function deletePhoto(string $repair_id, string $photo_id): void {
+        requireLogin(); global $pdo;
+
+        // Sprawdź czy zdjęcie należy do naprawy klienta
+        $stmt = $pdo->prepare('
+            SELECT rp.filename FROM repair_photos rp
+            JOIN repairs r ON rp.repair_id=r.id
+            WHERE rp.id=? AND r.id=? AND r.user_id=?
+        ');
+        $stmt->execute([(int)$photo_id, (int)$repair_id, $_SESSION['user_id']]);
+        $photo = $stmt->fetch();
+
+        if ($photo) {
+            $path = ROOT_PATH.'/public/uploads/'.$photo['filename'];
+            if (file_exists($path)) unlink($path);
+            $pdo->prepare('DELETE FROM repair_photos WHERE id=?')->execute([(int)$photo_id]);
+        }
+
+        redirect('/panel/naprawa/'.$repair_id.'?success=Zdjęcie usunięte');
+    }
+
     public function repairDetail(string $id): void {
-        requireLogin();
-        global $pdo;
+        requireLogin(); global $pdo;
         $stmt = $pdo->prepare('
             SELECT r.*, rs.label as status_label, rs.color as status_color, rs.code as status_code,
                    dt.name as device_type, COALESCE(db.name,\'\') as device_brand
@@ -124,7 +158,7 @@ class ClientController {
         $repair = $stmt->fetch();
         if (!$repair) redirect('/panel');
 
-        $photos = $pdo->prepare('SELECT * FROM repair_photos WHERE repair_id=?');
+        $photos = $pdo->prepare('SELECT * FROM repair_photos WHERE repair_id=? ORDER BY id ASC');
         $photos->execute([(int)$id]);
         $photos = $photos->fetchAll();
 
@@ -141,7 +175,6 @@ class ClientController {
         $config  = require ROOT_PATH.'/config/config.php';
         $success = $_GET['success'] ?? '';
         $error   = $_GET['error'] ?? '';
-
         $pageTitle = 'Zgłoszenie '.$repair['rma_number'];
         ob_start(); include VIEW_PATH.'/client/repair-detail.php'; $content = ob_get_clean();
         include VIEW_PATH.'/layout.php';
@@ -194,11 +227,9 @@ class ClientController {
         $street = trim($_POST['return_street'] ?? '');
         $postal = trim($_POST['return_postal'] ?? '');
         $city   = trim($_POST['return_city'] ?? '');
-
         if (!$first || !$last || !$street || !$postal || !$city) {
             redirect('/panel/naprawa/'.$id.'?error=Wypełnij wszystkie pola adresu');
         }
-
         $pdo->prepare('UPDATE repairs SET return_first_name=?, return_last_name=?, return_phone=?, return_street=?, return_postal=?, return_city=?, updated_at=NOW() WHERE id=?')
             ->execute([$first,$last,$phone,$street,$postal,$city,(int)$id]);
         redirect('/panel/naprawa/'.$id.'?success=Adres zwrotny zapisany');

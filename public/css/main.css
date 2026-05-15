@@ -504,3 +504,123 @@ img{max-width:100%;display:block}
 .file-upload__preview img{width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--bd)}
 .file-upload__label{cursor:pointer}
 .file-upload__label.drag-over{border-color:var(--c);background:rgba(0,229,255,0.05)}
+
+/* ---- UPLOAD AREA ---- */
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.upload-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.upload-thumb {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+    overflow: visible;
+    flex-shrink: 0;
+}
+.upload-thumb img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--bd);
+    display: block;
+}
+.upload-thumb__remove {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ef4444;
+    border: 2px solid var(--bg3);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    padding: 0;
+    z-index: 2;
+}
+.upload-thumb__remove:hover { background: #dc2626; }
+.upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 24px 20px;
+    border: 2px dashed var(--bd);
+    border-radius: 12px;
+    color: var(--tm);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+.upload-label:hover, .upload-label.drag-over {
+    border-color: var(--c);
+    color: var(--c);
+    background: rgba(0,229,255,0.03);
+}
+.upload-label span { font-size: 14px; font-weight: 500; }
+.upload-label small { font-size: 12px; color: var(--tm); }
+.upload-counter {
+    font-size: 12px;
+    color: var(--c);
+    min-height: 16px;
+}
+.upload-info {
+    font-size: 12px;
+    color: #f87171;
+    padding: 6px 10px;
+    background: rgba(239,68,68,0.08);
+    border-radius: 8px;
+}
+
+/* ---- PHOTOS GRID EDITABLE ---- */
+.photos-grid-editable {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.photo-thumb {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+.photo-thumb img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--bd);
+    display: block;
+    transition: opacity 0.2s;
+}
+.photo-thumb img:hover { opacity: 0.85; }
+.photo-thumb__del {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ef4444;
+    border: 2px solid var(--bg3);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.2s;
+    z-index: 2;
+}
+.photo-thumb__del:hover { background: #dc2626; }
