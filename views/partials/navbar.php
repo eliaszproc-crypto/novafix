@@ -11,6 +11,10 @@
         </nav>
         <div class="navbar__actions">
             <?php if (isLoggedIn()): ?>
+                <div class="navbar__user">
+                    <div class="navbar__user-avatar"><?= strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 1)) ?></div>
+                    <span class="navbar__user-name"><?= sanitize(explode(' ', $_SESSION['user_name'] ?? '')[0]) ?></span>
+                </div>
                 <?php if (isAdmin()): ?>
                     <a href="/admin" class="btn btn--outline">Panel admina</a>
                 <?php else: ?>

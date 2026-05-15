@@ -1551,3 +1551,47 @@ img { content-visibility: auto; }
     .hero__stats { flex-direction: column; gap: 8px; }
     .hero__stat-divider { display: none; }
 }
+
+/* ---- ANIMACJE PRZEJŚĆ MIĘDZY STRONAMI ---- */
+html { transition: opacity 0.25s ease; }
+html.page-loading { opacity: 0; }
+html.page-loaded { opacity: 1; }
+html.page-leaving { opacity: 0; }
+
+/* ---- NAVBAR USER ---- */
+.navbar__user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.navbar__user-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--c);
+    font-size: 12px; font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+}
+.navbar__user-name {
+    font-size: 13px;
+    color: var(--t);
+    font-weight: 500;
+}
+@media(max-width:768px){
+    .navbar__user { display: none; }
+}
+
+/* ---- PAYMENT METHOD BADGE ---- */
+.payment-method-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}

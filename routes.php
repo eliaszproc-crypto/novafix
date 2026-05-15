@@ -43,6 +43,7 @@ $router->get('admin/zgloszenia',                    ['AdminController',  'repair
 $router->get('admin/naprawa/{id}',                  ['AdminController',  'repairDetail']);
 $router->post('admin/naprawa/{id}/status',          ['AdminController',  'updateStatus']);
 $router->post('admin/naprawa/{id}/wycena',          ['AdminController',  'sendQuote']);
+$router->post('admin/naprawa/{id}/ustaw-platnosc', ['AdminController',  'setPaymentMethod']);
 $router->post('admin/naprawa/{id}/oplacone',        ['AdminController',  'markPaid']);
 $router->post('admin/naprawa/{id}/zwrot',           ['AdminController',  'markReturning']);
 $router->post('admin/naprawa/{id}/usun',            ['AdminController',  'deleteRepair']);

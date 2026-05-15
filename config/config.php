@@ -25,6 +25,11 @@ return [
         'allowed'  => ['jpg', 'jpeg', 'png', 'webp'],
         'path'     => ROOT_PATH . '/public/uploads/',
     ],
+    'payment' => [
+        'bank_account'  => 'PL XX XXXX XXXX XXXX XXXX XXXX XXXX', // Uzupełnij swój numer konta
+        'bank_name'     => 'Eliasz Proć — NovaFix',
+        'blik_phone'    => '691 113 754',
+    ],
     'service_address' => [
         'name'    => 'Eliasz Proć — NovaFix',
         'street'  => 'Paczkomat SCZ04M',

@@ -278,29 +278,57 @@
         <!-- OCZEKUJE NA PŁATNOŚĆ -->
         <?php if ($sc === 'awaiting_payment'): ?>
         <?php
-            $payment_info = $pdo->query("SELECT method FROM payments WHERE repair_id={$repair['id']} ORDER BY id DESC LIMIT 1")->fetch();
-            $method = $payment_info['method'] ?? 'transfer';
+            $method = $repair['payment_method'] ?? 'transfer';
+            $amount = (float)($repair['final_quote_amount'] ?? 0);
         ?>
         <div class="panel-card" style="border-color:rgba(234,179,8,0.25)">
             <h3 style="color:#eab308">💳 Oczekuje na płatność</h3>
-            <div class="quote-amount" style="margin-bottom:12px"><?= formatMoney((float)$repair['final_quote_amount']) ?></div>
+            <div class="quote-amount" style="margin-bottom:16px"><?= formatMoney($amount) ?></div>
+
             <?php if ($method === 'transfer'): ?>
-                <div class="payment-info">
-                    <p><strong>Forma płatności:</strong> Przelew bankowy</p>
-                    <div class="payment-details">
-                        <div><span>Numer konta:</span><strong>PL 00 0000 0000 0000 0000 0000 0000</strong></div>
-                        <div><span>Odbiorca:</span><strong>Eliasz Proć — NovaFix</strong></div>
-                        <div><span>Tytuł przelewu:</span><strong><?= sanitize($repair['rma_number']) ?></strong></div>
-                        <div><span>Kwota:</span><strong style="color:#eab308"><?= formatMoney((float)$repair['final_quote_amount']) ?></strong></div>
-                    </div>
-                    <p class="detail-text" style="margin-top:12px">Po zaksięgowaniu płatności zmienię status i wyślę sprzęt.</p>
+            <div class="payment-info">
+                <div class="payment-method-badge" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.2);color:#60a5fa">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    Przelew bankowy
                 </div>
+                <p class="detail-text" style="margin:12px 0">Przelej na poniższe dane — w tytule koniecznie podaj numer zgłoszenia.</p>
+                <div class="payment-details">
+                    <div><span>Numer konta:</span><strong><?= sanitize($config['payment']['bank_account']) ?></strong></div>
+                    <div><span>Odbiorca:</span><strong><?= sanitize($config['payment']['bank_name']) ?></strong></div>
+                    <div><span>Tytuł przelewu:</span><strong style="color:var(--c)"><?= sanitize($repair['rma_number']) ?></strong></div>
+                    <div><span>Kwota:</span><strong style="color:#eab308"><?= formatMoney($amount) ?></strong></div>
+                </div>
+                <p class="detail-text" style="margin-top:12px">Po zaksięgowaniu płatności zmienię status i wyślę sprzęt.</p>
+            </div>
+
+            <?php elseif ($method === 'blik'): ?>
+            <div class="payment-info">
+                <div class="payment-method-badge" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.2);color:#fb923c">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                    BLIK
+                </div>
+                <p class="detail-text" style="margin:12px 0">Wyślij płatność BLIK na numer telefonu:</p>
+                <div class="payment-details">
+                    <div><span>Numer telefonu:</span><strong style="color:var(--c);font-size:18px"><?= sanitize($config['payment']['blik_phone']) ?></strong></div>
+                    <div><span>Kwota:</span><strong style="color:#eab308"><?= formatMoney($amount) ?></strong></div>
+                    <div><span>Opis:</span><strong><?= sanitize($repair['rma_number']) ?></strong></div>
+                </div>
+                <p class="detail-text" style="margin-top:12px">Po otrzymaniu płatności zmienię status i wyślę sprzęt.</p>
+            </div>
+
             <?php elseif ($method === 'cash'): ?>
-                <p class="detail-text"><strong>Forma płatności:</strong> Gotówka przy odbiorze</p>
-            <?php elseif ($method === 'card'): ?>
-                <p class="detail-text"><strong>Forma płatności:</strong> Karta płatnicza</p>
+            <div class="payment-info">
+                <div class="payment-method-badge" style="background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.2);color:#4ade80">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Gotówka przy odbiorze
+                </div>
+                <p class="detail-text" style="margin-top:12px">Zapłać gotówką w kwocie <strong style="color:#eab308"><?= formatMoney($amount) ?></strong> przy odbiorze paczki.</p>
+            </div>
+
             <?php else: ?>
-                <p class="detail-text"><strong>Forma płatności:</strong> Skontaktuję się w sprawie płatności.</p>
+            <div class="payment-info">
+                <p class="detail-text">Skontaktuję się w sprawie formy płatności na email lub telefon.</p>
+            </div>
             <?php endif; ?>
         </div>
         <?php endif; ?>
