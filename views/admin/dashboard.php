@@ -52,7 +52,7 @@
                 <td><?= sanitize($r['first_name'] . ' ' . $r['last_name']) ?></td>
                 <td><?= sanitize($r['device_type']) ?></td>
                 <td><span class="status-pill" style="background:<?= $r['status_color'] ?>22;color:<?= $r['status_color'] ?>"><?= sanitize($r['status_label']) ?></span></td>
-                <td style="color:var(--tm)"><?= date('d.m.Y', strtotime($r['created_at'])) ?></td>
+                <td style="color:var(--tm);font-size:12px" title="<?= date('d.m.Y H:i', strtotime($r['created_at'])) ?>"><?= formatDate($r['created_at']) ?></td>
                 <td><a href="/admin/naprawa/<?= $r['id'] ?>" class="table-link">Otwórz →</a></td>
             </tr>
             <?php endforeach; ?>

@@ -37,7 +37,7 @@
                 <td style="color:var(--tm);font-size:12px"><?= sanitize($r['email']) ?></td>
                 <td><?= sanitize($r['device_type']) ?><?= $r['device_brand'] ? ' — <span style="color:var(--tm)">'.sanitize($r['device_brand']).'</span>' : '' ?></td>
                 <td><span class="status-pill" style="background:<?= $r['status_color'] ?>22;color:<?= $r['status_color'] ?>"><?= sanitize($r['status_label']) ?></span></td>
-                <td style="color:var(--tm);font-size:13px"><?= date('d.m.Y', strtotime($r['created_at'])) ?></td>
+                <td style="color:var(--tm);font-size:12px" title="<?= date('d.m.Y H:i', strtotime($r['created_at'])) ?>"><?= formatDate($r['created_at']) ?></td>
                 <td style="display:flex;gap:8px;align-items:center">
                     <a href="/admin/naprawa/<?= $r['id'] ?>" class="table-link">Otwórz →</a>
                     <form method="POST" action="/admin/naprawa/<?= $r['id'] ?>/usun"

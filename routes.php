@@ -47,6 +47,7 @@ $router->post('admin/naprawa/{id}/ustaw-platnosc', ['AdminController',  'setPaym
 $router->post('admin/naprawa/{id}/oplacone',        ['AdminController',  'markPaid']);
 $router->post('admin/naprawa/{id}/zwrot',           ['AdminController',  'markReturning']);
 $router->post('admin/naprawa/{id}/usun',            ['AdminController',  'deleteRepair']);
+$router->get('admin/statystyki',                   ['AdminController',   'statistics']);
 $router->get('admin/kalendarz',                     ['AdminController',  'calendar']);
 $router->get('admin/diagnostyka',                   ['AdminController',   'diagnostics']);
 $router->post('admin/diagnostyka/dodaj',            ['AdminController',   'diagAdd']);

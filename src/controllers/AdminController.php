@@ -1,6 +1,14 @@
 <?php
 class AdminController {
 
+
+    public function statistics(): void {
+        requireAdmin(); global $pdo;
+        $pageTitle = 'Statystyki';
+        ob_start(); include VIEW_PATH.'/admin/stats.php'; $content = ob_get_clean();
+        include VIEW_PATH.'/admin/layout.php';
+    }
+
     public function dashboard(): void {
         requireAdmin(); global $pdo;
         $stats = [

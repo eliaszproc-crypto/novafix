@@ -166,24 +166,23 @@
     <div class="admin-card" style="border-color:rgba(234,179,8,0.2)">
         <h3 style="color:#eab308">💳 Forma płatności dla klienta</h3>
         <p class="detail-text" style="margin-bottom:16px">Wybierz formę — klient zobaczy odpowiednie instrukcje w swoim panelu.</p>
+        <?php if (!$repair['final_quote_amount']): ?>
+        <p style="color:#f87171;font-size:13px;margin-bottom:12px">⚠ Najpierw wyślij koszt naprawy do klienta i poczekaj na akceptację.</p>
+        <?php else: ?>
+        <p class="detail-text" style="margin-bottom:16px">Koszt naprawy: <strong style="color:#22c55e;font-size:18px"><?= formatMoney((float)$repair['final_quote_amount']) ?></strong></p>
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/ustaw-platnosc" class="admin-form">
-            <div class="f-row">
-                <div class="f-group">
-                    <label>Kwota do zapłaty (zł)</label>
-                    <input type="number" name="amount" step="0.01" min="0.01" required
-                           value="<?= $repair['final_quote_amount'] ?? '' ?>" placeholder="0.00">
-                </div>
-                <div class="f-group">
-                    <label>Forma płatności</label>
-                    <select name="method" required>
-                        <option value="transfer" <?= ($repair['payment_method'] ?? '') === 'transfer' ? 'selected' : '' ?>>💳 Przelew bankowy</option>
-                        <option value="blik"     <?= ($repair['payment_method'] ?? '') === 'blik'     ? 'selected' : '' ?>>📱 BLIK</option>
-                        <option value="cash"     <?= ($repair['payment_method'] ?? '') === 'cash'     ? 'selected' : '' ?>>💵 Gotówka przy odbiorze</option>
-                    </select>
-                </div>
+            <input type="hidden" name="amount" value="<?= $repair['final_quote_amount'] ?>">
+            <div class="f-group">
+                <label>Forma płatności</label>
+                <select name="method" required>
+                    <option value="transfer" <?= ($repair['payment_method'] ?? '') === 'transfer' ? 'selected' : '' ?>>💳 Przelew bankowy</option>
+                    <option value="blik"     <?= ($repair['payment_method'] ?? '') === 'blik'     ? 'selected' : '' ?>>📱 BLIK</option>
+                    <option value="cash"     <?= ($repair['payment_method'] ?? '') === 'cash'     ? 'selected' : '' ?>>💵 Gotówka przy odbiorze</option>
+                </select>
             </div>
             <button type="submit" class="a-btn a-btn-primary">Zapisz i ustaw oczekiwanie na płatność</button>
         </form>
+        <?php endif; ?>
         <?php if ($repair['payment_method']): ?>
         <div style="margin-top:16px;padding:12px 16px;background:rgba(0,0,0,0.2);border-radius:10px;font-size:13px;color:var(--tm)">
             Aktualnie ustawiona forma:
@@ -203,6 +202,10 @@
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/oplacone" class="admin-form">
             <input type="hidden" name="amount" value="<?= $repair['final_quote_amount'] ?? 0 ?>">
             <input type="hidden" name="method" value="<?= $repair['payment_method'] ?? 'transfer' ?>">
+            <p class="detail-text" style="margin-bottom:12px">
+                <?php $pm = ['transfer'=>'💳 Przelew','blik'=>'📱 BLIK','cash'=>'💵 Gotówka']; ?>
+                Forma: <strong><?= $pm[$repair['payment_method'] ?? 'transfer'] ?? '—' ?></strong>
+            </p>
             <button type="submit" class="a-btn a-btn-primary">✓ Płatność otrzymana — oznacz jako opłacone</button>
         </form>
     </div>

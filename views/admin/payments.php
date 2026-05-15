@@ -29,7 +29,7 @@
                 <td><?= sanitize($p['first_name'].' '.$p['last_name']) ?></td>
                 <td><strong style="color:#00e5ff"><?= formatMoney((float)$p['amount']) ?></strong></td>
                 <td style="color:var(--tm)"><?= sanitize($p['method']) ?></td>
-                <td style="color:var(--tm)"><?= date('d.m.Y', strtotime($p['created_at'])) ?></td>
+                <td style="color:var(--tm);font-size:12px" title="<?= date('d.m.Y H:i', strtotime($p['created_at'])) ?>"><?= formatDate($p['created_at']) ?></td>
                 <td>
                     <form method="POST" action="/admin/platnosc/<?= $p['id'] ?>/usun"
                           onsubmit="return confirm('Usunąć tę płatność z historii?')">
