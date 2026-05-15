@@ -1388,8 +1388,6 @@ img { content-visibility: auto; }
     border: 1px solid rgba(0,150,255,0.2);
     display: flex; align-items: center; justify-content: center;
     color: var(--c); margin-bottom: 16px;
-    margin-top: -46px;
-    position: relative; z-index: 1;
 }
 .service-card h3 {
     font-family: 'Outfit', sans-serif;

@@ -165,14 +165,19 @@
     <?php if ($sc === 'awaiting_payment'): ?>
     <div class="admin-card" style="border-color:rgba(34,197,94,0.2)">
         <h3 style="color:#22c55e">✓ Potwierdź płatność</h3>
-        <p class="detail-text" style="margin-bottom:16px">Kwota: <strong style="color:#22c55e;font-size:20px"><?= formatMoney((float)$repair['final_quote_amount']) ?></strong></p>
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/oplacone" class="admin-form">
+            <div class="f-group">
+                <label>Kwota (zł)</label>
+                <input type="number" name="amount" step="0.01" min="0.01" required
+                       value="<?= $repair['final_quote_amount'] ?? '' ?>"
+                       placeholder="Wpisz kwotę...">
+            </div>
             <div class="f-group">
                 <label>Metoda płatności</label>
                 <select name="method">
                     <option value="transfer">Przelew bankowy</option>
                     <option value="card">Karta płatnicza</option>
-                    <option value="cash">Gotówka</option>
+                    <option value="cash">Gotówka przy odbiorze</option>
                     <option value="other">Inna</option>
                 </select>
             </div>

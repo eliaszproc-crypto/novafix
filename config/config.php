@@ -30,7 +30,7 @@ return [
         'street'  => 'Paczkomat SCZ04M',
         'postal'  => '78-400',
         'city'    => 'Szczecinek',
-        'phone'   => '',
+        'phone'   => '691 113 754',
         'email'   => 'eliasz.proc@gmail.com',
     ],
 ];
