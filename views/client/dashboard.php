@@ -7,11 +7,11 @@
             </div>
             <a href="/panel/diagnostyka" class="btn btn--ghost">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
-                Diagnoza AI
+                Diagnoza online
             </a>
             <a href="/panel/diagnostyka" class="btn btn--ghost">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                Diagnoza wstępna
+                Diagnoza online
             </a>
             <a href="/panel/nowe-zgloszenie" class="btn btn--primary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
@@ -41,11 +41,11 @@
                     <p>Nie masz jeszcze żadnych zgłoszeń.</p>
                     <a href="/panel/diagnostyka" class="btn btn--ghost">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
-                Diagnoza AI
+                Diagnoza online
             </a>
             <a href="/panel/diagnostyka" class="btn btn--ghost">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                Diagnoza wstępna
+                Diagnoza online
             </a>
             <a href="/panel/nowe-zgloszenie" class="btn btn--primary">Zgłoś pierwsze urządzenie</a>
                 </div>

@@ -31,7 +31,7 @@ if ($history) {
 <div class="container" style="max-width:760px">
     <div class="panel-header">
         <div>
-            <h1>Diagnoza wstępna</h1>
+            <h1>Diagnoza online</h1>
             <p>Odpowiedz na pytania — system pomoże określić możliwą przyczynę usterki.</p>
         </div>
         <a href="/panel" class="btn btn--ghost">← Panel</a>

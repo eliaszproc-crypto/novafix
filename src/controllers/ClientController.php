@@ -46,7 +46,7 @@ class ClientController {
 
     public function diagnostics(): void {
         requireLogin(); global $pdo;
-        $pageTitle = 'Diagnoza wstępna';
+        $pageTitle = 'Diagnoza online';
         ob_start(); include VIEW_PATH.'/client/diagnostics.php'; $content = ob_get_clean();
         include VIEW_PATH.'/layout.php';
     }

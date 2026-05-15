@@ -32,7 +32,6 @@ $router->post('panel/naprawa/{id}/usun-zdjecie/{photo_id}',   ['ClientController
 $router->post('panel/naprawa/{id}/nadanie-paczki',  ['ClientController', 'submitTracking']);
 $router->post('panel/naprawa/{id}/adres-zwrotny',   ['ClientController', 'updateReturnAddress']);
 
-$router->get('panel/diagnostyka',               ['ClientController', 'diagnostics']);
 
 // ---- Diagnostyka klienta ----
 $router->get('panel/diagnostyka',                   ['ClientController',  'diagnostics']);
