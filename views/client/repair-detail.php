@@ -9,7 +9,20 @@
                 <?= sanitize($repair['status_label']) ?>
             </div>
         </div>
-        <a href="/panel" class="btn btn--ghost">← Wróć</a>
+        <div style="display:flex;gap:10px;align-items:center">
+            <a href="/panel" class="btn btn--ghost">← Wróć</a>
+            <?php
+            $can_delete = !in_array($sc, ['paid','awaiting_payment','shipped_to_client','completed']);
+            if ($can_delete): ?>
+            <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/usun"
+                  onsubmit="return confirm('Czy na pewno chcesz usunąć to zlecenie? Tej operacji nie można cofnąć.')">
+                <button type="submit" class="btn btn--ghost" style="color:#f87171;border-color:rgba(239,68,68,0.3)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    Usuń zlecenie
+                </button>
+            </form>
+            <?php endif; ?>
+        </div>
     </div>
 
     <?php if ($success): ?><div class="alert alert--success"><?= sanitize($success) ?></div><?php endif; ?>

@@ -43,6 +43,14 @@ class ClientController {
         include VIEW_PATH.'/layout.php';
     }
 
+
+    public function diagnostics(): void {
+        requireLogin();
+        $pageTitle = 'Diagnoza AI';
+        ob_start(); include VIEW_PATH.'/client/diagnostics.php'; $content = ob_get_clean();
+        include VIEW_PATH.'/layout.php';
+    }
+
     public function newRepairForm(): void {
         requireLogin(); global $pdo;
         $device_types  = $pdo->query('SELECT * FROM device_types WHERE is_active=1')->fetchAll();
@@ -233,6 +241,44 @@ class ClientController {
         $pdo->prepare('UPDATE repairs SET return_first_name=?, return_last_name=?, return_phone=?, return_street=?, return_postal=?, return_city=?, updated_at=NOW() WHERE id=?')
             ->execute([$first,$last,$phone,$street,$postal,$city,(int)$id]);
         redirect('/panel/naprawa/'.$id.'?success=Adres zwrotny zapisany');
+    }
+
+
+    public function deleteRepair(string $id): void {
+        requireLogin(); global $pdo;
+        $this->verifyOwnership((int)$id);
+
+        // Sprawdź czy zlecenie można usunąć
+        $stmt = $pdo->prepare("
+            SELECT rs.code FROM repairs r
+            JOIN repair_statuses rs ON r.status_id = rs.id
+            WHERE r.id = ?
+        ");
+        $stmt->execute([(int)$id]);
+        $status_code = $stmt->fetchColumn();
+
+        // Nie można usunąć jeśli opłacone lub zakończone
+        $blocked = ['paid', 'awaiting_payment', 'shipped_to_client', 'completed'];
+        if (in_array($status_code, $blocked)) {
+            redirect('/panel/naprawa/'.$id.'?error=Nie można usunąć opłaconego lub zakończonego zlecenia');
+        }
+
+        // Usuń zdjęcia z dysku
+        $photos = $pdo->prepare('SELECT filename FROM repair_photos WHERE repair_id=?');
+        $photos->execute([(int)$id]);
+        foreach ($photos->fetchAll() as $p) {
+            $path = ROOT_PATH.'/public/uploads/'.$p['filename'];
+            if (file_exists($path)) unlink($path);
+        }
+
+        // Usuń z bazy
+        $pdo->prepare('DELETE FROM payments WHERE repair_id=?')->execute([(int)$id]);
+        $pdo->prepare('DELETE FROM notifications WHERE repair_id=?')->execute([(int)$id]);
+        $pdo->prepare('DELETE FROM repair_status_history WHERE repair_id=?')->execute([(int)$id]);
+        $pdo->prepare('DELETE FROM repair_photos WHERE repair_id=?')->execute([(int)$id]);
+        $pdo->prepare('DELETE FROM repairs WHERE id=?')->execute([(int)$id]);
+
+        redirect('/panel?success=Zlecenie zostało usunięte');
     }
 
     private function verifyOwnership(int $id): void {

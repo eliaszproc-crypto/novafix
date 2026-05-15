@@ -45,22 +45,31 @@
             <div class="hero__orb hero__orb--2"></div>
             <div class="hero__orb hero__orb--3"></div>
             <div class="hero__orb hero__orb--4"></div>
-            <div class="hero__card">
+            <div class="hero__card" id="heroCard">
                 <div class="hero__card-icon">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                 </div>
-                <div class="hero__card-title">Naprawa w toku</div>
-                <div class="hero__card-sub">NF-2025-A8F2K1</div>
-                <div class="hero__card-bar"><div class="hero__card-fill"></div></div>
-                <div class="hero__card-label"><span>Diagnostyka</span><span>72%</span></div>
+                <div class="hero__card-title" id="heroCardTitle">Naprawa w toku</div>
+                <div class="hero__card-sub" id="heroCardSub">Ładowanie...</div>
+                <div class="hero__card-bar"><div class="hero__card-fill" id="heroCardFill"></div></div>
+                <div class="hero__card-label">
+                    <span id="heroCardLabel">Aktywne naprawy</span>
+                    <span id="heroCardValue" style="color:var(--c)">—</span>
+                </div>
             </div>
-            <div class="hero__float hero__float--1">
+            <div class="hero__float hero__float--1" id="heroFloat1">
                 <div class="hero__float-dot hero__float-dot--green"></div>
-                <div class="hero__float-text"><strong>Nowe zgłoszenie</strong><span>Przed chwilą</span></div>
+                <div class="hero__float-text">
+                    <strong id="heroFloat1Title">Nowe zgłoszenie</strong>
+                    <span id="heroFloat1Sub">Dziś</span>
+                </div>
             </div>
-            <div class="hero__float hero__float--2">
+            <div class="hero__float hero__float--2" id="heroFloat2">
                 <div class="hero__float-dot hero__float-dot--cyan"></div>
-                <div class="hero__float-text"><strong>Wycena zaakceptowana</strong><span>2 min temu</span></div>
+                <div class="hero__float-text">
+                    <strong id="heroFloat2Title">Wycena zaakceptowana</strong>
+                    <span id="heroFloat2Sub">Niedawno</span>
+                </div>
             </div>
         </div>
     </div>

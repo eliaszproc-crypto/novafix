@@ -7,6 +7,9 @@ $router->get('kontakt',                             ['HomeController',   'contac
 $router->get('status',                              ['HomeController',   'statusPage']);
 $router->get('status/{rma}',                        ['HomeController',   'checkStatus']);
 
+// ---- API ----
+\$router->get('api/stats',  ['ApiController', 'stats']);
+
 // ---- Autoryzacja ----
 $router->get('login',                               ['AuthController',   'loginForm']);
 $router->post('login',                              ['AuthController',   'login']);
@@ -20,12 +23,15 @@ $router->get('panel/zgloszenia',                    ['ClientController', 'repair
 $router->get('panel/nowe-zgloszenie',               ['ClientController', 'newRepairForm']);
 $router->post('panel/nowe-zgloszenie',              ['ClientController', 'newRepairSubmit']);
 $router->get('panel/naprawa/{id}',                  ['ClientController', 'repairDetail']);
+$router->post('panel/naprawa/{id}/usun',            ['ClientController', 'deleteRepair']);
 $router->post('panel/naprawa/{id}/akceptuj-wycene', ['ClientController', 'acceptInitialQuote']);
 $router->post('panel/naprawa/{id}/odrzuc-wycene',   ['ClientController', 'rejectInitialQuote']);
 $router->post('panel/naprawa/{id}/akceptuj-koszt',  ['ClientController', 'acceptFinalQuote']);
 $router->post('panel/naprawa/{id}/odrzuc-koszt',    ['ClientController', 'rejectFinalQuote']);
 $router->post('panel/naprawa/{id}/usun-zdjecie/{photo_id}',   ['ClientController', 'deletePhoto']);
 $router->post('panel/naprawa/{id}/adres-zwrotny',   ['ClientController', 'updateReturnAddress']);
+
+$router->get('panel/diagnostyka',               ['ClientController', 'diagnostics']);
 
 // ---- Panel admina ----
 $router->get('admin',                               ['AdminController',  'dashboard']);
