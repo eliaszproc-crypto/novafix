@@ -326,3 +326,25 @@ svg { display: block; flex-shrink: 0; }
     display: flex; align-items: center; justify-content: center;
 }
 .del-btn:hover { background: rgba(239,68,68,0.2); }
+
+/* Override del-btn - kosz */
+.del-btn {
+    background: transparent !important;
+    border: 1px solid rgba(239,68,68,0.15) !important;
+    color: var(--tm) !important;
+    width: 30px !important; height: 30px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+}
+.del-btn:hover {
+    background: rgba(239,68,68,0.1) !important;
+    border-color: rgba(239,68,68,0.4) !important;
+    color: #f87171 !important;
+}
+.del-btn svg { display: block; }

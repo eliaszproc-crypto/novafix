@@ -166,7 +166,11 @@ class AdminController {
             $path = ROOT_PATH.'/public/uploads/'.$p['filename'];
             if (file_exists($path)) unlink($path);
         }
-        // Usuń z bazy (CASCADE usunie powiązane rekordy)
+        // Usuń powiązane rekordy ręcznie (foreign key constraints)
+        $pdo->prepare('DELETE FROM payments WHERE repair_id=?')->execute([(int)$id]);
+        $pdo->prepare('DELETE FROM notifications WHERE repair_id=?')->execute([(int)$id]);
+        $pdo->prepare('DELETE FROM repair_status_history WHERE repair_id=?')->execute([(int)$id]);
+        $pdo->prepare('DELETE FROM repair_photos WHERE repair_id=?')->execute([(int)$id]);
         $pdo->prepare('DELETE FROM repairs WHERE id=?')->execute([(int)$id]);
         redirect('/admin/zgloszenia?success=Zgłoszenie usunięte');
     }

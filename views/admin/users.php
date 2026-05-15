@@ -22,7 +22,7 @@
                     <?php if ($u['repair_count'] == 0): ?>
                     <form method="POST" action="/admin/uzytkownik/<?= $u['id'] ?>/usun"
                           onsubmit="return confirm('Usunąć użytkownika <?= sanitize($u['first_name'].' '.$u['last_name']) ?>?')">
-                        <button type="submit" class="del-btn" title="Usuń">✕</button>
+                        <button type="submit" class="del-btn" title="Usuń"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
                     </form>
                     <?php else: ?>
                         <span style="font-size:12px;color:var(--tm)" title="Nie można usunąć — ma zgłoszenia">🔒</span>
