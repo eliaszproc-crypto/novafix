@@ -8,7 +8,7 @@ $router->get('status',                              ['HomeController',   'status
 $router->get('status/{rma}',                        ['HomeController',   'checkStatus']);
 
 // ---- API ----
-\$router->get('api/stats',  ['ApiController', 'stats']);
+$router->get('api/stats',  ['ApiController', 'stats']);
 
 // ---- Autoryzacja ----
 $router->get('login',                               ['AuthController',   'loginForm']);
