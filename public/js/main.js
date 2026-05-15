@@ -7,21 +7,39 @@ if (navbar) {
 }
 
 // Mobile burger menu
-const burger  = document.getElementById('burgerBtn');
-const navMenu = document.getElementById('navMenu');
+const burger   = document.getElementById('burgerBtn');
+const navMenu  = document.getElementById('navMenu');
+const navActs  = document.querySelector('.navbar__actions');
+
+function openMenu() {
+    navMenu.classList.add('open');
+    if (navActs) navActs.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    burger.setAttribute('aria-expanded', 'true');
+    // Zmień ikonę burgera na X
+    burger.innerHTML = '<span style="transform:rotate(45deg) translate(5px,5px)"></span><span style="opacity:0"></span><span style="transform:rotate(-45deg) translate(5px,-5px)"></span>';
+}
+
+function closeMenu() {
+    navMenu.classList.remove('open');
+    if (navActs) navActs.classList.remove('open');
+    document.body.style.overflow = '';
+    burger.setAttribute('aria-expanded', 'false');
+    burger.innerHTML = '<span></span><span></span><span></span>';
+}
+
 if (burger && navMenu) {
     burger.addEventListener('click', () => {
-        const open = navMenu.classList.toggle('open');
-        burger.setAttribute('aria-expanded', open);
+        navMenu.classList.contains('open') ? closeMenu() : openMenu();
     });
-    // Zamknij po kliknięciu w link
     navMenu.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => navMenu.classList.remove('open'));
+        a.addEventListener('click', closeMenu);
     });
-    // Zamknij po kliknięciu poza menu
-    document.addEventListener('click', (e) => {
-        if (!navbar.contains(e.target)) navMenu.classList.remove('open');
-    });
+    if (navActs) {
+        navActs.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', closeMenu);
+        });
+    }
 }
 
 // Scroll reveal — IntersectionObserver

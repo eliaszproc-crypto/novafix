@@ -1426,24 +1426,34 @@ img { content-visibility: auto; }
     .navbar__nav {
         display: none;
         position: fixed;
-        top: 60px; left: 0; right: 0;
-        background: rgba(7,13,26,0.98);
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(7,13,26,0.99);
         backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--bd);
         flex-direction: column;
         gap: 0;
-        padding: 8px 0;
-        z-index: 99;
+        padding: 70px 0 24px;
+        z-index: 98;
+        overflow-y: auto;
     }
     .navbar__nav.open { display: flex; }
     .navbar__nav a {
-        padding: 14px 24px;
-        font-size: 15px;
+        padding: 16px 24px;
+        font-size: 16px;
         border-bottom: 1px solid var(--bd);
     }
     .navbar__actions {
         display: none;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        padding: 16px 24px;
+        background: rgba(7,13,26,0.99);
+        border-top: 1px solid var(--bd);
+        gap: 10px;
+        z-index: 99;
+        flex-direction: row;
     }
+    .navbar__actions.open { display: flex; }
+    .navbar__actions .btn { flex: 1; justify-content: center; }
     .navbar__burger { display: flex; }
 
     /* Hero mobile */
@@ -1590,3 +1600,11 @@ img { content-visibility: auto; }
     font-weight: 600;
     margin-bottom: 4px;
 }
+
+/* Burger spans animacja */
+.navbar__burger span {
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    display: block;
+}
+/* Zablokuj scroll gdy menu otwarte */
+body.menu-open { overflow: hidden; }
