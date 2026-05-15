@@ -96,14 +96,14 @@ class ClientController {
     }
 
     private function handlePhotoUpload(int $repair_id, $pdo): void {
-        if (empty($_FILES['photos']['name'][0])) return;
+        if (empty($_FILES['photos']['name'])) return;
 
         $upload_path = ROOT_PATH.'/public/uploads/';
         $count = 0;
 
         foreach ($_FILES['photos']['tmp_name'] as $i => $tmp) {
             if ($count >= self::MAX_PHOTOS) break;
-            if ($_FILES['photos']['error'][$i] !== UPLOAD_ERR_OK) continue;
+            if ($_FILES['photos']['error'][$i] !== UPLOAD_ERR_OK) continue; // pomija puste inputy (error 4)
 
             $ext      = strtolower(pathinfo($_FILES['photos']['name'][$i], PATHINFO_EXTENSION));
             $allowed  = ['jpg','jpeg','png','webp'];
