@@ -17,7 +17,7 @@
             </div>
             <div class="about-box__content">
                 <h3>Kim jestem?</h3>
-                <p>Jestem inżynierem elektronikiem — projektuję i produkuję indywidualne układy elektroniczne oraz zajmuję się serwisem sprzętu elektronicznego. Moje układy funkcjonują m.in. w centrach nauki w Białymstoku, Kamieniu Pomorskim, Zakopanem, Olsztynie i Jeleniej Górze. Serwis sprzętu akwarystycznego to moja specjalizacja — rozumiem elektronikę od środka.</p>
+                <p>Jestem inżynierem elektronikiem — projektuję i produkuję indywidualne układy elektroniczne oraz zajmuję się serwisem sprzętu elektronicznego. Moje układy funkcjonują m.in. w centrach nauki w Białymstoku, Kamieniu Pomorskim, Zakopanem, Olsztynie i Jeleniej Górze. Serwis sprzętu akwarystycznego to moja specjalizacja — rozumiem elektronikę od środka. Skupiam się <strong>wyłącznie na elektronice</strong> — nie naprawiam elementów mechanicznych.</p>
             </div>
         </div>
 
@@ -43,12 +43,12 @@
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 </div>
                 <h3>Sterowniki akwarystyczne</h3>
-                <p>Naprawa sterowników do falowników, cyrkulatorów, pomp obiegowych i odpieniaczy (skimmerów). Diagnostyka i naprawa elektroniki sterującej.</p>
+                <p>Naprawiam <strong>wyłącznie elektronikę</strong> sterującą — sterowniki, płyty główne, zasilacze. <strong>Nie naprawiam części mechanicznych</strong> — wirniki, magnesy i obudowy hermetyczne pomp pracują pod wodą i ich rozkładanie pozbawia je szczelności.</p>
                 <ul class="service-card__list">
-                    <li>Sterowniki falowników i cyrkulatorów</li>
-                    <li>Sterowniki pomp obiegowych</li>
-                    <li>Elektronika odpieniaczy (skimmerów)</li>
-                    <li>Naprawa układów komunikacyjnych (WiFi, BT)</li>
+                    <li>Sterowniki falowników i cyrkulatorów ✓</li>
+                    <li>Elektronika pomp obiegowych ✓</li>
+                    <li>Elektronika odpieniaczy (skimmerów) ✓</li>
+                    <li>Wirniki, magnesy, uszczelnienia ✗ (mechanika)</li>
                 </ul>
                 <a href="/panel/nowe-zgloszenie" class="btn btn--primary">Zgłoś sterownik</a>
             </div>

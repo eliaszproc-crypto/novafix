@@ -37,7 +37,7 @@
                 </a>
             </div>
             <div class="hero__stats">
-                <div class="hero__stat"><strong>15+</strong><span>lat doświadczenia</span></div>
+                <div class="hero__stat"><strong>6+</strong><span>lat doświadczenia</span></div>
                 <div class="hero__stat-divider"></div>
                 <div class="hero__stat"><strong>5</strong><span>centrów nauki</span></div>
                 <div class="hero__stat-divider"></div>
@@ -190,18 +190,18 @@
         <div class="reviews__grid">
             <div class="reviews__card">
                 <div class="reviews__stars">★★★★★</div>
-                <p>"Lampa AI Hydra przestała działać po zalaniu. Eliasz ją przywrócił do życia w tydzień. Profesjonalne podejście i szczery kontakt."</p>
-                <div class="reviews__author"><div class="reviews__avatar">M</div><div><strong>Marek</strong><span>Reefkeeper, Warszawa</span></div></div>
+                <p>"Lampa Hydra wpadła do akwarium. Myślałem że jest nie do uratowania — Eliasz ją przywrócił do życia. Szczery kontakt i szybka realizacja."</p>
+                <div class="reviews__author"><div class="reviews__avatar">M</div><div><strong>Marek</strong></div></div>
             </div>
             <div class="reviews__card">
                 <div class="reviews__stars">★★★★★</div>
-                <p>"Sterownik GHL naprawiony ekspresowo. Pełna komunikacja na każdym etapie — wiedziałem co się dzieje z moim sprzętem."</p>
-                <div class="reviews__author"><div class="reviews__avatar">A</div><div><strong>Anna</strong><span>Akwarystka, Kraków</span></div></div>
+                <p>"Sterownik GHL przestał reagować. Naprawa ekspresowo, pełna komunikacja na każdym etapie. Wiedziałem co się dzieje ze sprzętem."</p>
+                <div class="reviews__author"><div class="reviews__avatar">A</div><div><strong>Anna</strong></div></div>
             </div>
             <div class="reviews__card">
                 <div class="reviews__stars">★★★★★</div>
-                <p>"Dozownik Balling przestał dozować. Diagnoza, wycena i naprawa sprawnie. Cena uczciwa, sprzęt działa jak nowy."</p>
-                <div class="reviews__author"><div class="reviews__avatar">T</div><div><strong>Tomasz</strong><span>Reef tank, Gdańsk</span></div></div>
+                <p>"Dozownik Balling przestał dozować. Diagnoza, wycena i naprawa błyskawicznie. Cena uczciwa, sprzęt wrócił do życia."</p>
+                <div class="reviews__author"><div class="reviews__avatar">T</div><div><strong>Tomasz</strong></div></div>
             </div>
         </div>
     </div>
