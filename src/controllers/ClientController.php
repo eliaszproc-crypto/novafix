@@ -95,8 +95,20 @@ class ClientController {
         redirect('/panel/naprawa/'.$repair_id);
     }
 
-    private function handlePhotoUpload(int $repair_id, $pdo): void {
-        if (empty($_FILES['photos']['name'][0])) return;
+    private function handlePhotoUpload(int \$repair_id, \$pdo): void {
+        // DEBUG - zapisz co dostajemy
+        \$debug = ['files_count' => 0, 'files_data' => []];
+        if (!empty(\$_FILES)) {
+            foreach (\$_FILES as \$key => \$val) {
+                \$debug['files_data'][\$key] = is_array(\$val['name']) ? count(\$val['name']).' plików' : '1 plik: '.\$val['name'];
+            }
+        }
+        file_put_contents(ROOT_PATH.'/public/uploads/debug.txt', date('H:i:s').' '.json_encode(\$debug)."\n", FILE_APPEND);
+        
+        if (empty(\$_FILES['photos']['name'][0])) {
+            file_put_contents(ROOT_PATH.'/public/uploads/debug.txt', date('H:i:s').' BRAK ZDJEC'."\n", FILE_APPEND);
+            return;
+        }
 
         $upload_path = ROOT_PATH.'/public/uploads/';
         $count = 0;
