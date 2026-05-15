@@ -3,7 +3,8 @@
 $nodes = $pdo->query('SELECT * FROM diag_nodes ORDER BY parent_id ASC, sort_order ASC')->fetchAll();
 $nodes_by_parent = [];
 foreach ($nodes as $n) {
-    $nodes_by_parent[$n['parent_id'] ?? 'root'][] = $n;
+    $key = $n['parent_id'] === null ? '__root__' : (int)$n['parent_id'];
+    $nodes_by_parent[$key][] = $n;
 }
 
 $action  = $_GET['action'] ?? '';
@@ -32,8 +33,8 @@ $error   = $_GET['error'] ?? '';
         </div>
         <div class="diag-tree">
             <?php
-            function renderTree($nodes_by_parent, $parent_id, $level = 0) {
-                $children = $nodes_by_parent[$parent_id] ?? [];
+            function renderTree($nodes_by_parent, $parent_key, $level = 0) {
+                $children = $nodes_by_parent[$parent_key] ?? [];
                 foreach ($children as $node):
                     $indent = $level * 20;
                     $type_colors = ['repair'=>'#00e5ff','no_repair'=>'#f87171','contact'=>'#8b5cf6','continue'=>'#7a8aaa'];
@@ -65,7 +66,7 @@ $error   = $_GET['error'] ?? '';
             </div>
             <?php renderTree($nodes_by_parent, $node['id'], $level + 1); ?>
             <?php endforeach; }
-            renderTree($nodes_by_parent, null);
+            renderTree($nodes_by_parent, '__root__');
             ?>
         </div>
     </div>
