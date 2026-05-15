@@ -14,7 +14,6 @@ $appName = $config['app']['name'];
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css">
-    <script src="/js/transitions.js"></script>
 </head>
 <body>
     <?php include VIEW_PATH . '/partials/navbar.php'; ?>
