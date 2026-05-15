@@ -6,9 +6,12 @@ $appName = $config['app']['name'];
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#070d1a">
+    <meta name="description" content="NovaFix — profesjonalny serwis elektroniki akwarystycznej. Naprawa lamp LED, sterowników, dozowników. Eliasz Proć, inżynier elektronik.">
     <title><?= $pageTitle ?? $appName ?> | Serwis Sprzętu Akwarystycznego</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/main.css">
 </head>
