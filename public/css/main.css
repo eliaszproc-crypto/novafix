@@ -386,7 +386,7 @@ img{max-width:100%;display:block}
 }
 
 /* ---- PAGE HERO ---- */
-.page-hero{padding:140px 0 80px;position:relative;overflow:hidden;border-bottom:1px solid var(--bd)}
+.page-hero{padding:140px 0 80px;position:relative;overflow:hidden;}
 .page-hero__bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 0%,rgba(0,60,160,0.25) 0%,transparent 60%),var(--bg2)}
 .page-hero .container{position:relative}
 .page-hero .section__label{display:block;margin-bottom:12px}
@@ -1334,8 +1334,7 @@ img { content-visibility: auto; }
     background: linear-gradient(135deg,
         rgba(7,13,26,0.92) 0%,
         rgba(7,13,26,0.75) 50%,
-        rgba(7,13,26,0.55) 100%),
-        linear-gradient(to bottom, transparent 70%, #070d1a 100%);
+        rgba(7,13,26,0.55) 100%);
 }
 .page-hero__inner {
     position: relative;
