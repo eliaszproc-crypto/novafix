@@ -280,6 +280,7 @@
         <?php
             $method = $repair['payment_method'] ?? 'transfer';
             $amount = (float)($repair['final_quote_amount'] ?? 0);
+            $pay_cfg = $config['payment'];
         ?>
         <div class="panel-card" style="border-color:rgba(234,179,8,0.25)">
             <h3 style="color:#eab308">💳 Oczekuje na płatność</h3>
@@ -293,8 +294,8 @@
                 </div>
                 <p class="detail-text" style="margin:12px 0">Przelej na poniższe dane — w tytule koniecznie podaj numer zgłoszenia.</p>
                 <div class="payment-details">
-                    <div><span>Numer konta:</span><strong><?= sanitize($config['payment']['bank_account']) ?></strong></div>
-                    <div><span>Odbiorca:</span><strong><?= sanitize($config['payment']['bank_name']) ?></strong></div>
+                    <div><span>Numer konta:</span><strong><?= sanitize($pay_cfg['bank_account']) ?></strong></div>
+                    <div><span>Odbiorca:</span><strong><?= sanitize($pay_cfg['bank_name']) ?></strong></div>
                     <div><span>Tytuł przelewu:</span><strong style="color:var(--c)"><?= sanitize($repair['rma_number']) ?></strong></div>
                     <div><span>Kwota:</span><strong style="color:#eab308"><?= formatMoney($amount) ?></strong></div>
                 </div>
@@ -309,7 +310,7 @@
                 </div>
                 <p class="detail-text" style="margin:12px 0">Wyślij płatność BLIK na numer telefonu:</p>
                 <div class="payment-details">
-                    <div><span>Numer telefonu:</span><strong style="color:var(--c);font-size:18px"><?= sanitize($config['payment']['blik_phone']) ?></strong></div>
+                    <div><span>Numer telefonu:</span><strong style="color:var(--c);font-size:18px"><?= sanitize($pay_cfg['blik_phone']) ?></strong></div>
                     <div><span>Kwota:</span><strong style="color:#eab308"><?= formatMoney($amount) ?></strong></div>
                     <div><span>Opis:</span><strong><?= sanitize($repair['rma_number']) ?></strong></div>
                 </div>

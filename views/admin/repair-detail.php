@@ -161,27 +161,49 @@
         </form>
     </div>
 
-    <!-- Potwierdź płatność -->
+    <!-- Forma płatności + potwierdzenie -->
+    <?php if (in_array($sc, ['awaiting_payment','in_repair','final_quote_accepted'])): ?>
+    <div class="admin-card" style="border-color:rgba(234,179,8,0.2)">
+        <h3 style="color:#eab308">💳 Forma płatności dla klienta</h3>
+        <p class="detail-text" style="margin-bottom:16px">Wybierz formę — klient zobaczy odpowiednie instrukcje w swoim panelu.</p>
+        <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/ustaw-platnosc" class="admin-form">
+            <div class="f-row">
+                <div class="f-group">
+                    <label>Kwota do zapłaty (zł)</label>
+                    <input type="number" name="amount" step="0.01" min="0.01" required
+                           value="<?= $repair['final_quote_amount'] ?? '' ?>" placeholder="0.00">
+                </div>
+                <div class="f-group">
+                    <label>Forma płatności</label>
+                    <select name="method" required>
+                        <option value="transfer" <?= ($repair['payment_method'] ?? '') === 'transfer' ? 'selected' : '' ?>>💳 Przelew bankowy</option>
+                        <option value="blik"     <?= ($repair['payment_method'] ?? '') === 'blik'     ? 'selected' : '' ?>>📱 BLIK</option>
+                        <option value="cash"     <?= ($repair['payment_method'] ?? '') === 'cash'     ? 'selected' : '' ?>>💵 Gotówka przy odbiorze</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="a-btn a-btn-primary">Zapisz i ustaw oczekiwanie na płatność</button>
+        </form>
+        <?php if ($repair['payment_method']): ?>
+        <div style="margin-top:16px;padding:12px 16px;background:rgba(0,0,0,0.2);border-radius:10px;font-size:13px;color:var(--tm)">
+            Aktualnie ustawiona forma:
+            <?php $pm = ['transfer'=>'💳 Przelew bankowy','blik'=>'📱 BLIK','cash'=>'💵 Gotówka']; ?>
+            <strong style="color:var(--t)"><?= $pm[$repair['payment_method']] ?? $repair['payment_method'] ?></strong>
+        </div>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
+
     <?php if ($sc === 'awaiting_payment'): ?>
     <div class="admin-card" style="border-color:rgba(34,197,94,0.2)">
-        <h3 style="color:#22c55e">✓ Potwierdź płatność</h3>
+        <h3 style="color:#22c55e">✓ Potwierdź otrzymanie płatności</h3>
+        <p class="detail-text" style="margin-bottom:16px">
+            Kwota: <strong style="color:#22c55e;font-size:18px"><?= formatMoney((float)($repair['final_quote_amount'] ?? 0)) ?></strong>
+        </p>
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/oplacone" class="admin-form">
-            <div class="f-group">
-                <label>Kwota (zł)</label>
-                <input type="number" name="amount" step="0.01" min="0.01" required
-                       value="<?= $repair['final_quote_amount'] ?? '' ?>"
-                       placeholder="Wpisz kwotę...">
-            </div>
-            <div class="f-group">
-                <label>Metoda płatności</label>
-                <select name="method">
-                    <option value="transfer">Przelew bankowy</option>
-                    <option value="card">Karta płatnicza</option>
-                    <option value="cash">Gotówka przy odbiorze</option>
-                    <option value="other">Inna</option>
-                </select>
-            </div>
-            <button type="submit" class="a-btn a-btn-primary">✓ Oznacz jako opłacone</button>
+            <input type="hidden" name="amount" value="<?= $repair['final_quote_amount'] ?? 0 ?>">
+            <input type="hidden" name="method" value="<?= $repair['payment_method'] ?? 'transfer' ?>">
+            <button type="submit" class="a-btn a-btn-primary">✓ Płatność otrzymana — oznacz jako opłacone</button>
         </form>
     </div>
     <?php endif; ?>

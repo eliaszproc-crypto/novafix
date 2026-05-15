@@ -139,21 +139,23 @@ class AdminController {
         requireAdmin(); global $pdo;
         $method = $_POST['method'] ?? 'transfer';
         $amount = (float)str_replace(',', '.', $_POST['amount'] ?? 0);
-        if ($amount <= 0) redirect('/admin/naprawa/'.$id.'?error=Podaj kwotę');
+        if ($amount <= 0) redirect('/admin/naprawa/'.$id.'?error=Podaj kwotę większą niż 0');
 
-        $pdo->prepare('UPDATE repairs SET payment_method=?, final_quote_amount=COALESCE(final_quote_amount,?), updated_at=NOW() WHERE id=?')
+        // Zapisz metodę i kwotę
+        $pdo->prepare('UPDATE repairs SET payment_method=?, final_quote_amount=?, updated_at=NOW() WHERE id=?')
             ->execute([$method, $amount, (int)$id]);
 
+        // Ustaw status na awaiting_payment
         $status_id = $pdo->query("SELECT id FROM repair_statuses WHERE code='awaiting_payment'")->fetchColumn();
         $pdo->prepare('UPDATE repairs SET status_id=? WHERE id=?')->execute([$status_id, (int)$id]);
 
-        $method_labels = ['transfer'=>'Przelew bankowy','blik'=>'BLIK','cash'=>'Gotówka','other'=>'Inna'];
+        $method_labels = ['transfer'=>'Przelew bankowy','blik'=>'BLIK','cash'=>'Gotówka przy odbiorze'];
         $label = $method_labels[$method] ?? $method;
         $pdo->prepare('INSERT INTO repair_status_history (repair_id,status_id,changed_by,note) VALUES (?,?,?,?)')
             ->execute([(int)$id, $status_id, $_SESSION['user_id'],
-                'Naprawa zakończona. Forma płatności: '.$label.'. Kwota: '.number_format($amount,2).' zł']);
+                'Oczekiwanie na płatność. Forma: '.$label.'. Kwota: '.number_format($amount,2,',','').' zł']);
 
-        redirect('/admin/naprawa/'.$id.'?success=Status ustawiony — klient zobaczy instrukcje płatności');
+        redirect('/admin/naprawa/'.$id.'?success=Forma płatności zapisana — klient widzi instrukcje');
     }
 
     public function markPaid(string $id): void {
