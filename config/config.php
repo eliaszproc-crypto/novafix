@@ -8,8 +8,8 @@ return [
     'db' => [
         'host'     => 'localhost',
         'name'     => 'novafix_db',
-        'user'     => 'novafix_user',
-        'password' => 'ZMIEN_HASLO',
+        'user'     => 'root',
+        'password' => '',
         'charset'  => 'utf8mb4',
     ],
     'mail' => [
@@ -24,5 +24,13 @@ return [
         'max_size' => 5 * 1024 * 1024,
         'allowed'  => ['jpg', 'jpeg', 'png', 'webp'],
         'path'     => ROOT_PATH . '/public/uploads/',
+    ],
+    'service_address' => [
+        'name'    => 'NovaFix — Eliasz Proć',
+        'street'  => 'ul. Przykładowa 1',
+        'postal'  => '00-000',
+        'city'    => 'Miasto',
+        'phone'   => '+48 000 000 000',
+        'email'   => 'serwis@novafix.pl',
     ],
 ];

@@ -12,17 +12,44 @@
         <a href="/panel" class="btn btn--ghost">← Wróć</a>
     </div>
 
-    <?php if ($success): ?>
-        <div class="alert alert--success"><?= sanitize($success) ?></div>
-    <?php endif; ?>
-    <?php if ($error): ?>
-        <div class="alert alert--error"><?= sanitize($error) ?></div>
+    <?php if ($success): ?><div class="alert alert--success"><?= sanitize($success) ?></div><?php endif; ?>
+    <?php if ($error): ?><div class="alert alert--error"><?= sanitize($error) ?></div><?php endif; ?>
+
+    <?php
+    $sc = $repair['status_code'];
+    $sa = $config['service_address'];
+    $has_return_address = $repair['return_first_name'] && $repair['return_city'];
+    ?>
+
+    <!-- INSTRUKCJA WYSYŁKI — po akceptacji wstępnej wyceny -->
+    <?php if (in_array($sc, ['initial_quote_accepted','parcel_received','diagnosis','final_quote_sent','final_quote_accepted','final_quote_rejected','final_quote_renegotiation','in_repair','awaiting_payment','paid','shipped_to_client','completed'])): ?>
+    <div class="info-box info-box--shipping">
+        <div class="info-box__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="info-box__content">
+            <?php if ($sc === 'initial_quote_accepted'): ?>
+                <h4>Zapakuj starannie sprzęt i wyślij go na nasz adres:</h4>
+            <?php else: ?>
+                <h4>Adres serwisu:</h4>
+            <?php endif; ?>
+            <div class="service-address">
+                <strong><?= sanitize($sa['name']) ?></strong><br>
+                <?= sanitize($sa['street']) ?><br>
+                <?= sanitize($sa['postal']) ?> <?= sanitize($sa['city']) ?><br>
+                Tel: <?= sanitize($sa['phone']) ?> | <?= sanitize($sa['email']) ?>
+            </div>
+            <?php if ($sc === 'initial_quote_accepted'): ?>
+                <p class="info-box__tip">⚠ Pamiętaj o dołączeniu numeru zgłoszenia <strong><?= sanitize($repair['rma_number']) ?></strong> do paczki.</p>
+            <?php endif; ?>
+        </div>
+    </div>
     <?php endif; ?>
 
     <div class="detail-grid">
     <div class="detail-main">
 
-        <!-- Szczegóły -->
+        <!-- Szczegóły urządzenia -->
         <div class="panel-card">
             <h3>Szczegóły urządzenia</h3>
             <div class="detail-info">
@@ -33,7 +60,7 @@
             </div>
         </div>
 
-        <!-- Opis -->
+        <!-- Opis problemu -->
         <div class="panel-card">
             <h3>Opis problemu</h3>
             <p class="detail-text"><?= nl2br(sanitize($repair['problem_description'])) ?></p>
@@ -59,13 +86,12 @@
                 <p class="detail-text" style="margin-bottom:20px"><?= nl2br(sanitize($repair['initial_quote_note'])) ?></p>
             <?php endif; ?>
 
-            <?php if ($repair['status_code'] === 'initial_quote_sent'): ?>
-                <!-- Przyciski akceptacji -->
+            <?php if ($sc === 'initial_quote_sent'): ?>
                 <div class="quote-actions">
                     <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/akceptuj-wycene">
                         <button type="submit" class="btn btn--primary">✓ Akceptuję wycenę</button>
                     </form>
-                    <button type="button" class="btn btn--ghost" onclick="toggleReject('reject-initial')">✗ Odrzucam wycenę</button>
+                    <button type="button" class="btn btn--ghost" onclick="toggleEl('reject-initial')">✗ Odrzucam wycenę</button>
                 </div>
                 <div id="reject-initial" class="reject-form" style="display:none">
                     <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/odrzuc-wycene">
@@ -76,12 +102,15 @@
                         <button type="submit" class="btn btn--ghost">Wyślij odrzucenie</button>
                     </form>
                 </div>
-            <?php elseif ($repair['status_code'] === 'initial_quote_accepted'): ?>
+            <?php elseif (in_array($sc, ['initial_quote_accepted','parcel_received','diagnosis','final_quote_sent','final_quote_accepted','final_quote_rejected','final_quote_renegotiation','in_repair','awaiting_payment','paid','shipped_to_client','completed'])): ?>
                 <div class="quote-decision accepted">✓ Zaakceptowano <?= $repair['initial_quote_decided_at'] ? date('d.m.Y', strtotime($repair['initial_quote_decided_at'])) : '' ?></div>
-            <?php elseif (in_array($repair['status_code'], ['initial_quote_rejected','initial_quote_renegotiation'])): ?>
-                <div class="quote-decision rejected">✗ Odrzucono <?= $repair['initial_quote_decided_at'] ? date('d.m.Y', strtotime($repair['initial_quote_decided_at'])) : '' ?></div>
+            <?php elseif (in_array($sc, ['initial_quote_rejected','initial_quote_renegotiation'])): ?>
+                <div class="quote-decision rejected">✗ Odrzucono</div>
                 <?php if ($repair['initial_quote_rejection_note']): ?>
-                    <p class="detail-text" style="margin-top:8px">Twój komentarz: <em><?= sanitize($repair['initial_quote_rejection_note']) ?></em></p>
+                    <p class="detail-text" style="margin-top:8px"><em>Twój komentarz: <?= sanitize($repair['initial_quote_rejection_note']) ?></em></p>
+                <?php endif; ?>
+                <?php if ($sc === 'initial_quote_renegotiation'): ?>
+                    <p class="detail-text" style="margin-top:8px;color:var(--c)">Serwis pracuje nad nową propozycją...</p>
                 <?php endif; ?>
             <?php endif; ?>
         </div>
@@ -96,12 +125,12 @@
                 <p class="detail-text" style="margin-bottom:20px"><?= nl2br(sanitize($repair['final_quote_note'])) ?></p>
             <?php endif; ?>
 
-            <?php if ($repair['status_code'] === 'final_quote_sent'): ?>
+            <?php if ($sc === 'final_quote_sent'): ?>
                 <div class="quote-actions">
                     <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/akceptuj-koszt">
                         <button type="submit" class="btn btn--primary">✓ Akceptuję koszt naprawy</button>
                     </form>
-                    <button type="button" class="btn btn--ghost" onclick="toggleReject('reject-final')">✗ Odrzucam</button>
+                    <button type="button" class="btn btn--ghost" onclick="toggleEl('reject-final')">✗ Odrzucam</button>
                 </div>
                 <div id="reject-final" class="reject-form" style="display:none">
                     <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/odrzuc-koszt">
@@ -112,45 +141,75 @@
                         <button type="submit" class="btn btn--ghost">Wyślij odrzucenie</button>
                     </form>
                 </div>
-            <?php elseif ($repair['status_code'] === 'final_quote_accepted'): ?>
+            <?php elseif (in_array($sc, ['final_quote_accepted','in_repair','awaiting_payment','paid','shipped_to_client','completed'])): ?>
                 <div class="quote-decision accepted">✓ Zaakceptowano — naprawa w toku</div>
-            <?php elseif (in_array($repair['status_code'], ['final_quote_rejected','final_quote_renegotiation'])): ?>
+            <?php elseif (in_array($sc, ['final_quote_rejected','final_quote_renegotiation'])): ?>
                 <div class="quote-decision rejected">✗ Odrzucono</div>
                 <?php if ($repair['final_quote_rejection_note']): ?>
-                    <p class="detail-text" style="margin-top:8px">Twój komentarz: <em><?= sanitize($repair['final_quote_rejection_note']) ?></em></p>
+                    <p class="detail-text" style="margin-top:8px"><em>Twój komentarz: <?= sanitize($repair['final_quote_rejection_note']) ?></em></p>
+                <?php endif; ?>
+                <?php if ($sc === 'final_quote_renegotiation'): ?>
+                    <p class="detail-text" style="margin-top:8px;color:var(--c)">Serwis pracuje nad nową propozycją kosztu...</p>
                 <?php endif; ?>
             <?php endif; ?>
         </div>
         <?php endif; ?>
 
         <!-- ADRES ZWROTNY -->
-        <?php
-        $show_address = in_array($repair['status_code'], [
-            'initial_quote_accepted','shipping_instructions','parcel_received',
-            'diagnosis','final_quote_sent','final_quote_accepted','final_quote_rejected',
-            'final_quote_renegotiation','in_repair','awaiting_payment','paid',
-            'shipped_to_client','return_in_progress'
-        ]);
-        ?>
-        <?php if ($show_address): ?>
         <div class="panel-card">
             <h3>Adres zwrotny</h3>
-            <p class="detail-text" style="margin-bottom:16px">Adres na który wyślemy naprawiony sprzęt lub go zwrócimy.</p>
-            <?php if ($repair['return_address']): ?>
-                <div class="address-display">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <?= nl2br(sanitize($repair['return_address'])) ?>
+            <p class="detail-text" style="margin-bottom:16px">Na ten adres wyślemy naprawiony sprzęt lub zwrócimy go w razie rezygnacji.</p>
+
+            <?php if ($has_return_address): ?>
+            <div class="address-display">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <div>
+                    <strong><?= sanitize($repair['return_first_name'].' '.$repair['return_last_name']) ?></strong><br>
+                    <?= sanitize($repair['return_street']) ?><br>
+                    <?= sanitize($repair['return_postal']) ?> <?= sanitize($repair['return_city']) ?>
+                    <?php if ($repair['return_phone']): ?><br>Tel: <?= sanitize($repair['return_phone']) ?><?php endif; ?>
                 </div>
+            </div>
             <?php endif; ?>
-            <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/adres-zwrotny" style="margin-top:14px">
-                <div class="form-group">
-                    <label><?= $repair['return_address'] ? 'Zmień adres zwrotny' : 'Podaj adres zwrotny' ?></label>
-                    <textarea name="return_address" rows="3" placeholder="Imię Nazwisko&#10;ul. Przykładowa 1&#10;00-000 Miasto"><?= sanitize($repair['return_address'] ?? '') ?></textarea>
-                </div>
-                <button type="submit" class="btn btn--primary">Zapisz adres</button>
-            </form>
+
+            <button type="button" class="btn btn--ghost" style="margin-top:12px" onclick="toggleEl('edit-address')">
+                <?= $has_return_address ? 'Zmień adres' : 'Podaj adres zwrotny' ?>
+            </button>
+
+            <div id="edit-address" style="display:<?= $has_return_address ? 'none' : 'block' ?>;margin-top:16px">
+                <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/adres-zwrotny">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Imię <span class="required">*</span></label>
+                            <input type="text" name="return_first_name" value="<?= sanitize($repair['return_first_name']??'') ?>" placeholder="Jan" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nazwisko <span class="required">*</span></label>
+                            <input type="text" name="return_last_name" value="<?= sanitize($repair['return_last_name']??'') ?>" placeholder="Kowalski" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefon</label>
+                        <input type="tel" name="return_phone" value="<?= sanitize($repair['return_phone']??'') ?>" placeholder="+48 123 456 789">
+                    </div>
+                    <div class="form-group">
+                        <label>Ulica i numer <span class="required">*</span></label>
+                        <input type="text" name="return_street" value="<?= sanitize($repair['return_street']??'') ?>" placeholder="ul. Przykładowa 1" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Kod pocztowy <span class="required">*</span></label>
+                            <input type="text" name="return_postal" value="<?= sanitize($repair['return_postal']??'') ?>" placeholder="00-000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Miasto <span class="required">*</span></label>
+                            <input type="text" name="return_city" value="<?= sanitize($repair['return_city']??'') ?>" placeholder="Warszawa" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--primary" style="margin-top:4px">Zapisz adres</button>
+                </form>
+            </div>
         </div>
-        <?php endif; ?>
 
     </div>
 
@@ -159,7 +218,7 @@
         <div class="panel-card">
             <h3>Historia statusów</h3>
             <div class="history-list">
-                <?php foreach ($history as $h): ?>
+                <?php foreach (array_reverse($history) as $h): ?>
                 <div class="history-item">
                     <div class="history-dot" style="background:<?= $h['color'] ?>"></div>
                     <div class="history-content">
@@ -176,9 +235,8 @@
     </div>
 </div>
 </section>
-
 <script>
-function toggleReject(id) {
+function toggleEl(id) {
     const el = document.getElementById(id);
     el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }

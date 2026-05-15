@@ -4,7 +4,7 @@
         <span class="status-pill" style="background:<?= $repair['status_color'] ?>22;color:<?= $repair['status_color'] ?>;padding:5px 12px;font-size:12px">
             <?= sanitize($repair['status_label']) ?>
         </span>
-        <?php if ($repair['negotiation_round'] > 1): ?>
+        <?php if (($repair['negotiation_round'] ?? 0) > 1): ?>
             <span style="font-size:11px;color:var(--tm);margin-left:8px">Runda <?= $repair['negotiation_round'] ?> negocjacji</span>
         <?php endif; ?>
     </div>
@@ -14,23 +14,41 @@
 <?php if ($success): ?><div class="a-alert a-alert--success"><?= sanitize($success) ?></div><?php endif; ?>
 <?php if ($error): ?><div class="a-alert a-alert--error"><?= sanitize($error) ?></div><?php endif; ?>
 
+<?php $sc = $repair['status_code']; ?>
+
 <div class="detail-grid">
 <div>
 
-    <!-- Dane klienta i urządzenia -->
     <div class="admin-card">
         <h3>Dane zgłoszenia</h3>
         <div class="detail-rows">
-            <div class="detail-row"><span>Klient</span><strong><?= sanitize($repair['first_name'] . ' ' . $repair['last_name']) ?></strong></div>
+            <div class="detail-row"><span>Klient</span><strong><?= sanitize($repair['first_name'].' '.$repair['last_name']) ?></strong></div>
             <div class="detail-row"><span>Email</span><strong><?= sanitize($repair['email']) ?></strong></div>
             <?php if ($repair['phone']): ?><div class="detail-row"><span>Telefon</span><strong><?= sanitize($repair['phone']) ?></strong></div><?php endif; ?>
-            <div class="detail-row"><span>Urządzenie</span><strong><?= sanitize($repair['device_type']) ?><?= $repair['device_brand'] ? ' — ' . sanitize($repair['device_brand']) : '' ?></strong></div>
+            <div class="detail-row"><span>Urządzenie</span><strong><?= sanitize($repair['device_type']) ?><?= $repair['device_brand'] ? ' — '.sanitize($repair['device_brand']) : '' ?></strong></div>
             <?php if ($repair['device_model']): ?><div class="detail-row"><span>Model</span><strong><?= sanitize($repair['device_model']) ?></strong></div><?php endif; ?>
             <div class="detail-row"><span>Zgłoszono</span><strong><?= date('d.m.Y H:i', strtotime($repair['created_at'])) ?></strong></div>
         </div>
     </div>
 
-    <!-- Opis problemu -->
+    <!-- Adres zwrotny klienta -->
+    <?php if ($repair['return_first_name']): ?>
+    <div class="admin-card" style="border-color:rgba(0,229,255,0.12)">
+        <h3>Adres zwrotny klienta</h3>
+        <div style="font-size:14px;color:var(--t);line-height:1.8">
+            <strong><?= sanitize($repair['return_first_name'].' '.$repair['return_last_name']) ?></strong><br>
+            <?= sanitize($repair['return_street']) ?><br>
+            <?= sanitize($repair['return_postal']) ?> <?= sanitize($repair['return_city']) ?>
+            <?php if ($repair['return_phone']): ?><br>Tel: <?= sanitize($repair['return_phone']) ?><?php endif; ?>
+        </div>
+    </div>
+    <?php else: ?>
+    <div class="admin-card" style="border-color:rgba(239,68,68,0.15)">
+        <h3 style="color:#f87171">⚠ Brak adresu zwrotnego</h3>
+        <p class="detail-text">Klient nie podał jeszcze adresu zwrotnego.</p>
+    </div>
+    <?php endif; ?>
+
     <div class="admin-card">
         <h3>Opis problemu</h3>
         <p class="detail-text"><?= nl2br(sanitize($repair['problem_description'])) ?></p>
@@ -47,73 +65,74 @@
     </div>
     <?php endif; ?>
 
-    <!-- Adres zwrotny klienta -->
-    <?php if ($repair['return_address']): ?>
-    <div class="admin-card">
-        <h3>Adres zwrotny klienta</h3>
-        <p class="detail-text"><?= nl2br(sanitize($repair['return_address'])) ?></p>
-    </div>
-    <?php endif; ?>
-
-    <!-- Odrzucenia / komentarze klienta -->
+    <!-- Komentarze klienta przy odrzuceniu -->
     <?php if ($repair['initial_quote_rejection_note']): ?>
     <div class="admin-card" style="border-color:rgba(239,68,68,0.2)">
-        <h3 style="color:#f87171">Komentarz klienta — wstępna wycena</h3>
+        <h3 style="color:#f87171">💬 Komentarz klienta — wstępna wycena</h3>
         <p class="detail-text"><?= nl2br(sanitize($repair['initial_quote_rejection_note'])) ?></p>
     </div>
     <?php endif; ?>
 
     <?php if ($repair['final_quote_rejection_note']): ?>
     <div class="admin-card" style="border-color:rgba(239,68,68,0.2)">
-        <h3 style="color:#f87171">Komentarz klienta — koszt naprawy</h3>
+        <h3 style="color:#f87171">💬 Komentarz klienta — koszt naprawy</h3>
         <p class="detail-text"><?= nl2br(sanitize($repair['final_quote_rejection_note'])) ?></p>
     </div>
     <?php endif; ?>
 
-    <!-- Wyceny -->
+    <!-- Wstępna wycena info -->
     <?php if ($repair['initial_quote_amount']): ?>
-    <div class="admin-card" style="border-color:rgba(0,229,255,0.12)">
+    <div class="admin-card" style="border-color:rgba(0,229,255,0.1)">
         <h3>Wstępna wycena</h3>
         <div class="quote-amount"><?= formatMoney((float)$repair['initial_quote_amount']) ?></div>
         <?php if ($repair['initial_quote_note']): ?><p class="detail-text"><?= nl2br(sanitize($repair['initial_quote_note'])) ?></p><?php endif; ?>
         <?php if ($repair['initial_quote_decided_at']): ?>
             <p style="font-size:12px;color:var(--tm);margin-top:8px">
-                <?= in_array($repair['status_code'], ['initial_quote_accepted','shipping_instructions','parcel_received','diagnosis','final_quote_sent','final_quote_accepted','final_quote_rejected','in_repair','awaiting_payment','paid','shipped_to_client','completed']) ? '✓ Zaakceptowana' : '✗ Odrzucona' ?>
-                <?= date('d.m.Y', strtotime($repair['initial_quote_decided_at'])) ?>
+                <?= in_array($sc, ['initial_quote_accepted','parcel_received','diagnosis','final_quote_sent','final_quote_accepted','final_quote_rejected','in_repair','awaiting_payment','paid','shipped_to_client','completed','return_in_progress','final_quote_renegotiation']) ? '✓ Zaakceptowana' : '✗ Odrzucona' ?>
+                — <?= date('d.m.Y', strtotime($repair['initial_quote_decided_at'])) ?>
             </p>
         <?php endif; ?>
     </div>
     <?php endif; ?>
 
+    <!-- Koszt naprawy info -->
     <?php if ($repair['final_quote_amount']): ?>
-    <div class="admin-card" style="border-color:rgba(0,229,255,0.2)">
+    <div class="admin-card" style="border-color:rgba(0,229,255,0.18)">
         <h3>Koszt naprawy</h3>
         <div class="quote-amount"><?= formatMoney((float)$repair['final_quote_amount']) ?></div>
         <?php if ($repair['final_quote_note']): ?><p class="detail-text"><?= nl2br(sanitize($repair['final_quote_note'])) ?></p><?php endif; ?>
+        <?php if ($repair['final_quote_decided_at']): ?>
+            <p style="font-size:12px;color:var(--tm);margin-top:8px">
+                <?= in_array($sc, ['final_quote_accepted','in_repair','awaiting_payment','paid','shipped_to_client','completed']) ? '✓ Zaakceptowany' : '✗ Odrzucony' ?>
+                — <?= date('d.m.Y', strtotime($repair['final_quote_decided_at'])) ?>
+            </p>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
 
     <!-- FORMULARZE AKCJI -->
 
-    <!-- Wyślij wycenę / koszt -->
+    <!-- Wyślij wycenę — zawsze dostępne -->
     <div class="admin-card">
-        <h3>Wyślij wycenę / koszt naprawy</h3>
+        <h3><?= in_array($sc, ['initial_quote_rejected','initial_quote_renegotiation']) ? '🔄 Wyślij nową propozycję wyceny' : (in_array($sc, ['final_quote_rejected','final_quote_renegotiation']) ? '🔄 Wyślij nowy koszt naprawy' : 'Wyślij wycenę / koszt naprawy') ?></h3>
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/wycena" class="admin-form">
             <div class="f-row">
                 <div class="f-group">
                     <label>Typ</label>
                     <select name="quote_type" required>
-                        <option value="initial">Wstępna wycena</option>
-                        <option value="final">Koszt naprawy</option>
+                        <option value="initial" <?= in_array($sc, ['new','initial_quote_sent','initial_quote_rejected','initial_quote_renegotiation']) ? 'selected' : '' ?>>Wstępna wycena</option>
+                        <option value="final" <?= in_array($sc, ['parcel_received','diagnosis','final_quote_sent','final_quote_rejected','final_quote_renegotiation']) ? 'selected' : '' ?>>Koszt naprawy</option>
                     </select>
                 </div>
                 <div class="f-group">
                     <label>Kwota (zł)</label>
-                    <input type="number" name="amount" step="0.01" min="0.01" placeholder="0.00" required>
+                    <input type="number" name="amount" step="0.01" min="0.01"
+                           value="<?= in_array($sc, ['final_quote_sent','final_quote_rejected','final_quote_renegotiation']) ? ($repair['final_quote_amount']??'') : ($repair['initial_quote_amount']??'') ?>"
+                           placeholder="0.00" required>
                 </div>
             </div>
             <div class="f-group">
-                <label>Opis / zakres prac</label>
+                <label>Opis</label>
                 <textarea name="note" rows="3" placeholder="Co zostanie naprawione, jakie części..."></textarea>
             </div>
             <button type="submit" class="a-btn a-btn-primary">Wyślij do klienta</button>
@@ -142,11 +161,11 @@
         </form>
     </div>
 
-    <!-- Oznacz jako opłacone -->
-    <?php if ($repair['status_code'] === 'awaiting_payment'): ?>
+    <!-- Potwierdź płatność -->
+    <?php if ($sc === 'awaiting_payment'): ?>
     <div class="admin-card" style="border-color:rgba(34,197,94,0.2)">
-        <h3 style="color:#22c55e">Potwierdź płatność</h3>
-        <p class="detail-text" style="margin-bottom:16px">Kwota: <strong style="color:#22c55e"><?= formatMoney((float)$repair['final_quote_amount']) ?></strong></p>
+        <h3 style="color:#22c55e">✓ Potwierdź płatność</h3>
+        <p class="detail-text" style="margin-bottom:16px">Kwota: <strong style="color:#22c55e;font-size:20px"><?= formatMoney((float)$repair['final_quote_amount']) ?></strong></p>
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/oplacone" class="admin-form">
             <div class="f-group">
                 <label>Metoda płatności</label>
@@ -162,26 +181,29 @@
     </div>
     <?php endif; ?>
 
-    <!-- Zwrot sprzętu -->
-    <?php if (in_array($repair['status_code'], ['initial_quote_rejected','final_quote_rejected','initial_quote_renegotiation','final_quote_renegotiation'])): ?>
+    <!-- Zwrot sprzętu — przy odrzuceniu wyceny lub kosztu -->
+    <?php if (in_array($sc, ['initial_quote_rejected','initial_quote_renegotiation','final_quote_rejected','final_quote_renegotiation'])): ?>
     <div class="admin-card" style="border-color:rgba(239,68,68,0.2)">
         <h3 style="color:#f87171">Zwrot sprzętu</h3>
-        <p class="detail-text" style="margin-bottom:16px">Klient zrezygnował — możesz oznaczyć zgłoszenie jako zwrot sprzętu.</p>
-        <?php if ($repair['return_address']): ?>
-            <p class="detail-text" style="margin-bottom:16px">Adres zwrotny: <strong><?= nl2br(sanitize($repair['return_address'])) ?></strong></p>
+        <?php if (!$repair['return_first_name']): ?>
+            <p style="color:#f87171;font-size:13px;margin-bottom:12px">⚠ Klient nie podał jeszcze adresu zwrotnego!</p>
         <?php else: ?>
-            <p style="color:#f87171;font-size:13px;margin-bottom:16px">⚠ Klient nie podał jeszcze adresu zwrotnego.</p>
+            <p class="detail-text" style="margin-bottom:12px">
+                Adres zwrotny: <strong><?= sanitize($repair['return_first_name'].' '.$repair['return_last_name'].', '.$repair['return_street'].', '.$repair['return_postal'].' '.$repair['return_city']) ?></strong>
+            </p>
         <?php endif; ?>
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/zwrot">
             <input type="hidden" name="note" value="Zwrot sprzętu do klienta">
-            <button type="submit" class="a-btn" style="background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3)">Oznacz jako zwrot sprzętu</button>
+            <button type="submit" class="a-btn" style="background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.3)">
+                Oznacz jako zwrot sprzętu
+            </button>
         </form>
     </div>
     <?php endif; ?>
 
 </div>
 
-<!-- Historia -->
+<!-- Historia statusów -->
 <div>
     <div class="admin-card">
         <h3>Historia statusów</h3>
@@ -203,5 +225,4 @@
         <?php endif; ?>
     </div>
 </div>
-
 </div>
