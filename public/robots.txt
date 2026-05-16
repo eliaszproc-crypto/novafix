@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /panel
+Disallow: /admin
+Disallow: /login
+Disallow: /rejestracja
+Disallow: /logout
+Disallow: /api/
+
+Sitemap: https://novafix.pl/sitemap.xml

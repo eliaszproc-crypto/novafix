@@ -2,30 +2,18 @@
 <section class="hero">
     <div class="hero__bg"></div>
     <?php
-    $hero_img = file_exists(ROOT_PATH.'/public/images/hero/hero-bg.jpg') ? '/images/hero/hero-bg.jpg'
-              : (file_exists(ROOT_PATH.'/public/images/hero/hero-bg.webp') ? '/images/hero/hero-bg.webp'
-              : (file_exists(ROOT_PATH.'/public/images/hero/hero-bg.png') ? '/images/hero/hero-bg.png' : null));
+    $hero_img = null;
+    foreach (['hero-bg.jpg','hero-bg.webp','hero-bg.png'] as $f) {
+        if (file_exists(ROOT_PATH.'/public/images/hero/'.$f)) { $hero_img = '/images/hero/'.$f; break; }
+    }
     ?>
-    <?php if ($hero_img): ?>
-    <div class="hero__img" style="background-image:url('<?= $hero_img ?>')"></div>
-    <?php else: ?>
-    <div class="hero__img"></div>
-    <?php endif; ?>
+    <?php if ($hero_img): ?><div class="hero__img" style="background-image:url('<?= $hero_img ?>')"></div><?php else: ?><div class="hero__img"></div><?php endif; ?>
     <div class="hero__grid"></div>
     <div class="container hero__inner">
         <div class="hero__content">
-            <div class="hero__badge">
-                <span class="hero__badge-dot"></span>
-                Inżynier elektronik z wieloletnim doświadczeniem
-            </div>
-            <h1 class="hero__title">
-                Serwis elektroniki<br>
-                <span class="hero__title--accent">akwarystycznej</span>
-            </h1>
-            <p class="hero__desc">
-                Naprawa lamp LED, sterowników, falowników, dozowników<br>
-                i automatyki akwariowej. Skupiam się wyłącznie na elektronice.
-            </p>
+            <div class="hero__badge"><span class="hero__badge-dot"></span>Inżynier elektronik · 6 lat doświadczenia</div>
+            <h1 class="hero__title">Serwis elektroniki<br><span class="hero__title--accent">akwarystycznej</span></h1>
+            <p class="hero__desc">Naprawa lamp LED, sterowników, falowników, dozowników i automatyki akwariowej. Skupiam się wyłącznie na elektronice.</p>
             <div class="hero__actions">
                 <a href="/panel/nowe-zgloszenie" class="btn btn--primary btn--lg">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
@@ -50,30 +38,19 @@
             <div class="hero__orb hero__orb--3"></div>
             <div class="hero__orb hero__orb--4"></div>
             <div class="hero__card" id="heroCard">
-                <div class="hero__card-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                </div>
+                <div class="hero__card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
                 <div class="hero__card-title" id="heroCardTitle">Naprawa w toku</div>
                 <div class="hero__card-sub" id="heroCardSub">Ładowanie...</div>
                 <div class="hero__card-bar"><div class="hero__card-fill" id="heroCardFill"></div></div>
-                <div class="hero__card-label">
-                    <span id="heroCardLabel">Aktywne naprawy</span>
-                    <span id="heroCardValue" style="color:var(--c)">—</span>
-                </div>
+                <div class="hero__card-label"><span id="heroCardLabel">Aktywne</span><span id="heroCardValue" style="color:var(--c)">—</span></div>
             </div>
             <div class="hero__float hero__float--1" id="heroFloat1">
                 <div class="hero__float-dot hero__float-dot--green"></div>
-                <div class="hero__float-text">
-                    <strong id="heroFloat1Title">Nowe zgłoszenie</strong>
-                    <span id="heroFloat1Sub">Dziś</span>
-                </div>
+                <div class="hero__float-text"><strong id="heroFloat1Title">Nowe zgłoszenie</strong><span id="heroFloat1Sub">Dziś</span></div>
             </div>
             <div class="hero__float hero__float--2" id="heroFloat2">
                 <div class="hero__float-dot hero__float-dot--cyan"></div>
-                <div class="hero__float-text">
-                    <strong id="heroFloat2Title">Wycena zaakceptowana</strong>
-                    <span id="heroFloat2Sub">Niedawno</span>
-                </div>
+                <div class="hero__float-text"><strong id="heroFloat2Title">Wycena zaakceptowana</strong><span id="heroFloat2Sub">Niedawno</span></div>
             </div>
         </div>
     </div>
@@ -99,39 +76,39 @@
                 <div class="steps__number">02</div>
                 <div class="steps__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
                 <h3>Wysyłka na paczkomat</h3>
-                <p>Wysyłasz sprzęt na paczkomat SCZ04M w Szczecinku (78-400). Starannie zapakuj urządzenie.</p>
+                <p>Wysyłasz sprzęt na paczkomat SCZ04M Szczecinek. Starannie zapakuj urządzenie.</p>
                 <div class="steps__connector">→</div>
             </div>
             <div class="steps__item">
                 <div class="steps__number">03</div>
                 <div class="steps__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
                 <h3>Diagnostyka i wycena</h3>
-                <p>Wykonuję szczegółową diagnostykę elektroniki i przesyłam dokładną wycenę naprawy do akceptacji.</p>
+                <p>Wykonuję szczegółową diagnostykę i przesyłam dokładną wycenę naprawy do akceptacji.</p>
                 <div class="steps__connector">→</div>
             </div>
             <div class="steps__item">
                 <div class="steps__number">04</div>
                 <div class="steps__icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
                 <h3>Naprawa i odesłanie</h3>
-                <p>Po akceptacji wyceny naprawiam sprzęt i odsyłam z powrotem. Śledzisz status online.</p>
+                <p>Po akceptacji naprawiam sprzęt i odsyłam z powrotem. Śledzisz status online.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ZDJĘCIE + CTA -->
+<!-- CTA ZDJĘCIE -->
 <section class="photo-section">
     <?php
     $cta_img = file_exists(ROOT_PATH.'/public/images/sections/aquarium-cta.jpg') ? '/images/sections/aquarium-cta.jpg'
              : (file_exists(ROOT_PATH.'/public/images/sections/aquarium-cta.webp') ? '/images/sections/aquarium-cta.webp'
              : 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=1600&q=80');
     ?>
-    <img class="photo-section__img" src="<?= $cta_img ?>" alt="Akwarium">
+    <img class="photo-section__img" src="<?= $cta_img ?>" alt="Akwarium morskie">
     <div class="photo-section__overlay"></div>
     <div class="photo-section__content container">
         <div class="photo-section__text">
             <h2>Zgłoś urządzenie do serwisu</h2>
-            <p>Wypełnij formularz online — opisz problem, dodaj zdjęcia. Odezwę się ze wstępną wyceną i dalszymi krokami.</p>
+            <p>Wypełnij formularz online — opisz problem, dodaj zdjęcia. Odezwę się ze wstępną wyceną.</p>
             <a href="/panel/nowe-zgloszenie" class="btn btn--primary btn--lg">Przejdź do formularza</a>
         </div>
     </div>
@@ -141,9 +118,7 @@
 <section class="status-check section">
     <div class="container">
         <div class="status-check__inner">
-            <div class="status-check__icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            </div>
+            <div class="status-check__icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
             <div class="status-check__content">
                 <h2>Sprawdź status naprawy</h2>
                 <p>Wpisz numer zgłoszenia i sprawdź na jakim etapie jest Twój sprzęt.</p>
@@ -162,47 +137,69 @@
         <div class="features__grid">
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                <div><h4>Wykształcony inżynier</h4><p>Elektronik z wykształcenia i praktyki. Projektuję układy elektroniczne od ponad 15 lat.</p></div>
+                <div><h4>Wykształcony inżynier</h4><p>Elektronik z wykształcenia. Projektuję układy elektroniczne od ponad 6 lat.</p></div>
             </div>
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg></div>
-                <div><h4>Tylko elektronika</h4><p>Skupiam się wyłącznie na naprawie elektroniki — płyty główne, drivery, sterowniki, układy scalone.</p></div>
+                <div><h4>Tylko elektronika</h4><p>Skupiam się wyłącznie na elektronice — płyty główne, drivery, sterowniki.</p></div>
             </div>
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                <div><h4>Gwarancja na naprawę</h4><p>Na każdą wykonaną naprawę udzielam gwarancji. Wyjątek: sprzęt zalany lub po kontakcie z wodą.</p></div>
+                <div><h4>Gwarancja na naprawę</h4><p>Na każdą wykonaną naprawę udzielam gwarancji. Wyjątek: sprzęt po wodzie.</p></div>
             </div>
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-                <div><h4>Uczciwa wycena</h4><p>Najpierw wstępna wycena, potem diagnostyka i koszt finalny. Naprawiam tylko po Twojej akceptacji.</p></div>
+                <div><h4>Uczciwa wycena</h4><p>Wstępna wycena, potem koszt po diagnostyce. Naprawiam po Twojej akceptacji.</p></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- OPINIE -->
+<!-- OPINIE - SLIDER -->
 <section class="reviews section">
     <div class="container">
         <div class="section__header">
             <p class="section__label">Co mówią klienci</p>
-            <h2 class="section__title">Opinie naszych klientów</h2>
+            <h2 class="section__title">Opinie</h2>
         </div>
-        <div class="reviews__grid">
-            <div class="reviews__card">
-                <div class="reviews__stars">★★★★★</div>
-                <p>"Lampa Hydra wpadła do akwarium. Myślałem że jest nie do uratowania — Eliasz ją przywrócił do życia. Szczery kontakt i szybka realizacja."</p>
-                <div class="reviews__author"><div class="reviews__avatar">M</div><div><strong>Marek</strong></div></div>
+        <div class="reviews-slider" id="reviewsSlider">
+            <div class="reviews-track" id="reviewsTrack">
+                <?php
+                $reviews = [
+                    ['stars'=>5,'text'=>'Lampa Hydra wpadła do akwarium. Myślałem że przepadła — Eliasz ją przywrócił do życia w tydzień. Szczery kontakt i szybka realizacja.','name'=>'Marek'],
+                    ['stars'=>5,'text'=>'Sterownik GHL przestał reagować. Naprawa ekspresowo, wiedziałem na bieżąco co się dzieje ze sprzętem. Polecam z czystym sumieniem.','name'=>'Anna'],
+                    ['stars'=>5,'text'=>'Dozownik Balling przestał dozować. Diagnoza i naprawa błyskawicznie. Cena uczciwa, sprzęt działa jak nowy.','name'=>'Tomasz'],
+                    ['stars'=>5,'text'=>'Falownik Ecotech po zalaniu — naprawiony bez problemu. Nikt inny się nie podjął, Eliasz zrobił to profesjonalnie.','name'=>'Piotr'],
+                    ['stars'=>5,'text'=>'Lampa Kessil po zalaniu słoną wodą — odratowana! Bardzo fachowe podejście, szczegółowa diagnoza przed naprawą.','name'=>'Kamila'],
+                    ['stars'=>5,'text'=>'Sterownik Neptune Apex przestał komunikować się z modułami. Naprawa płyty głównej, wszystko wróciło do normy. Dziękuję!','name'=>'Rafał'],
+                    ['stars'=>5,'text'=>'Rollermat nie ruszał po przepięciu. Myślałem że do wymiany — okazało się że spalony moduł sterujący. Tania i szybka naprawa.','name'=>'Monika'],
+                    ['stars'=>5,'text'=>'Skimmer przestał działać po roku — uszkodzony sterownik. Naprawa zajęła 3 dni robocze. Bardzo polecam!','name'=>'Jakub'],
+                    ['stars'=>5,'text'=>'Dolewka ATO wariowała przez miesiąc. Okazał się uszkodzony czujnik poziomu — wymieniony i skalibrowany. Działa idealnie.','name'=>'Zofia'],
+                    ['stars'=>5,'text'=>'Maxspect Recurve nie świecił jednym kanałem. Driver LED wymieniony, lampa jak nowa. Szybko, uczciwie, profesjonalnie.','name'=>'Bartosz'],
+                ];
+                // Duplikuj dla nieskończonej pętli
+                $all = array_merge($reviews, $reviews);
+                foreach ($all as $r):
+                ?>
+                <div class="reviews__card">
+                    <div class="reviews__stars"><?= str_repeat('★', $r['stars']) ?></div>
+                    <p>"<?= htmlspecialchars($r['text']) ?>"</p>
+                    <div class="reviews__author">
+                        <div class="reviews__avatar"><?= strtoupper($r['name'][0]) ?></div>
+                        <div><strong><?= htmlspecialchars($r['name']) ?></strong></div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
             </div>
-            <div class="reviews__card">
-                <div class="reviews__stars">★★★★★</div>
-                <p>"Sterownik GHL przestał reagować. Naprawa ekspresowo, pełna komunikacja na każdym etapie. Wiedziałem co się dzieje ze sprzętem."</p>
-                <div class="reviews__author"><div class="reviews__avatar">A</div><div><strong>Anna</strong></div></div>
-            </div>
-            <div class="reviews__card">
-                <div class="reviews__stars">★★★★★</div>
-                <p>"Dozownik Balling przestał dozować. Diagnoza, wycena i naprawa błyskawicznie. Cena uczciwa, sprzęt wrócił do życia."</p>
-                <div class="reviews__author"><div class="reviews__avatar">T</div><div><strong>Tomasz</strong></div></div>
-            </div>
+        </div>
+        <div class="reviews-controls">
+            <button class="reviews-btn" id="reviewsPrev" aria-label="Poprzednia">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="reviews-dots" id="reviewsDots"></div>
+            <button class="reviews-btn" id="reviewsNext" aria-label="Następna">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
         </div>
     </div>
 </section>

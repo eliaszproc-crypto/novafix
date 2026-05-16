@@ -80,3 +80,69 @@ function toggleEl(id) {
     const el = document.getElementById(id);
     if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
+
+// ---- SLIDER OPINII ----
+(function() {
+    const track  = document.getElementById('reviewsTrack');
+    const prev   = document.getElementById('reviewsPrev');
+    const next   = document.getElementById('reviewsNext');
+    const dotsEl = document.getElementById('reviewsDots');
+    if (!track) return;
+
+    const cards   = track.querySelectorAll('.reviews__card');
+    const total   = cards.length / 2; // połowa bo duplikujemy
+    let current   = 0;
+    let auto;
+
+    // Ustal ile kart na ekranie
+    function perView() {
+        const w = window.innerWidth;
+        if (w < 600) return 1;
+        if (w < 900) return 2;
+        return 3;
+    }
+
+    const steps = total - perView() + 1;
+
+    // Stwórz kropki
+    for (let i = 0; i < steps; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'reviews-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        dotsEl.appendChild(dot);
+    }
+
+    function goTo(n) {
+        current = Math.max(0, Math.min(n, steps - 1));
+        const cardW = cards[0].offsetWidth + 20; // width + gap
+        track.style.transform = `translateX(-${current * cardW}px)`;
+        dotsEl.querySelectorAll('.reviews-dot').forEach((d, i) => {
+            d.classList.toggle('active', i === current);
+        });
+    }
+
+    function startAuto() {
+        auto = setInterval(() => {
+            goTo(current + 1 < steps ? current + 1 : 0);
+        }, 4000);
+    }
+
+    function stopAuto() {
+        clearInterval(auto);
+    }
+
+    prev.addEventListener('click', () => { stopAuto(); goTo(current - 1 < 0 ? steps - 1 : current - 1); startAuto(); });
+    next.addEventListener('click', () => { stopAuto(); goTo(current + 1 < steps ? current + 1 : 0); startAuto(); });
+
+    // Swipe na mobile
+    let touchX = 0;
+    track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; stopAuto(); }, { passive: true });
+    track.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - touchX;
+        if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+        startAuto();
+    });
+
+    window.addEventListener('resize', () => goTo(0));
+    startAuto();
+})();
