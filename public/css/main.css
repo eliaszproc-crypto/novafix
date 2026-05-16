@@ -1663,3 +1663,24 @@ img { content-visibility: auto; }
 @media (max-width: 600px) {
     .reviews-track .reviews__card { flex: 0 0 calc(100% - 0px); min-width: calc(100% - 0px); }
 }
+
+/* ---- STAR RATING ---- */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 4px;
+    width: fit-content;
+}
+.star-rating input { display: none; }
+.star-rating label {
+    font-size: 32px;
+    color: var(--bd);
+    cursor: pointer;
+    transition: color 0.15s;
+    line-height: 1;
+}
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #eab308;
+}

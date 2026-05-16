@@ -331,6 +331,39 @@ class ClientController {
         redirect('/panel?success=Zlecenie zostało usunięte');
     }
 
+
+    public function submitReview(string $id): void {
+        requireLogin(); global $pdo;
+        $this->verifyOwnership((int)$id);
+
+        // Sprawdź czy naprawa zakończona
+        $stmt = $pdo->prepare("SELECT rs.code, u.first_name, u.last_name FROM repairs r JOIN repair_statuses rs ON r.status_id=rs.id JOIN users u ON r.user_id=u.id WHERE r.id=?");
+        $stmt->execute([(int)$id]);
+        $row = $stmt->fetch();
+        if (!$row || $row['code'] !== 'completed') {
+            redirect('/panel/naprawa/'.$id.'?error=Opinie można wystawiać tylko po zakończeniu naprawy');
+        }
+
+        // Sprawdź czy już wystawił opinię
+        $exists = $pdo->prepare('SELECT id FROM reviews WHERE repair_id=?');
+        $exists->execute([(int)$id]);
+        if ($exists->fetch()) {
+            redirect('/panel/naprawa/'.$id.'?error=Opinia dla tego zlecenia już została wystawiona');
+        }
+
+        $rating  = min(5, max(1, (int)($_POST['rating'] ?? 5)));
+        $content = trim($_POST['content'] ?? '');
+        if (strlen($content) < 10) {
+            redirect('/panel/naprawa/'.$id.'?error=Opinia musi mieć co najmniej 10 znaków');
+        }
+
+        $author = trim($row['first_name']);
+        $pdo->prepare('INSERT INTO reviews (repair_id, user_id, author, rating, content, is_fake, is_visible) VALUES (?,?,?,?,?,0,1)')
+            ->execute([(int)$id, $_SESSION['user_id'], $author, $rating, $content]);
+
+        redirect('/panel/naprawa/'.$id.'?success=Dziękujemy za opinię!');
+    }
+
     private function verifyOwnership(int $id): void {
         global $pdo;
         $stmt = $pdo->prepare('SELECT id FROM repairs WHERE id=? AND user_id=?');

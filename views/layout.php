@@ -35,7 +35,10 @@ $appName = $config['app']['name'];
         "areaServed": "PL",
         "priceRange": "od 50 zł",
         "openingHours": "Mo-Fr 08:00-18:00",
-        "serviceType": ["Naprawa lamp LED akwarystycznych","Naprawa sterowników akwarystycznych","Naprawa dozowników Balling","Naprawa falowników i cyrkulatorów","Naprawa sprzętu po zalaniu"]
+        "serviceType": ["Naprawa lamp LED akwarystycznych","Naprawa sterowników akwarystycznych","Naprawa dozowników Balling","Naprawa falowników i cyrkulatorów","Naprawa sprzętu po zalaniu"],
+        "taxID": "6731864422",
+        "vatID": "PL6731864422",
+        "legalName": "NovaFix Eliasz Proć"
     }
     </script>
     <title><?= $pageTitle ?? $appName ?> | Serwis Sprzętu Akwarystycznego</title>

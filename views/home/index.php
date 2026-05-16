@@ -162,31 +162,19 @@
             <p class="section__label">Co mówią klienci</p>
             <h2 class="section__title">Opinie</h2>
         </div>
+        <?php
+        global $pdo;
+        $reviews_db = $pdo->query('SELECT * FROM reviews WHERE is_visible=1 ORDER BY is_fake ASC, created_at DESC')->fetchAll();
+        ?>
         <div class="reviews-slider" id="reviewsSlider">
             <div class="reviews-track" id="reviewsTrack">
-                <?php
-                $reviews = [
-                    ['stars'=>5,'text'=>'Lampa Hydra wpadła do akwarium. Myślałem że przepadła — Eliasz ją przywrócił do życia w tydzień. Szczery kontakt i szybka realizacja.','name'=>'Marek'],
-                    ['stars'=>5,'text'=>'Sterownik GHL przestał reagować. Naprawa ekspresowo, wiedziałem na bieżąco co się dzieje ze sprzętem. Polecam z czystym sumieniem.','name'=>'Anna'],
-                    ['stars'=>5,'text'=>'Dozownik Balling przestał dozować. Diagnoza i naprawa błyskawicznie. Cena uczciwa, sprzęt działa jak nowy.','name'=>'Tomasz'],
-                    ['stars'=>5,'text'=>'Falownik Ecotech po zalaniu — naprawiony bez problemu. Nikt inny się nie podjął, Eliasz zrobił to profesjonalnie.','name'=>'Piotr'],
-                    ['stars'=>5,'text'=>'Lampa Kessil po zalaniu słoną wodą — odratowana! Bardzo fachowe podejście, szczegółowa diagnoza przed naprawą.','name'=>'Kamila'],
-                    ['stars'=>5,'text'=>'Sterownik Neptune Apex przestał komunikować się z modułami. Naprawa płyty głównej, wszystko wróciło do normy. Dziękuję!','name'=>'Rafał'],
-                    ['stars'=>5,'text'=>'Rollermat nie ruszał po przepięciu. Myślałem że do wymiany — okazało się że spalony moduł sterujący. Tania i szybka naprawa.','name'=>'Monika'],
-                    ['stars'=>5,'text'=>'Skimmer przestał działać po roku — uszkodzony sterownik. Naprawa zajęła 3 dni robocze. Bardzo polecam!','name'=>'Jakub'],
-                    ['stars'=>5,'text'=>'Dolewka ATO wariowała przez miesiąc. Okazał się uszkodzony czujnik poziomu — wymieniony i skalibrowany. Działa idealnie.','name'=>'Zofia'],
-                    ['stars'=>5,'text'=>'Maxspect Recurve nie świecił jednym kanałem. Driver LED wymieniony, lampa jak nowa. Szybko, uczciwie, profesjonalnie.','name'=>'Bartosz'],
-                ];
-                // Duplikuj dla nieskończonej pętli
-                $all = array_merge($reviews, $reviews);
-                foreach ($all as $r):
-                ?>
+                <?php foreach ($reviews_db as $r): ?>
                 <div class="reviews__card">
-                    <div class="reviews__stars"><?= str_repeat('★', $r['stars']) ?></div>
-                    <p>"<?= htmlspecialchars($r['text']) ?>"</p>
+                    <div class="reviews__stars"><?= str_repeat('★', (int)$r['rating']) ?></div>
+                    <p>"<?= sanitize($r['content']) ?>"</p>
                     <div class="reviews__author">
-                        <div class="reviews__avatar"><?= strtoupper($r['name'][0]) ?></div>
-                        <div><strong><?= htmlspecialchars($r['name']) ?></strong></div>
+                        <div class="reviews__avatar"><?= strtoupper(mb_substr($r['author'],0,1)) ?></div>
+                        <div><strong><?= sanitize($r['author']) ?></strong></div>
                     </div>
                 </div>
                 <?php endforeach; ?>

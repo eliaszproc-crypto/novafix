@@ -348,6 +348,33 @@ class AdminController {
         redirect('/admin/cennik?success=Pozycja usunięta');
     }
 
+
+    public function reviews(): void {
+        requireAdmin(); global $pdo;
+        $reviews = $pdo->query("
+            SELECT r.*, rep.rma_number
+            FROM reviews r
+            LEFT JOIN repairs rep ON r.repair_id=rep.id
+            ORDER BY r.created_at DESC
+        ")->fetchAll();
+        $success = $_GET['success'] ?? '';
+        $pageTitle = 'Opinie';
+        ob_start(); include VIEW_PATH.'/admin/reviews.php'; $content = ob_get_clean();
+        include VIEW_PATH.'/admin/layout.php';
+    }
+
+    public function reviewToggle(string $id): void {
+        requireAdmin(); global $pdo;
+        $pdo->prepare('UPDATE reviews SET is_visible = !is_visible WHERE id=?')->execute([(int)$id]);
+        redirect('/admin/opinie?success=Widoczność zmieniona');
+    }
+
+    public function reviewDelete(string $id): void {
+        requireAdmin(); global $pdo;
+        $pdo->prepare('DELETE FROM reviews WHERE id=?')->execute([(int)$id]);
+        redirect('/admin/opinie?success=Opinia usunięta');
+    }
+
     public function calendar(): void {
         requireAdmin(); global $pdo;
         $repairs = $pdo->query("

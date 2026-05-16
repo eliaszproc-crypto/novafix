@@ -228,6 +228,42 @@
         </div>
         <?php endif; ?>
 
+        <!-- OPINIA - tylko po zakończeniu -->
+        <?php if ($sc === 'completed'): ?>
+        <?php
+            $existing_review = $pdo->prepare('SELECT id FROM reviews WHERE repair_id=?');
+            $existing_review->execute([(int)$repair['id']]);
+            $already_reviewed = $existing_review->fetch();
+        ?>
+        <?php if ($already_reviewed): ?>
+        <div class="panel-card" style="border-color:rgba(34,197,94,0.2)">
+            <h3 style="color:#22c55e">✓ Opinia wystawiona</h3>
+            <p class="detail-text">Dziękujemy za podzielenie się opinią!</p>
+        </div>
+        <?php else: ?>
+        <div class="panel-card" style="border-color:rgba(234,179,8,0.2)">
+            <h3>⭐ Wystaw opinię</h3>
+            <p class="detail-text" style="margin-bottom:16px">Naprawa zakończona! Chętnie poznamy Twoją opinię.</p>
+            <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/opinia">
+                <div class="form-group" style="margin-bottom:16px">
+                    <label>Ocena</label>
+                    <div class="star-rating" id="starRating">
+                        <?php for ($i=5;$i>=1;$i--): ?>
+                        <input type="radio" name="rating" id="star<?= $i ?>" value="<?= $i ?>" <?= $i===5?'checked':'' ?>>
+                        <label for="star<?= $i ?>">★</label>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Twoja opinia</label>
+                    <textarea name="content" rows="4" placeholder="Opisz jak przebiegła naprawa, czy jesteś zadowolony..." required minlength="10"></textarea>
+                </div>
+                <button type="submit" class="btn btn--primary">Wyślij opinię</button>
+            </form>
+        </div>
+        <?php endif; ?>
+        <?php endif; ?>
+
         <!-- ADRES ZWROTNY -->
         <div class="panel-card">
             <h3>Adres zwrotny</h3>
