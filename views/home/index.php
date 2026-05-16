@@ -4,7 +4,11 @@
     <?php
     $hero_img = null;
     foreach (['hero-bg.jpg','hero-bg.webp','hero-bg.png'] as $f) {
-        if (file_exists(ROOT_PATH.'/public/images/hero/'.$f)) { $hero_img = '/images/hero/'.$f; break; }
+        $check = [
+            ROOT_PATH.'/public/images/hero/'.$f,
+            $_SERVER['DOCUMENT_ROOT'].'/images/hero/'.$f,
+        ];
+        foreach ($check as $p) { if (file_exists($p)) { $hero_img = '/images/hero/'.$f; break 2; } }
     }
     ?>
     <?php if ($hero_img): ?><div class="hero__img" style="background-image:url('<?= $hero_img ?>')"></div><?php else: ?><div class="hero__img"></div><?php endif; ?>
@@ -99,9 +103,12 @@
 <!-- CTA ZDJĘCIE -->
 <section class="photo-section">
     <?php
-    $cta_img = file_exists(ROOT_PATH.'/public/images/sections/aquarium-cta.jpg') ? '/images/sections/aquarium-cta.jpg'
-             : (file_exists(ROOT_PATH.'/public/images/sections/aquarium-cta.webp') ? '/images/sections/aquarium-cta.webp'
-             : 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=1600&q=80');
+    $cta_paths = ['/images/sections/aquarium-cta.jpg', '/images/sections/aquarium-cta.webp'];
+    $cta_img = 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=1600&q=80';
+    foreach ($cta_paths as $cp) {
+        $check = [ROOT_PATH.'/public'.$cp, $_SERVER['DOCUMENT_ROOT'].$cp];
+        foreach ($check as $p) { if (file_exists($p)) { $cta_img = $cp; break 2; } }
+    }
     ?>
     <img class="photo-section__img" src="<?= $cta_img ?>" alt="Akwarium morskie">
     <div class="photo-section__overlay"></div>
