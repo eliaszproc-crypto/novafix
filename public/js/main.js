@@ -13,14 +13,19 @@ if (burger && navMenu) {
     burger.addEventListener('click', () => {
         const open = navMenu.classList.toggle('open');
         burger.setAttribute('aria-expanded', open);
+        document.body.style.overflow = open ? 'hidden' : '';
     });
-    // Zamknij po kliknięciu w link
     navMenu.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => navMenu.classList.remove('open'));
+        a.addEventListener('click', () => {
+            navMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        });
     });
-    // Zamknij po kliknięciu poza menu
     document.addEventListener('click', (e) => {
-        if (!navbar.contains(e.target)) navMenu.classList.remove('open');
+        if (!navbar.contains(e.target)) {
+            navMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        }
     });
 }
 

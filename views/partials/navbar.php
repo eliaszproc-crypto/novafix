@@ -26,6 +26,19 @@
                 <a href="/rejestracja" class="btn btn--primary">Rejestracja</a>
             <?php endif; ?>
         </div>
+        <div class="navbar__mobile-actions">
+            <?php if (isLoggedIn()): ?>
+                <?php if (isAdmin()): ?>
+                    <a href="/admin" class="btn btn--outline btn--sm">Admin</a>
+                <?php else: ?>
+                    <a href="/panel" class="btn btn--outline btn--sm">Panel</a>
+                <?php endif; ?>
+                <a href="/logout" class="btn btn--ghost btn--sm">Wyloguj</a>
+            <?php else: ?>
+                <a href="/login" class="btn btn--outline btn--sm">Logowanie</a>
+                <a href="/rejestracja" class="btn btn--primary btn--sm">Rejestracja</a>
+            <?php endif; ?>
+        </div>
         <button class="navbar__burger" id="burgerBtn" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>

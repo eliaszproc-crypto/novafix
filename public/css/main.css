@@ -1590,3 +1590,22 @@ img { content-visibility: auto; }
     font-weight: 600;
     margin-bottom: 4px;
 }
+
+/* ---- NAVBAR MOBILE ACTIONS ---- */
+.navbar__mobile-actions {
+    display: none;
+}
+@media (max-width: 768px) {
+    .navbar__mobile-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+        margin-right: 8px;
+    }
+    .navbar__mobile-actions .btn--sm {
+        padding: 7px 12px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+    }
+}
