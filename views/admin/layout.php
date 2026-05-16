@@ -11,6 +11,10 @@
 </head>
 <body>
 <div class="admin-wrap">
+    <div id="adminOverlay" onclick="closeAdminMenu()"></div>
+    <button id="adminMenuBtn" onclick="toggleAdminMenu()" aria-label="Menu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <aside class="sidebar">
         <div class="sidebar__logo">
             <a href="/admin">Nova<span>Fix</span></a>
@@ -79,5 +83,24 @@
     </div>
 </div>
 <script src="/js/admin.js"></script>
+<script>
+function toggleAdminMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('adminOverlay');
+    const btn = document.getElementById('adminMenuBtn');
+    const open = sidebar.classList.toggle('open');
+    overlay.classList.toggle('open', open);
+    btn.innerHTML = open
+        ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+        : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+}
+function closeAdminMenu() {
+    document.querySelector('.sidebar').classList.remove('open');
+    document.getElementById('adminOverlay').classList.remove('open');
+    document.getElementById('adminMenuBtn').innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+}
+// Zamknij po kliknięciu linku
+document.querySelectorAll('.sidebar__link').forEach(a => a.addEventListener('click', closeAdminMenu));
+</script>
 </body>
 </html>
