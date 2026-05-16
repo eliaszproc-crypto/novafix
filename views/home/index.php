@@ -27,9 +27,9 @@
             <div class="hero__stats">
                 <div class="hero__stat"><strong>6+</strong><span>lat doświadczenia</span></div>
                 <div class="hero__stat-divider"></div>
-                <div class="hero__stat"><strong>5</strong><span>centrów nauki</span></div>
+                <div class="hero__stat"><strong>50+</strong><span>naprawionych układów</span></div>
                 <div class="hero__stat-divider"></div>
-                <div class="hero__stat"><strong>100%</strong><span>skupienie na elektronice</span></div>
+                <div class="hero__stat"><strong>95%</strong><span>skuteczności</span></div>
             </div>
         </div>
         <div class="hero__visual">
