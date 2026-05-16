@@ -1684,3 +1684,19 @@ img { content-visibility: auto; }
 .star-rating label:hover ~ label {
     color: #eab308;
 }
+
+/* ---- DIAGNOSTYKA MOBILE ---- */
+@media (max-width: 768px) {
+    .diag-card { border-radius: 14px; }
+    .diag-question { padding: 18px 16px 14px; gap: 12px; }
+    .diag-question__icon { width: 34px; height: 34px; flex-shrink: 0; }
+    .diag-question h2 { font-size: 15px; line-height: 1.4; padding-top: 4px; }
+    .diag-answer { padding: 14px 16px; }
+    .diag-answer__text { font-size: 14px; }
+    .diag-result { padding: 20px 16px; margin: 10px; }
+    .diag-result h3 { font-size: 16px; }
+    .diag-result p { font-size: 14px; }
+    .diag-result__actions { flex-direction: column; }
+    .diag-result__actions .btn { width: 100%; justify-content: center; }
+    .diag-path { font-size: 12px; flex-wrap: wrap; }
+}
