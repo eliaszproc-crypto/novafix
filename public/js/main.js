@@ -10,26 +10,14 @@ if (navbar) {
 const burger  = document.getElementById('burgerBtn');
 const navMenu = document.getElementById('navMenu');
 
-let scrollY = 0;
-
 function openMenu() {
-    scrollY = window.scrollY;
     navMenu.classList.add('open');
     burger.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = '-' + scrollY + 'px';
-    document.body.style.width = '100%';
 }
 
 function closeMenu() {
     navMenu.classList.remove('open');
     burger.classList.remove('is-open');
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    window.scrollTo(0, scrollY);
 }
 
 if (burger && navMenu) {
@@ -38,6 +26,12 @@ if (burger && navMenu) {
     });
     navMenu.querySelectorAll('a').forEach(a => {
         a.addEventListener('click', closeMenu);
+    });
+    // Zamknij przez kliknięcie w nakładkę (::after nie łapie zdarzeń - używamy click na dokumencie)
+    document.addEventListener('click', (e) => {
+        if (navMenu.classList.contains('open') && !navMenu.contains(e.target) && e.target !== burger && !burger.contains(e.target)) {
+            closeMenu();
+        }
     });
 }
 
