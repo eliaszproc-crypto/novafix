@@ -102,18 +102,19 @@ class ClientController {
 
         // Wyślij powiadomienie email do admina
         $device_name = '';
-        foreach (\$pdo->query('SELECT name FROM device_types WHERE id='.(int)\$device_type_id)->fetchAll() as \$row) {
-            \$device_name = \$row['name'];
+        $dt = $pdo->prepare('SELECT name FROM device_types WHERE id=?');
+        $dt->execute([(int)$device_type_id]);
+        $device_name = $dt->fetchColumn() ?: '';
+        if ($device_brand_id) {
+            $db = $pdo->prepare('SELECT name FROM device_brands WHERE id=?');
+            $db->execute([(int)$device_brand_id]);
+            $bn = $db->fetchColumn();
+            if ($bn) $device_name .= ' — '.$bn;
         }
-        if (\$device_brand_id) {
-            foreach (\$pdo->query('SELECT name FROM device_brands WHERE id='.(int)\$device_brand_id)->fetchAll() as \$row) {
-                \$device_name .= ' — '.\$row['name'];
-            }
-        }
-        if (\$device_model) \$device_name .= ' '.\$device_model;
-        notifyNewRepair([], \$rma, \$device_name, \$problem);
+        if ($device_model) $device_name .= ' '.$device_model;
+        notifyNewRepair([], $rma, $device_name, $problem);
 
-        redirect('/panel/naprawa/'.\$repair_id);
+        redirect('/panel/naprawa/'.$repair_id);
     }
 
     private function handlePhotoUpload(int $repair_id, $pdo): void {
