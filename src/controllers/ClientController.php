@@ -100,7 +100,20 @@ class ClientController {
         $pdo->prepare('INSERT INTO repair_status_history (repair_id,status_id,changed_by,note) VALUES (?,?,?,?)')
             ->execute([$repair_id, $status_id, $user_id, 'Zgłoszenie utworzone przez klienta']);
 
-        redirect('/panel/naprawa/'.$repair_id);
+        // Wyślij powiadomienie email do admina
+        $device_name = '';
+        foreach (\$pdo->query('SELECT name FROM device_types WHERE id='.(int)\$device_type_id)->fetchAll() as \$row) {
+            \$device_name = \$row['name'];
+        }
+        if (\$device_brand_id) {
+            foreach (\$pdo->query('SELECT name FROM device_brands WHERE id='.(int)\$device_brand_id)->fetchAll() as \$row) {
+                \$device_name .= ' — '.\$row['name'];
+            }
+        }
+        if (\$device_model) \$device_name .= ' '.\$device_model;
+        notifyNewRepair([], \$rma, \$device_name, \$problem);
+
+        redirect('/panel/naprawa/'.\$repair_id);
     }
 
     private function handlePhotoUpload(int $repair_id, $pdo): void {

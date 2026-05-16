@@ -26,12 +26,12 @@
                 </div>
                 <div class="contact-card">
                     <div class="contact-card__icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                     </div>
                     <div>
-                        <h4>Adres paczkomatu</h4>
-                        <p><strong>SCZ04M</strong> — Szczecinek 78-400</p>
-                        <p style="font-size:12px;margin-top:4px">Preferowana forma dostawy</p>
+                        <h4>Adres firmy</h4>
+                        <p>ul. Wyszyńskiego 14a/1<br>78-400 Szczecinek</p>
+                        <p style="font-size:12px;margin-top:4px;color:var(--tm)">Wysyłka: paczkomat <strong>SCZ04M</strong> lub kurier</p>
                     </div>
                 </div>
                 <div class="contact-card">
@@ -67,8 +67,10 @@
                     <a href="/panel/nowe-zgloszenie" class="btn btn--primary btn--lg">Zgłoś urządzenie</a>
                 </div>
                 <div class="contact-cta" style="background:rgba(0,229,255,0.04);border-color:rgba(0,229,255,0.15)">
-                    <h3>📦 Jak zapakować sprzęt?</h3>
-                    <p>Zawiń w folię bąbelkową, zabezpiecz w kartonie. Dołącz numer RMA. Nadaj na paczkomat <strong>SCZ04M</strong> Szczecinek.</p>
+                    <h3>📦 Jak wysłać sprzęt?</h3>
+                    <p>Zawiń w folię bąbelkową i zabezpiecz w kartonie. Dołącz kartkę z numerem zgłoszenia RMA.</p>
+                    <p style="margin-top:10px"><strong style="color:var(--c)">Małe urządzenia:</strong> paczkomat <strong>SCZ04M</strong>, 78-400 Szczecinek</p>
+                    <p style="margin-top:6px"><strong style="color:#8b5cf6">Duże urządzenia</strong> (nie mieszczą się w paczkomacie):<br>kurierem na ul. Wyszyńskiego 14a/1, 78-400 Szczecinek</p>
                 </div>
             </div>
             <div class="contact-form-wrap">

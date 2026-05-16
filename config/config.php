@@ -32,10 +32,16 @@ return [
     ],
     'service_address' => [
         'name'    => 'Eliasz Proć — NovaFix',
-        'street'  => 'Paczkomat SCZ04M',
+        'street'  => 'ul. Wyszyńskiego 14a/1',
         'postal'  => '78-400',
         'city'    => 'Szczecinek',
         'phone'   => '691 113 754',
         'email'   => 'eliasz.proc@gmail.com',
+    ],
+    'service_parcel' => [
+        'name'    => 'NovaFix (paczkomat)',
+        'locker'  => 'SCZ04M',
+        'postal'  => '78-400',
+        'city'    => 'Szczecinek',
     ],
 ];

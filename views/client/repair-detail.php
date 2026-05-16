@@ -35,26 +35,37 @@
     ?>
 
     <!-- INSTRUKCJA WYSYŁKI — po akceptacji wstępnej wyceny -->
-    <?php if (in_array($sc, ['initial_quote_accepted','parcel_received','diagnosis','final_quote_sent','final_quote_accepted','final_quote_rejected','final_quote_renegotiation','in_repair','awaiting_payment','paid','shipped_to_client','completed'])): ?>
+    <?php if (in_array($sc, ['initial_quote_accepted','parcel_sent','parcel_received','diagnosis','final_quote_sent','final_quote_accepted','final_quote_rejected','final_quote_renegotiation','in_repair','awaiting_payment','paid','shipped_to_client','completed'])): ?>
     <div class="info-box info-box--shipping">
         <div class="info-box__icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
         </div>
         <div class="info-box__content">
             <?php if ($sc === 'initial_quote_accepted'): ?>
-                <h4>Zapakuj starannie sprzęt i wyślij go na nasz adres:</h4>
+                <h4>Zapakuj starannie sprzęt i wyślij go do nas:</h4>
             <?php else: ?>
                 <h4>Adres serwisu:</h4>
             <?php endif; ?>
-            <div class="service-address">
-                <strong><?= sanitize($sa['name']) ?></strong><br>
-                <?= sanitize($sa['street']) ?><br>
-                <?= sanitize($sa['postal']) ?> <?= sanitize($sa['city']) ?><br>
-                Tel: <?= sanitize($sa['phone']) ?> | <?= sanitize($sa['email']) ?>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
+                <div class="service-address">
+                    <div style="font-size:11px;color:var(--c);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">📦 Paczkomat (małe urządzenia)</div>
+                    <strong><?= sanitize($config['parcel_address']['name']) ?></strong><br>
+                    <?= sanitize($config['parcel_address']['machine']) ?><br>
+                    <?= sanitize($config['parcel_address']['postal']) ?> <?= sanitize($config['parcel_address']['city']) ?>
+                </div>
+                <div class="service-address">
+                    <div style="font-size:11px;color:#8b5cf6;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">🏠 Kurier (duże urządzenia)</div>
+                    <strong><?= sanitize($sa['name']) ?></strong><br>
+                    <?= sanitize($sa['street']) ?><br>
+                    <?= sanitize($sa['postal']) ?> <?= sanitize($sa['city']) ?>
+                </div>
             </div>
+
             <?php if ($sc === 'initial_quote_accepted'): ?>
-                <p class="info-box__tip">⚠ Pamiętaj o dołączeniu numeru zgłoszenia <strong><?= sanitize($repair['rma_number']) ?></strong> do paczki.</p>
+                <p class="info-box__tip">⚠ Dołącz numer zgłoszenia <strong><?= sanitize($repair['rma_number']) ?></strong> do paczki. Duże lampy i urządzenia które nie mieszczą się w paczkomacie — wyślij kurierem na adres podany powyżej.</p>
             <?php endif; ?>
+            <p style="font-size:12px;color:var(--tm);margin-top:8px">Tel: <?= sanitize($sa['phone']) ?> &nbsp;|&nbsp; <?= sanitize($sa['email']) ?></p>
         </div>
     </div>
     <?php endif; ?>
