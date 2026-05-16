@@ -10,11 +10,15 @@ if (navbar) {
 const burger  = document.getElementById('burgerBtn');
 const navMenu = document.getElementById('navMenu');
 
+let scrollY = 0;
+
 function openMenu() {
+    scrollY = window.scrollY;
     navMenu.classList.add('open');
     burger.classList.add('is-open');
     document.body.style.overflow = 'hidden';
     document.body.style.position = 'fixed';
+    document.body.style.top = '-' + scrollY + 'px';
     document.body.style.width = '100%';
 }
 
@@ -23,7 +27,9 @@ function closeMenu() {
     burger.classList.remove('is-open');
     document.body.style.overflow = '';
     document.body.style.position = '';
+    document.body.style.top = '';
     document.body.style.width = '';
+    window.scrollTo(0, scrollY);
 }
 
 if (burger && navMenu) {
