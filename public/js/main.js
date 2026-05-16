@@ -9,22 +9,42 @@ if (navbar) {
 // Mobile burger menu
 const burger  = document.getElementById('burgerBtn');
 const navMenu = document.getElementById('navMenu');
+let menuScrollY = 0;
+
+function lockScroll() {
+    menuScrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + menuScrollY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.overflow = 'hidden';
+}
+
+function unlockScroll() {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, menuScrollY);
+}
+
 if (burger && navMenu) {
     burger.addEventListener('click', () => {
         const open = navMenu.classList.toggle('open');
         burger.setAttribute('aria-expanded', open);
-        document.body.style.overflow = open ? 'hidden' : '';
+        open ? lockScroll() : unlockScroll();
     });
     navMenu.querySelectorAll('a').forEach(a => {
         a.addEventListener('click', () => {
             navMenu.classList.remove('open');
-            document.body.style.overflow = '';
+            unlockScroll();
         });
     });
     document.addEventListener('click', (e) => {
-        if (!navbar.contains(e.target)) {
+        if (navMenu.classList.contains('open') && !navbar.contains(e.target)) {
             navMenu.classList.remove('open');
-            document.body.style.overflow = '';
+            unlockScroll();
         }
     });
 }
