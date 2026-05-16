@@ -7,17 +7,20 @@ if (navbar) {
 }
 
 // Mobile burger menu
-const burger  = document.getElementById('burgerBtn');
-const navMenu = document.getElementById('navMenu');
+const burger   = document.getElementById('burgerBtn');
+const navMenu  = document.getElementById('navMenu');
+const overlay  = document.getElementById('menuOverlay');
 
 function openMenu() {
     navMenu.classList.add('open');
     burger.classList.add('is-open');
+    if (overlay) overlay.classList.add('open');
 }
 
 function closeMenu() {
     navMenu.classList.remove('open');
     burger.classList.remove('is-open');
+    if (overlay) overlay.classList.remove('open');
 }
 
 if (burger && navMenu) {
@@ -26,12 +29,6 @@ if (burger && navMenu) {
     });
     navMenu.querySelectorAll('a').forEach(a => {
         a.addEventListener('click', closeMenu);
-    });
-    // Zamknij przez kliknięcie w nakładkę (::after nie łapie zdarzeń - używamy click na dokumencie)
-    document.addEventListener('click', (e) => {
-        if (navMenu.classList.contains('open') && !navMenu.contains(e.target) && e.target !== burger && !burger.contains(e.target)) {
-            closeMenu();
-        }
     });
 }
 
