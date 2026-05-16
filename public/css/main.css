@@ -1090,6 +1090,10 @@ img{max-width:100%;display:block}
 .page-deco__ring--2 { width: 200px; height: 200px; top: 60px; right: 60px; border-style: dashed; animation: rot 18s linear infinite reverse; }
 .page-deco__ring--3 { width: 400px; height: 400px; top: -100px; right: -140px; border-color: rgba(0,100,255,0.05); animation: rot 35s linear infinite; }
 
+/* Elementy tylko mobilne - ukryte na desktopie */
+.mobile-auth { display: none; }
+#menuOverlay { display: none; }
+
 /* ---- PAGE HERO Z ZDJĘCIEM ---- */
 .page-hero__img {
     position: absolute;
@@ -1321,6 +1325,10 @@ img { content-visibility: auto; }
     }
     .reviews__grid::-webkit-scrollbar { display: none; }
 }
+
+/* Elementy tylko mobilne - ukryte na desktopie */
+.mobile-auth { display: none; }
+#menuOverlay { display: none; }
 
 /* ---- PAGE HERO Z ZDJĘCIEM ---- */
 .page-hero--img {
