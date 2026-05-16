@@ -1090,10 +1090,6 @@ img{max-width:100%;display:block}
 .page-deco__ring--2 { width: 200px; height: 200px; top: 60px; right: 60px; border-style: dashed; animation: rot 18s linear infinite reverse; }
 .page-deco__ring--3 { width: 400px; height: 400px; top: -100px; right: -140px; border-color: rgba(0,100,255,0.05); animation: rot 35s linear infinite; }
 
-/* Elementy tylko mobilne - ukryte na desktopie */
-.mobile-auth { display: none; }
-#menuOverlay { display: none; }
-
 /* ---- PAGE HERO Z ZDJĘCIEM ---- */
 .page-hero__img {
     position: absolute;
@@ -1326,10 +1322,6 @@ img { content-visibility: auto; }
     .reviews__grid::-webkit-scrollbar { display: none; }
 }
 
-/* Elementy tylko mobilne - ukryte na desktopie */
-.mobile-auth { display: none; }
-#menuOverlay { display: none; }
-
 /* ---- PAGE HERO Z ZDJĘCIEM ---- */
 .page-hero--img {
     background-size: cover;
@@ -1434,50 +1426,25 @@ img { content-visibility: auto; }
     .navbar__nav {
         display: none;
         position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: #070d1a;
+        top: 60px; left: 0; right: 0;
+        background: rgba(7,13,26,0.98);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--bd);
         flex-direction: column;
-        z-index: 200;
-        overflow-y: auto;
-        padding: 0;
+        gap: 0;
+        padding: 8px 0;
+        z-index: 99;
     }
     .navbar__nav.open { display: flex; }
     .navbar__nav a {
-        padding: 18px 24px;
-        font-size: 16px;
-        border-bottom: 1px solid var(--bd);
-        color: var(--t);
-    }
-    .navbar__nav a:first-child {
-        margin-top: 64px;
-    }
-    .navbar__nav a:hover { color: var(--c); background: rgba(0,229,255,0.04); }
-    .navbar__actions {
-        display: none !important;
-    }
-    .navbar__burger {
-        display: flex;
-        z-index: 201;
-        position: relative;
-        width: 36px;
-        height: 36px;
-        align-items: center;
-        justify-content: center;
-    }
-    /* Przyciski logowania wewnątrz menu mobilnego */
-    .navbar__nav .mobile-auth {
-        display: flex;
-        gap: 12px;
-        padding: 20px 24px;
-        margin-top: auto;
-        border-top: 1px solid var(--bd);
-    }
-    .navbar__nav .mobile-auth .btn {
-        flex: 1;
-        justify-content: center;
-        padding: 14px;
+        padding: 14px 24px;
         font-size: 15px;
+        border-bottom: 1px solid var(--bd);
     }
+    .navbar__actions {
+        display: none;
+    }
+    .navbar__burger { display: flex; }
 
     /* Hero mobile */
     .hero { padding: 100px 0 60px; }
@@ -1623,11 +1590,3 @@ img { content-visibility: auto; }
     font-weight: 600;
     margin-bottom: 4px;
 }
-
-/* Burger spans animacja */
-.navbar__burger span {
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    display: block;
-}
-/* Zablokuj scroll gdy menu otwarte */
-body.menu-open { overflow: hidden; }

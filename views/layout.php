@@ -17,7 +17,6 @@ $appName = $config['app']['name'];
 </head>
 <body>
     <?php include VIEW_PATH . '/partials/navbar.php'; ?>
-    <div id="menuOverlay" onclick="closeMenu()"></div>
     <main><?= $content ?? '' ?></main>
     <?php include VIEW_PATH . '/partials/footer.php'; ?>
     <script src="/js/main.js"></script>
