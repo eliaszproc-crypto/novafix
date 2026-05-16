@@ -31,9 +31,18 @@ function unlockScroll() {
 
 if (burger && navMenu) {
     burger.addEventListener('click', () => {
-        const open = navMenu.classList.toggle('open');
-        burger.setAttribute('aria-expanded', open);
-        open ? lockScroll() : unlockScroll();
+        const isOpen = navMenu.classList.contains('open');
+        if (!isOpen) {
+            lockScroll();
+            requestAnimationFrame(() => {
+                navMenu.classList.add('open');
+                burger.setAttribute('aria-expanded', 'true');
+            });
+        } else {
+            navMenu.classList.remove('open');
+            burger.setAttribute('aria-expanded', 'false');
+            unlockScroll();
+        }
     });
     navMenu.querySelectorAll('a').forEach(a => {
         a.addEventListener('click', () => {
