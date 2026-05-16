@@ -8,6 +8,19 @@
             <a href="/panel/nowe-zgloszenie">Zgłoś urządzenie</a>
             <a href="/status">Status naprawy</a>
             <a href="/kontakt">Kontakt</a>
+            <div class="mobile-auth">
+                <?php if (isLoggedIn()): ?>
+                    <?php if (isAdmin()): ?>
+                        <a href="/admin" class="btn btn--outline">Panel admina</a>
+                    <?php else: ?>
+                        <a href="/panel" class="btn btn--outline">Moje zgłoszenia</a>
+                    <?php endif; ?>
+                    <a href="/logout" class="btn btn--ghost">Wyloguj</a>
+                <?php else: ?>
+                    <a href="/login" class="btn btn--outline">Zaloguj się</a>
+                    <a href="/rejestracja" class="btn btn--primary">Rejestracja</a>
+                <?php endif; ?>
+            </div>
         </nav>
         <div class="navbar__actions">
             <?php if (isLoggedIn()): ?>
