@@ -12,18 +12,18 @@ const navMenu = document.getElementById('navMenu');
 
 function openMenu() {
     navMenu.classList.add('open');
+    burger.classList.add('is-open');
     document.body.style.overflow = 'hidden';
-    burger.setAttribute('aria-expanded', 'true');
-    burger.innerHTML = `
-        <span style="position:absolute;width:24px;height:2px;background:var(--t);transform:rotate(45deg)"></span>
-        <span style="position:absolute;width:24px;height:2px;background:var(--t);transform:rotate(-45deg)"></span>`;
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
 }
 
 function closeMenu() {
     navMenu.classList.remove('open');
+    burger.classList.remove('is-open');
     document.body.style.overflow = '';
-    burger.setAttribute('aria-expanded', 'false');
-    burger.innerHTML = '<span></span><span></span><span></span>';
+    document.body.style.position = '';
+    document.body.style.width = '';
 }
 
 if (burger && navMenu) {
