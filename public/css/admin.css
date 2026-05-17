@@ -453,3 +453,27 @@ svg { display: block; flex-shrink: 0; }
     .detail-grid { grid-template-columns: 1fr; }
     .f-row { grid-template-columns: 1fr; }
 }
+
+/* ---- ADMIN DIAGNOSTYKA MOBILE ---- */
+@media (max-width: 768px) {
+    /* Drzewo i formularz - jedna kolumna */
+    .admin-card .dtree { font-size: 12px; }
+    .dtree__question { font-size: 12px; }
+    .dtree__answer { font-size: 11px; }
+    .dtree__actions { display: flex; }
+    .dtree__row { padding: 6px 8px; }
+    .dtree__badge { display: none; }
+
+    /* Grid diagnostyki na jedną kolumnę */
+    div[style*="grid-template-columns:1fr 380px"] {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+    }
+
+    /* Sticky panel - wyłącz na mobile */
+    div[style*="position:sticky"] {
+        position: relative !important;
+        top: auto !important;
+    }
+}
