@@ -21,7 +21,8 @@
             </div>
             <div class="about-box__content">
                 <h3>Kim jestem?</h3>
-                <p>Jestem inżynierem elektronikiem — projektuję i produkuję indywidualne układy elektroniczne oraz zajmuję się serwisem sprzętu elektronicznego. Moje układy funkcjonują m.in. w centrach nauki w Białymstoku, Kamieniu Pomorskim, Zakopanem, Olsztynie i Jeleniej Górze. Serwis sprzętu akwarystycznego to moja specjalizacja — rozumiem elektronikę od środka. Skupiam się <strong>wyłącznie na elektronice</strong> — nie naprawiam elementów mechanicznych.</p>
+                <p>Jestem inżynierem elektronikiem z pasją do akwarystyki morskiej. Projektuję i produkuję indywidualne układy elektroniczne — moje realizacje działają m.in. w centrach nauki w Białymstoku, Kamieniu Pomorskim, Zakopanem, Olsztynie i Jeleniej Górze.</p>
+                <p style="margin-top:10px">Jako zapalony akwarysta morski doskonale rozumiem jak działa sprzęt akwarystyczny od strony użytkownika — i co się dzieje gdy przestaje działać. Połączenie wiedzy inżynierskiej z praktycznym doświadczeniem akwarysty sprawia, że diagnoza jest trafniejsza, a naprawa skuteczniejsza. Skupiam się <strong>wyłącznie na elektronice</strong> — nie naprawiam elementów mechanicznych.</p>
             </div>
         </div>
 

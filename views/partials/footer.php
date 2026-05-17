@@ -25,7 +25,7 @@
         <div class="footer__inner">
             <div class="footer__brand">
                 <div class="footer__logo">Nova<span>Fix</span></div>
-                <p>Profesjonalny serwis sprzętu<br>akwarystycznego od 2010 roku.</p>
+                <p>Serwis elektroniki akwarystycznej<br>prowadzony przez pasjonata i inżyniera.</p>
             </div>
             <div class="footer__col">
                 <h4>Usługi</h4>

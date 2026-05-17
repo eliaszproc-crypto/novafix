@@ -58,7 +58,7 @@
                     </div>
                     <div>
                         <h4>Eliasz Proć</h4>
-                        <p>Inżynier elektronik<br>NovaFix — Szczecinek</p>
+                        <p>Inżynier elektronik<br>Pasjonat akwarystyki morskiej<br>NovaFix — Szczecinek</p>
                     </div>
                 </div>
                 <div class="contact-cta">

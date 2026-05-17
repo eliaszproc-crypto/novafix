@@ -15,7 +15,7 @@
     <div class="hero__grid"></div>
     <div class="container hero__inner">
         <div class="hero__content">
-            <div class="hero__badge"><span class="hero__badge-dot"></span>Inżynier elektronik · 3 lata NovaFix · 6 lat doświadczenia</div>
+            <div class="hero__badge"><span class="hero__badge-dot"></span>Inżynier elektronik · pasjonat akwarystyki morskiej</div>
             <h1 class="hero__title">Serwis elektroniki<br><span class="hero__title--accent">akwarystycznej</span></h1>
             <p class="hero__desc">Naprawa lamp LED, sterowników, falowników, dozowników i automatyki akwariowej. Skupiam się wyłącznie na elektronice.</p>
             <div class="hero__actions">
@@ -144,7 +144,7 @@
         <div class="features__grid">
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-                <div><h4>Wykształcony inżynier</h4><p>Elektronik z wykształcenia. Projektuję układy elektroniczne od ponad 6 lat (NovaFix od 3 lat).</p></div>
+                <div><h4>Inżynier i pasjonat</h4><p>Elektronik z wykształcenia i zapalony akwarysta morski. Wiem jak działa sprzęt od środka — jako użytkownik i jako inżynier.</p></div>
             </div>
             <div class="features__item">
                 <div class="features__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg></div>
