@@ -95,7 +95,7 @@ function sendEmailNotification(string $to, string $subject, string $body): bool 
     $headers = [
         'MIME-Version: 1.0',
         'Content-Type: text/html; charset=UTF-8',
-        'From: NovaFix <noreply@novafix.pl>',
+        'From: NovaFix <service@host201211.xce.pl>',
         'X-Mailer: PHP/' . PHP_VERSION,
     ];
     return @mail($to, $subject, $body, implode("\r\n", $headers));
