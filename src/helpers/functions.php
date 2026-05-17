@@ -1,4 +1,26 @@
 <?php
+
+function uploadPath(): string {
+    // Działa zarówno na XAMPP (public/) jak i na hostingu (public_html/)
+    $paths = [
+        ROOT_PATH . '/public/uploads/',
+        ROOT_PATH . '/public_html/uploads/',
+        $_SERVER['DOCUMENT_ROOT'] . '/uploads/',
+    ];
+    foreach ($paths as $p) {
+        if (is_dir($p) && is_writable($p)) return $p;
+    }
+    // Fallback - zwróć pierwszą istniejącą
+    foreach ($paths as $p) {
+        if (is_dir($p)) return $p;
+    }
+    return ROOT_PATH . '/public/uploads/';
+}
+
+function uploadUrl(string $filename): string {
+    return '/uploads/' . $filename;
+}
+
 function redirect(string $url): void {
     header('Location: ' . $url);
     exit;

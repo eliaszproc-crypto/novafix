@@ -120,7 +120,7 @@ class ClientController {
     private function handlePhotoUpload(int $repair_id, $pdo): void {
         if (empty($_FILES['photos']['name'])) return;
 
-        $upload_path = ROOT_PATH.'/public/uploads/';
+        $upload_path = uploadPath();
         $count = 0;
 
         foreach ($_FILES['photos']['tmp_name'] as $i => $tmp) {
@@ -157,7 +157,7 @@ class ClientController {
         $photo = $stmt->fetch();
 
         if ($photo) {
-            $path = ROOT_PATH.'/public/uploads/'.$photo['filename'];
+            $path = uploadPath().$photo['filename'];
             if (file_exists($path)) unlink($path);
             $pdo->prepare('DELETE FROM repair_photos WHERE id=?')->execute([(int)$photo_id]);
         }
@@ -318,7 +318,7 @@ class ClientController {
         $photos = $pdo->prepare('SELECT filename FROM repair_photos WHERE repair_id=?');
         $photos->execute([(int)$id]);
         foreach ($photos->fetchAll() as $p) {
-            $path = ROOT_PATH.'/public/uploads/'.$p['filename'];
+            $path = uploadPath().$p['filename'];
             if (file_exists($path)) unlink($path);
         }
 

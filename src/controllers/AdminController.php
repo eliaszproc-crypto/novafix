@@ -195,7 +195,7 @@ class AdminController {
         $photos = $pdo->prepare('SELECT filename FROM repair_photos WHERE repair_id=?');
         $photos->execute([(int)$id]);
         foreach ($photos->fetchAll() as $p) {
-            $path = ROOT_PATH.'/public/uploads/'.$p['filename'];
+            $path = uploadPath().$p['filename'];
             if (file_exists($path)) unlink($path);
         }
         // Usuń powiązane rekordy ręcznie (foreign key constraints)
@@ -234,7 +234,7 @@ class AdminController {
         $photos = $pdo->prepare('SELECT rp.filename FROM repair_photos rp JOIN repairs r ON rp.repair_id=r.id WHERE r.user_id=?');
         $photos->execute([(int)$id]);
         foreach ($photos->fetchAll() as $p) {
-            $path = ROOT_PATH.'/public/uploads/'.$p['filename'];
+            $path = uploadPath().$p['filename'];
             if (file_exists($path)) unlink($path);
         }
         $pdo->prepare('DELETE FROM users WHERE id=?')->execute([(int)$id]);
