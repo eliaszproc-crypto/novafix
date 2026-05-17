@@ -98,12 +98,26 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn--primary btn--lg">
+                    <button type="submit" id="submitBtn" class="btn btn--primary btn--lg">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
                         Wyślij zgłoszenie
                     </button>
                 </div>
             </form>
+            <script>
+            (function() {
+                var submitted = false;
+                document.querySelector('form.repair-form').addEventListener('submit', function(e) {
+                    if (submitted) { e.preventDefault(); return false; }
+                    submitted = true;
+                    var btn = document.getElementById('submitBtn');
+                    btn.disabled = true;
+                    btn.textContent = 'Wysyłanie...';
+                    btn.style.opacity = '0.6';
+                    btn.style.cursor = 'not-allowed';
+                });
+            })();
+            </script>
         </div>
     </div>
 </section>
