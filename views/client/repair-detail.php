@@ -50,9 +50,9 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px">
                 <div class="service-address">
                     <div style="font-size:11px;color:var(--c);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">📦 Paczkomat (małe urządzenia)</div>
-                    <strong><?= sanitize($config['parcel_address']['name']) ?></strong><br>
-                    <?= sanitize($config['parcel_address']['machine']) ?><br>
-                    <?= sanitize($config['parcel_address']['postal']) ?> <?= sanitize($config['parcel_address']['city']) ?>
+                    <strong><?= sanitize($config['service_parcel']['name'] ?? 'Eliasz Proć — NovaFix') ?></strong><br>
+                    <?= sanitize($config['service_parcel']['locker'] ?? 'SCZ04M') ?><br>
+                    <?= sanitize($config['service_parcel']['postal'] ?? '78-400') ?> <?= sanitize($config['service_parcel']['city'] ?? 'Szczecinek') ?>
                 </div>
                 <div class="service-address">
                     <div style="font-size:11px;color:#8b5cf6;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">🏠 Kurier (duże urządzenia)</div>
