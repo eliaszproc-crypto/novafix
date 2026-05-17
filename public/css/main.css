@@ -1700,3 +1700,5 @@ img { content-visibility: auto; }
     .diag-result__actions .btn { width: 100%; justify-content: center; }
     .diag-path { font-size: 12px; flex-wrap: wrap; }
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }
