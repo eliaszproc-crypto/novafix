@@ -238,6 +238,77 @@ $max_repairs = max(array_merge([1], array_column($daily_repairs, 'cnt')));
 
 </div>
 
+<!-- Statystyki odwiedzin -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+    <div class="admin-card">
+        <h3>Odwiedziny strony</h3>
+        <?php
+        try {
+            $v_total  = $pdo->query("SELECT COUNT(*) FROM page_visits WHERE visited_at BETWEEN '$from' AND '$to'")->fetchColumn();
+            $v_unique = $pdo->query("SELECT COUNT(DISTINCT ip_hash) FROM page_visits WHERE visited_at BETWEEN '$from' AND '$to'")->fetchColumn();
+            $v_today  = $pdo->query("SELECT COUNT(*) FROM page_visits WHERE DATE(visited_at)=CURDATE()")->fetchColumn();
+            $v_unique_today = $pdo->query("SELECT COUNT(DISTINCT ip_hash) FROM page_visits WHERE DATE(visited_at)=CURDATE()")->fetchColumn();
+            $daily_v  = $pdo->query("SELECT DATE(visited_at) as day, COUNT(*) as total FROM page_visits WHERE visited_at BETWEEN '$from' AND '$to' GROUP BY DATE(visited_at) ORDER BY day ASC")->fetchAll();
+        } catch (Exception $e) { $v_total=$v_unique=$v_today=$v_unique_today=0; $daily_v=[]; }
+        ?>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+            <div style="padding:16px;background:var(--bg4);border-radius:10px;text-align:center">
+                <strong style="font-size:28px;color:var(--c);font-family:'Outfit',sans-serif"><?= (int)$v_total ?></strong>
+                <p style="font-size:12px;color:var(--tm);margin-top:4px">Odwiedziny w okresie</p>
+            </div>
+            <div style="padding:16px;background:var(--bg4);border-radius:10px;text-align:center">
+                <strong style="font-size:28px;color:#8b5cf6;font-family:'Outfit',sans-serif"><?= (int)$v_unique ?></strong>
+                <p style="font-size:12px;color:var(--tm);margin-top:4px">Unikalni odwiedzający</p>
+            </div>
+            <div style="padding:16px;background:var(--bg4);border-radius:10px;text-align:center">
+                <strong style="font-size:28px;color:#22c55e;font-family:'Outfit',sans-serif"><?= (int)$v_today ?></strong>
+                <p style="font-size:12px;color:var(--tm);margin-top:4px">Odwiedziny dziś</p>
+            </div>
+            <div style="padding:16px;background:var(--bg4);border-radius:10px;text-align:center">
+                <strong style="font-size:28px;color:#f97316;font-family:'Outfit',sans-serif"><?= (int)$v_unique_today ?></strong>
+                <p style="font-size:12px;color:var(--tm);margin-top:4px">Unikalni dziś</p>
+            </div>
+        </div>
+        <?php if (!empty($daily_v)): $max_v = max(array_column($daily_v,'total')); ?>
+        <div class="bar-chart">
+            <?php foreach ($daily_v as $d): $h = max(4, round(($d['total']/$max_v)*100)); ?>
+            <div class="bar-chart__col">
+                <div class="bar-chart__bar bar-chart__bar--cyan" style="height:<?= $h ?>px"></div>
+                <div class="bar-chart__label"><?= date('d.m', strtotime($d['day'])) ?></div>
+                <div class="bar-chart__val"><?= $d['total'] ?></div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+    <div class="admin-card">
+        <h3>Najpopularniejsze strony</h3>
+        <?php
+        try {
+            $top = $pdo->query("SELECT path, COUNT(*) as cnt FROM page_visits WHERE visited_at BETWEEN '$from' AND '$to' GROUP BY path ORDER BY cnt DESC LIMIT 8")->fetchAll();
+        } catch (Exception $e) { $top = []; }
+        $pnames = ['/' => '🏠 Strona główna', '/uslugi' => '🔧 Usługi', '/cennik' => '💰 Cennik', '/kontakt' => '✉ Kontakt', '/status' => '📦 Status'];
+        ?>
+        <?php if (empty($top)): ?>
+            <p style="color:var(--tm);font-size:13px">Brak danych w wybranym okresie.</p>
+        <?php else: $max_p = max(array_column($top,'cnt')); ?>
+        <div style="display:flex;flex-direction:column;gap:10px">
+            <?php foreach ($top as $p): ?>
+            <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px">
+                    <span style="color:var(--t)"><?= sanitize($pnames[$p['path']] ?? $p['path']) ?></span>
+                    <strong style="color:var(--c)"><?= $p['cnt'] ?></strong>
+                </div>
+                <div style="height:5px;background:rgba(255,255,255,0.05);border-radius:4px">
+                    <div style="height:100%;width:<?= round($p['cnt']/$max_p*100) ?>%;background:linear-gradient(90deg,#8b5cf6,var(--c));border-radius:4px"></div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+
 <!-- Ostatnie płatności -->
 <?php if (!empty($recent_payments)): ?>
 <div class="admin-card">
