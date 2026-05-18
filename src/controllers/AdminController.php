@@ -189,6 +189,43 @@ class AdminController {
         redirect('/admin/naprawa/'.$id.'?success=Oznaczono jako zwrot sprzętu');
     }
 
+
+    public function sendMessage(string $id): void {
+        requireAdmin(); global $pdo;
+        $msg = trim($_POST['message'] ?? '');
+        if (strlen($msg) < 1) { http_response_code(400); echo json_encode(['error' => 'Pusta']); exit; }
+        $pdo->prepare('INSERT INTO repair_messages (repair_id, user_id, message) VALUES (?,?,?)')
+            ->execute([(int)$id, $_SESSION['user_id'], $msg]);
+        // Oznacz wiadomości klienta jako przeczytane
+        $pdo->prepare("UPDATE repair_messages SET is_read=1 WHERE repair_id=? AND user_id != ?")->execute([(int)$id, $_SESSION['user_id']]);
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    public function getMessages(string $id): void {
+        requireAdmin(); global $pdo;
+        $msgs = $pdo->prepare("
+            SELECT m.*, u.first_name, u.last_name, u.role
+            FROM repair_messages m
+            JOIN users u ON m.user_id=u.id
+            WHERE m.repair_id=?
+            ORDER BY m.created_at ASC
+        ");
+        $msgs->execute([(int)$id]);
+        header('Content-Type: application/json');
+        echo json_encode($msgs->fetchAll());
+        exit;
+    }
+
+    public function markRead(string $id): void {
+        requireAdmin(); global $pdo;
+        $pdo->prepare("UPDATE repair_messages SET is_read=1 WHERE repair_id=? AND user_id != ?")->execute([(int)$id, $_SESSION['user_id']]);
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
     public function deleteRepair(string $id): void {
         requireAdmin(); global $pdo;
         // Usuń zdjęcia z dysku

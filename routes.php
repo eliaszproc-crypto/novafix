@@ -36,6 +36,11 @@ $router->post('panel/naprawa/{id}/adres-zwrotny',   ['ClientController', 'update
 // ---- Diagnostyka klienta ----
 $router->get('panel/diagnostyka',                   ['ClientController',  'diagnostics']);
 
+$router->post('panel/naprawa/{id}/wiadomosc',      ['ClientController',  'sendMessage']);
+$router->get('panel/naprawa/{id}/wiadomosci',       ['ClientController',  'getMessages']);
+$router->post('admin/naprawa/{id}/wiadomosc',       ['AdminController',   'sendMessage']);
+$router->get('admin/naprawa/{id}/wiadomosci',       ['AdminController',   'getMessages']);
+$router->post('admin/naprawa/{id}/przeczytane',     ['AdminController',   'markRead']);
 $router->post('panel/naprawa/{id}/opinia',          ['ClientController',  'submitReview']);
 $router->get('admin/opinie',                        ['AdminController',   'reviews']);
 $router->post('admin/opinia/{id}/widocznosc',       ['AdminController',   'reviewToggle']);

@@ -403,6 +403,12 @@
     </div>
 </div>
 </section>
+<?php
+$repair_id = $repair['id'];
+$current_user_id = $_SESSION['user_id'];
+$is_admin = false;
+include VIEW_PATH.'/partials/chat.php';
+?>
 <script>
 function toggleEl(id) {
     const el = document.getElementById(id);

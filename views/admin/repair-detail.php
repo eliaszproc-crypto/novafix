@@ -256,3 +256,10 @@
     </div>
 </div>
 </div>
+
+<?php
+$repair_id = $repair['id'];
+$current_user_id = $_SESSION['user_id'];
+$is_admin = true;
+include VIEW_PATH.'/partials/chat.php';
+?>
