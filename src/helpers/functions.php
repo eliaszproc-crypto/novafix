@@ -128,3 +128,22 @@ function notifyNewRepair(array $repair, string $rma, string $device, string $pro
 
     sendEmailNotification($to, $subject, $body);
 }
+
+function csrfToken(): string {
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+function csrfVerify(): void {
+    $token = $_POST['csrf_token'] ?? '';
+    if (empty($token) || !hash_equals($_SESSION['csrf_token'] ?? '', $token)) {
+        http_response_code(403);
+        die('Nieprawidłowy token CSRF. Odśwież stronę i spróbuj ponownie.');
+    }
+}
+
+function csrfField(): string {
+    return '<input type="hidden" name="csrf_token" value="' . csrfToken() . '">';
+}

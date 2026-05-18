@@ -16,6 +16,18 @@ class AuthController {
         $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
+        // Limit prób logowania - max 10 na 15 minut z jednego IP
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $key = 'login_attempts_' . md5($ip);
+        if (!isset($_SESSION[$key])) $_SESSION[$key] = ['count' => 0, 'time' => time()];
+        if (time() - $_SESSION[$key]['time'] > 900) {
+            $_SESSION[$key] = ['count' => 0, 'time' => time()];
+        }
+        if ($_SESSION[$key]['count'] >= 10) {
+            redirect('/login?error=Zbyt wiele prób logowania. Spróbuj za 15 minut.');
+        }
+        $_SESSION[$key]['count']++;
+
         if (!$email || !$password) {
             redirect('/login?error=Wypełnij wszystkie pola');
         }

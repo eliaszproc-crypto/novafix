@@ -1,5 +1,14 @@
 <?php
+// Bezpieczna konfiguracja sesji
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_samesite', 'Strict');
+ini_set('session.use_strict_mode', 1);
 session_start();
+
+// Wyłącz wyświetlanie błędów na produkcji
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(0);
 define('ROOT_PATH', dirname(__DIR__));
 define('SRC_PATH',  ROOT_PATH . '/src');
 define('VIEW_PATH', ROOT_PATH . '/views');

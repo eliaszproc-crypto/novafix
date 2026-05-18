@@ -3,7 +3,7 @@ return [
     'app' => [
         'name'     => 'NovaFix',
         'url'      => 'https://novafix.pl',
-        'debug'    => true,
+        'debug'    => false,
     ],
     'db' => [
         'host'     => 'localhost',
