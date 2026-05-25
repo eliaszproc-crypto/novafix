@@ -354,9 +354,27 @@ class AdminController {
         $result      = trim($_POST['result'] ?? '') ?: null;
         $result_type = $_POST['result_type'] ?? 'continue';
         $sort_order  = (int)($_POST['sort_order'] ?? 0);
-        if (!$question) redirect('/admin/diagnostyka?error=Pytanie jest wymagane');
-        $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,result_type=?,sort_order=? WHERE id=?')
-            ->execute([$question,$answer,$result,$result_type,$sort_order,(int)$id]);
+        $parent_id   = isset($_POST['parent_id']) && $_POST['parent_id'] !== '' ? (int)$_POST['parent_id'] : null;
+
+        if (!$question) {
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) { http_response_code(400); exit; }
+            redirect('/admin/diagnostyka?error=Pytanie jest wymagane');
+        }
+
+        if (isset($_POST['parent_id'])) {
+            $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,result_type=?,sort_order=?,parent_id=? WHERE id=?')
+                ->execute([$question,$answer,$result,$result_type,$sort_order,$parent_id,(int)$id]);
+        } else {
+            $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,result_type=?,sort_order=? WHERE id=?')
+                ->execute([$question,$answer,$result,$result_type,$sort_order,(int)$id]);
+        }
+
+        // Jeśli żądanie AJAX - zwróć 200
+        if (isset($_SERVER['HTTP_FETCH_DEST']) || !empty($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['ok' => true]);
+            exit;
+        }
         redirect('/admin/diagnostyka?success=Węzeł zaktualizowany');
     }
 
