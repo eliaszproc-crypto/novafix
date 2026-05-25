@@ -369,7 +369,7 @@ class AdminController {
         $result      = trim($_POST['result'] ?? '') ?: null;
         $result_type = $_POST['result_type'] ?? 'continue';
         $sort_order  = (int)($_POST['sort_order'] ?? 0);
-        $parent_id   = isset($_POST['parent_id']) && $_POST['parent_id'] !== '' ? (int)$_POST['parent_id'] : null;
+        $parent_id   = (isset($_POST['parent_id']) && $_POST['parent_id'] !== '' && $_POST['parent_id'] !== '0') ? (int)$_POST['parent_id'] : null;
 
         if (!$question) {
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])) { http_response_code(400); exit; }

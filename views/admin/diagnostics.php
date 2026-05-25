@@ -194,7 +194,46 @@ window.addEventListener('load', function() {
     canvas.addEventListener('mouseup',   onMouseUp);
     canvas.addEventListener('dblclick',  onDblClick);
     canvas.addEventListener('wheel',     onWheel, { passive: false });
-    canvas.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    canvas.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        var wp = worldPos(e);
+        // Sprawdź kliknięcie na połączenie
+        var edgeIdx = hitTestEdge(wp.x, wp.y);
+        if (edgeIdx >= 0) {
+            var edge = edges[edgeIdx];
+            if (confirm('Usunąć połączenie między węzłem #' + edge.from + ' a #' + edge.to + '?')) {
+                // Usuń połączenie - ustaw parent_id dziecka na null
+                var childNode = nodeById(edge.to);
+                if (childNode) {
+                    fetch('/admin/diagnostyka/edytuj/' + edge.to, {
+                        method: 'POST',
+                        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                        body: new URLSearchParams({
+                            parent_id:   '',
+                            question:    childNode.data.question || '',
+                            answer:      childNode.data.answer || '',
+                            result:      childNode.data.result || '',
+                            result_type: childNode.data.result_type || 'continue',
+                            sort_order:  childNode.data.sort_order || 0
+                        })
+                    }).then(function() {
+                        childNode.data.parent_id = null;
+                        edges.splice(edgeIdx, 1);
+                        render();
+                        setStatus('Połączenie usunięte ✓');
+                        setTimeout(function(){ setStatus(''); }, 2000);
+                    });
+                }
+            }
+            return;
+        }
+        // Kliknięcie na węzeł - menu kontekstowe
+        var hit = hitTest(wp.x, wp.y);
+        if (hit) {
+            selected = hit.id;
+            render();
+        }
+    });
 });
 
 function resize() {
@@ -406,6 +445,33 @@ function worldPos(e) {
 function screenPos(e) {
     var r = canvas.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function pointOnBezier(x1,y1,x2,y2,t) {
+    var cp1y = y1 + Math.abs(y2-y1)*0.5;
+    var cp2y = y2 - Math.abs(y2-y1)*0.5;
+    var bx = x1, by = y1, cx = x1, cy = cp1y, dx = x2, dy = cp2y, ex = x2, ey = y2;
+    var mt = 1-t;
+    return {
+        x: mt*mt*mt*bx + 3*mt*mt*t*cx + 3*mt*t*t*dx + t*t*t*ex,
+        y: mt*mt*mt*by + 3*mt*mt*t*cy + 3*mt*t*t*dy + t*t*t*ey
+    };
+}
+
+function hitTestEdge(wx, wy) {
+    for (var i = 0; i < edges.length; i++) {
+        var e = edges[i];
+        var from = nodeById(e.from), to = nodeById(e.to);
+        if (!from || !to) continue;
+        var fx = from.x + NODE_W/2, fy = from.y + nodeHeight(from);
+        var tx = to.x + NODE_W/2,   ty = to.y;
+        // Sprawdź kilka punktów na krzywej
+        for (var t = 0; t <= 1; t += 0.05) {
+            var p = pointOnBezier(fx, fy, tx, ty, t);
+            if (Math.hypot(wx - p.x, wy - p.y) < 8) return i;
+        }
+    }
+    return -1;
 }
 
 function hitTest(wx, wy) {
