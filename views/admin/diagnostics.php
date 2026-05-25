@@ -25,7 +25,7 @@ $error   = $_GET['error'] ?? '';
             Usuń węzeł
         </button>
         <div class="ne-toolbar-sep"></div>
-        <span style="font-size:12px;color:var(--tm)">Przeciągnij węzły · Kliknij żeby edytować · Ctrl+scroll = zoom</span>
+        <span style="font-size:12px;color:var(--tm)">Przeciągnij węzeł · 2x klik = edytuj · <strong style='color:var(--c)'>Przeciągnij z dolnej kropki</strong> = połącz · PPM na linię = usuń połączenie</span>
         <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
             <span id="neStatus" style="font-size:12px;color:var(--tm)"></span>
             <a href="/panel/diagnostyka" target="_blank" class="a-btn a-btn-secondary" style="padding:5px 12px;font-size:12px">Podgląd klienta ↗</a>
@@ -159,7 +159,7 @@ $error   = $_GET['error'] ?? '';
 var DB_NODES = <?= $nodes_json ?>;
 
 // ====== STAŁE ======
-var NODE_W = 220, NODE_H_BASE = 70, PORT_R = 7;
+var NODE_W = 220, NODE_H_BASE = 70, PORT_R = 10;
 var COLORS = { continue:'#94a3b8', repair:'#00e5ff', no_repair:'#f87171', contact:'#8b5cf6' };
 var LABELS = { continue:'Kontynuuj', repair:'Naprawa', no_repair:'Brak naprawy', contact:'Kontakt' };
 
@@ -485,7 +485,7 @@ function hitTest(wx, wy) {
 function isNearPort(wx, wy, n, isOut) {
     var px = n.x + NODE_W/2;
     var py = isOut ? n.y + nodeHeight(n) : n.y;
-    return Math.hypot(wx-px, wy-py) < PORT_R + 4;
+    return Math.hypot(wx-px, wy-py) < PORT_R + 8;
 }
 
 var panDragging = false, panStart = { x:0, y:0 };
@@ -535,6 +535,19 @@ function onMouseMove(e) {
         connecting.curY = sp.y;
         render();
         return;
+    }
+
+    // Zmień kursor gdy nad portem
+    if (!dragging && !panDragging) {
+        var wpHover = worldPos(e);
+        var hoverHit = hitTest(wpHover.x, wpHover.y);
+        if (hoverHit && isNearPort(wpHover.x, wpHover.y, hoverHit, true)) {
+            wrap.style.cursor = 'crosshair';
+        } else if (hoverHit) {
+            wrap.style.cursor = 'move';
+        } else {
+            wrap.style.cursor = 'grab';
+        }
     }
 
     if (dragging) {
