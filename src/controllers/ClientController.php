@@ -194,6 +194,9 @@ class ClientController {
         $history->execute([(int)$id]);
         $history = $history->fetchAll();
 
+        $admin_photos = $pdo->prepare('SELECT * FROM admin_photos WHERE repair_id=? ORDER BY created_at ASC');
+        $admin_photos->execute([(int)$id]);
+        $admin_photos = $admin_photos->fetchAll();
         $config  = require ROOT_PATH.'/config/config.php';
         $success = $_GET['success'] ?? '';
         $error   = $_GET['error'] ?? '';

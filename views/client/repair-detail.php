@@ -113,6 +113,26 @@
         </div>
         <?php endif; ?>
 
+        <!-- ZDJĘCIA OD ADMINA -->
+        <?php if (!empty($admin_photos)): ?>
+        <div class="panel-card" style="border-color:rgba(0,229,255,0.15)">
+            <h3>📷 Zdjęcia z serwisu</h3>
+            <p class="detail-text" style="margin-bottom:14px">Zdjęcia przesłane przez serwis.</p>
+            <div class="photos-grid-editable">
+                <?php foreach ($admin_photos as $ap): ?>
+                <div class="photo-thumb">
+                    <a href="/uploads/<?= $ap['filename'] ?>" target="_blank">
+                        <img src="/uploads/<?= $ap['filename'] ?>" alt="<?= sanitize($ap['caption'] ?? '') ?>">
+                    </a>
+                    <?php if ($ap['caption']): ?>
+                        <p style="font-size:11px;color:var(--tm);margin:4px 0 0"><?= sanitize($ap['caption']) ?></p>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
         <!-- NADANIE PACZKI - po akceptacji wstępnej wyceny -->
         <?php if (in_array($sc, ['initial_quote_accepted','parcel_sent'])): ?>
         <div class="panel-card" style="border-color:rgba(6,182,212,0.2)">
@@ -331,7 +351,16 @@
         ?>
         <div class="panel-card" style="border-color:rgba(234,179,8,0.25)">
             <h3 style="color:#eab308">💳 Oczekuje na płatność</h3>
-            <div class="quote-amount" style="margin-bottom:16px"><?= formatMoney($amount) ?></div>
+            <?php
+                $repair_cost2 = (float)($repair['final_quote_amount'] ?? 0);
+                $shipping2    = (float)($repair['shipping_cost'] ?? 25);
+                $total2       = $repair_cost2 + $shipping2;
+            ?>
+            <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:14px">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--tm)">Naprawa:</span><strong><?= formatMoney($repair_cost2) ?></strong></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--tm)">Wysyłka zwrotna:</span><strong><?= formatMoney($shipping2) ?></strong></div>
+                <div style="display:flex;justify-content:space-between;border-top:1px solid var(--bd);padding-top:8px;margin-top:4px"><span style="color:#fff;font-weight:600">Razem:</span><strong style="color:#eab308;font-size:20px"><?= formatMoney($total2) ?></strong></div>
+            </div>
 
             <?php if ($method === 'transfer'): ?>
             <div class="payment-info">

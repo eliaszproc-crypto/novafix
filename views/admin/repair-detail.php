@@ -169,9 +169,18 @@
         <?php if (!$repair['final_quote_amount']): ?>
         <p style="color:#f87171;font-size:13px;margin-bottom:12px">⚠ Najpierw wyślij koszt naprawy do klienta i poczekaj na akceptację.</p>
         <?php else: ?>
-        <p class="detail-text" style="margin-bottom:16px">Koszt naprawy: <strong style="color:#22c55e;font-size:18px"><?= formatMoney((float)$repair['final_quote_amount']) ?></strong></p>
+        <?php
+            $repair_cost = (float)($repair['final_quote_amount'] ?? 0);
+            $shipping    = (float)($repair['shipping_cost'] ?? 25);
+            $total       = $repair_cost + $shipping;
+        ?>
+        <div style="background:var(--bg4);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--tm)">Koszt naprawy:</span><strong><?= formatMoney($repair_cost) ?></strong></div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--tm)">Wysyłka zwrotna:</span><strong><?= formatMoney($shipping) ?></strong></div>
+            <div style="display:flex;justify-content:space-between;border-top:1px solid var(--bd);padding-top:8px;margin-top:4px"><span style="color:#fff;font-weight:600">Do zapłaty:</span><strong style="color:#22c55e;font-size:18px"><?= formatMoney($total) ?></strong></div>
+        </div>
         <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/ustaw-platnosc" class="admin-form">
-            <input type="hidden" name="amount" value="<?= $repair['final_quote_amount'] ?>">
+            <input type="hidden" name="amount" value="<?= $total ?>">
             <div class="f-group">
                 <label>Forma płatności</label>
                 <select name="method" required>

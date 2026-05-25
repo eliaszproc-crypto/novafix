@@ -59,6 +59,9 @@ class AdminController {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
         $repairs  = $stmt->fetchAll();
+        $admin_photos = $pdo->prepare('SELECT * FROM admin_photos WHERE repair_id=? ORDER BY created_at ASC');
+        $admin_photos->execute([(int)$id]);
+        $admin_photos = $admin_photos->fetchAll();
         $statuses = $pdo->query('SELECT * FROM repair_statuses ORDER BY sort_order')->fetchAll();
         $success  = $_GET['success'] ?? '';
         $pageTitle = 'Zgłoszenia';
@@ -97,6 +100,9 @@ class AdminController {
         $history->execute([(int)$id]);
         $history = $history->fetchAll();
 
+        $admin_photos = $pdo->prepare('SELECT * FROM admin_photos WHERE repair_id=? ORDER BY created_at ASC');
+        $admin_photos->execute([(int)$id]);
+        $admin_photos = $admin_photos->fetchAll();
         $statuses = $pdo->query('SELECT * FROM repair_statuses ORDER BY sort_order')->fetchAll();
         $success  = $_GET['success'] ?? '';
         $error    = $_GET['error'] ?? '';
@@ -112,6 +118,9 @@ class AdminController {
         if (!$status_id) redirect('/admin/naprawa/'.$id);
         $pdo->prepare('UPDATE repairs SET status_id=?, updated_at=NOW() WHERE id=?')->execute([$status_id,(int)$id]);
         $pdo->prepare('INSERT INTO repair_status_history (repair_id,status_id,changed_by,note) VALUES (?,?,?,?)')->execute([(int)$id,$status_id,$_SESSION['user_id'],$note ?: 'Status zmieniony przez admina']);
+        // Wyślij email do klienta
+        $sc = $pdo->query("SELECT code,label FROM repair_statuses WHERE id=$status_id")->fetch();
+        if ($sc) notifyClientStatusChange((int)$id, $sc['code'], $sc['label'], require ROOT_PATH.'/config/config.php');
         redirect('/admin/naprawa/'.$id.'?success=Status zaktualizowany');
     }
 
@@ -139,6 +148,8 @@ class AdminController {
         $status_id = $status_id->fetchColumn();
         $pdo->prepare('UPDATE repairs SET status_id=?, updated_at=NOW() WHERE id=?')->execute([$status_id,(int)$id]);
         $pdo->prepare('INSERT INTO repair_status_history (repair_id,status_id,changed_by,note) VALUES (?,?,?,?)')->execute([(int)$id,$status_id,$_SESSION['user_id'],$hist_note.($note ? '. '.$note : '')]);
+        $sc2 = $pdo->query("SELECT code,label FROM repair_statuses WHERE id=$status_id")->fetch();
+        if ($sc2) notifyClientStatusChange((int)$id, $sc2['code'], $sc2['label'], require ROOT_PATH.'/config/config.php');
         redirect('/admin/naprawa/'.$id.'?success=Wycena wysłana do klienta');
     }
 
@@ -163,6 +174,7 @@ class AdminController {
             ->execute([(int)$id, $status_id, $_SESSION['user_id'],
                 'Oczekiwanie na płatność. Forma: '.$label.'. Kwota: '.number_format($amount,2,',','').' zł']);
 
+        notifyClientStatusChange((int)$id, 'awaiting_payment', 'Oczekuje na płatność', require ROOT_PATH.'/config/config.php');
         redirect('/admin/naprawa/'.$id.'?success=Forma płatności zapisana — klient widzi instrukcje');
     }
 
@@ -224,6 +236,35 @@ class AdminController {
         header('Content-Type: application/json');
         echo json_encode(['ok' => true]);
         exit;
+    }
+
+
+    public function addPhoto(string $id): void {
+        requireAdmin(); global $pdo;
+        if (empty($_FILES['photo']['tmp_name'])) redirect('/admin/naprawa/'.$id.'?error=Brak zdjęcia');
+        $caption = trim($_POST['caption'] ?? '');
+        $tmp = $_FILES['photo']['tmp_name'];
+        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, ['jpg','jpeg','png','webp'])) redirect('/admin/naprawa/'.$id.'?error=Nieprawidłowy format');
+        $filename = 'admin_'.$id.'_'.uniqid().'.jpg';
+        if (ImageHelper::resizeAndSave($tmp, uploadPath().$filename, 1200, 900)) {
+            $pdo->prepare('INSERT INTO admin_photos (repair_id, filename, caption) VALUES (?,?,?)')->execute([(int)$id, $filename, $caption ?: null]);
+            redirect('/admin/naprawa/'.$id.'?success=Zdjęcie dodane');
+        }
+        redirect('/admin/naprawa/'.$id.'?error=Błąd przy zapisie zdjęcia');
+    }
+
+    public function deleteAdminPhoto(string $id, string $pid): void {
+        requireAdmin(); global $pdo;
+        $stmt = $pdo->prepare('SELECT filename FROM admin_photos WHERE id=? AND repair_id=?');
+        $stmt->execute([(int)$pid, (int)$id]);
+        $photo = $stmt->fetch();
+        if ($photo) {
+            $path = uploadPath().$photo['filename'];
+            if (file_exists($path)) unlink($path);
+            $pdo->prepare('DELETE FROM admin_photos WHERE id=?')->execute([(int)$pid]);
+        }
+        redirect('/admin/naprawa/'.$id.'?success=Zdjęcie usunięte');
     }
 
     public function deleteRepair(string $id): void {

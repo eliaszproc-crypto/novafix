@@ -147,3 +147,77 @@ function csrfVerify(): void {
 function csrfField(): string {
     return '<input type="hidden" name="csrf_token" value="' . csrfToken() . '">';
 }
+
+function notifyClientStatusChange(int $repair_id, string $status_code, string $status_label, array $config): void {
+    global $pdo;
+
+    // Pobierz dane zlecenia i klienta
+    $stmt = $pdo->prepare("
+        SELECT r.rma_number, r.initial_quote_amount, r.final_quote_amount, r.shipping_cost,
+               r.payment_method, u.email, u.first_name
+        FROM repairs r JOIN users u ON r.user_id=u.id
+        WHERE r.id=?
+    ");
+    $stmt->execute([$repair_id]);
+    $repair = $stmt->fetch();
+    if (!$repair) return;
+
+    $to        = $repair['email'];
+    $name      = $repair['first_name'];
+    $rma       = $repair['rma_number'];
+    $url       = rtrim($config['app']['url'] ?? 'https://novafix.pl', '/');
+    $from      = $config['mail']['from'] ?? 'service@host201211.xce.pl';
+    $from_name = 'NovaFix';
+
+    // Treść wiadomości zależna od statusu
+    $messages = [
+        'initial_quote_sent'     => ['Wstępna wycena do akceptacji', "Przygotowałem dla Ciebie wstępną wycenę naprawy. Zaloguj się do panelu i zaakceptuj lub odrzuć wycenę."],
+        'initial_quote_accepted' => ['Wycena zaakceptowana — wyślij sprzęt', "Świetnie! Zaakceptowałeś wstępną wycenę. Zapakuj starannie sprzęt i wyślij na paczkomat SCZ04M Szczecinek (78-400) lub kurierem na ul. Wyszyńskiego 14a/1, 78-400 Szczecinek. Pamiętaj dołączyć numer zlecenia: <strong>$rma</strong>"],
+        'parcel_received'        => ['Paczka odebrana — zaczyna się diagnostyka', "Odebrałem Twoją przesyłkę. Zaczynam diagnostykę urządzenia. O wynikach poinformuję mailowo."],
+        'final_quote_sent'       => ['Koszt naprawy do akceptacji', "Zakończyłem diagnostykę. Przygotowałem szczegółowy kosztorys naprawy. Zaloguj się do panelu żeby zaakceptować lub odrzucić koszt."],
+        'final_quote_accepted'   => ['Koszt zaakceptowany — zaczynam naprawę', "Dziękuję za akceptację! Zaczynam naprawę Twojego urządzenia. Poinformuję Cię gdy będzie gotowe."],
+        'awaiting_payment'       => ['Naprawa gotowa — oczekuję na płatność', "Naprawa zakończona pomyślnie! Zaloguj się do panelu żeby zobaczyć dane do płatności i finalizować zlecenie."],
+        'paid'                   => ['Płatność otrzymana — wysyłam sprzęt', "Potwierdzam otrzymanie płatności. Pakuję Twój sprzęt i wysyłam go na wskazany adres. Dziękuję za skorzystanie z NovaFix!"],
+        'shipped_to_client'      => ['Sprzęt wysłany — w drodze do Ciebie!', "Twój sprzęt został wysłany. Sprawdź numer przesyłki w panelu zlecenia."],
+        'completed'              => ['Zlecenie zakończone', "Zlecenie zostało pomyślnie zakończone. Jeśli jesteś zadowolony — będę wdzięczny za opinię w panelu. Dziękuję!"],
+        'return_in_progress'     => ['Zwrot sprzętu w toku', "Twój sprzęt jest pakowany do odesłania na wskazany adres zwrotny."],
+    ];
+
+    if (!isset($messages[$status_code])) return;
+
+    [$subject_part, $body_msg] = $messages[$status_code];
+    $subject = "NovaFix — $rma — $subject_part";
+
+    $body = "
+    <html><body style='font-family:Arial,sans-serif;background:#070d1a;color:#e2e8f4;padding:20px;margin:0'>
+    <div style='max-width:560px;margin:0 auto;background:#0f1929;border-radius:14px;overflow:hidden'>
+        <div style='background:linear-gradient(135deg,#003ca0,#001450);padding:24px 28px'>
+            <h1 style='margin:0;font-size:20px;color:#fff'>NovaFix</h1>
+            <p style='margin:6px 0 0;color:rgba(255,255,255,0.6);font-size:14px'>Serwis elektroniki akwarystycznej</p>
+        </div>
+        <div style='padding:28px'>
+            <p style='color:#e2e8f4;font-size:15px;margin-bottom:6px'>Cześć <strong style=\"color:#fff\">$name</strong>,</p>
+            <div style='background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.15);border-radius:10px;padding:16px 20px;margin:20px 0'>
+                <p style='margin:0;font-size:13px;color:rgba(255,255,255,0.5)'>Status zlecenia <strong style=\"color:#00e5ff\">$rma</strong>:</p>
+                <p style='margin:6px 0 0;font-size:18px;font-weight:700;color:#fff'>$status_label</p>
+            </div>
+            <p style='color:#b0bec5;font-size:14px;line-height:1.7'>$body_msg</p>
+            <div style='text-align:center;margin-top:24px'>
+                <a href='$url/panel' style='display:inline-block;background:linear-gradient(135deg,#0050d0,#00e5ff20);color:#fff;padding:13px 32px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;border:1px solid rgba(0,229,255,0.3)'>Otwórz panel zlecenia →</a>
+            </div>
+        </div>
+        <div style='padding:16px 28px;border-top:1px solid rgba(255,255,255,0.06);font-size:12px;color:rgba(255,255,255,0.3);text-align:center'>
+            NovaFix Eliasz Proć · eliasz.proc@gmail.com · 691 113 754
+        </div>
+    </div>
+    </body></html>";
+
+    $headers = implode("\r\n", [
+        'MIME-Version: 1.0',
+        'Content-Type: text/html; charset=UTF-8',
+        "From: $from_name <$from>",
+        "Reply-To: eliasz.proc@gmail.com",
+    ]);
+
+    @mail($to, $subject, $body, $headers);
+}

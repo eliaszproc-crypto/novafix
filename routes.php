@@ -54,6 +54,8 @@ $router->post('admin/naprawa/{id}/status',          ['AdminController',  'update
 $router->post('admin/naprawa/{id}/wycena',          ['AdminController',  'sendQuote']);
 $router->post('admin/naprawa/{id}/ustaw-platnosc', ['AdminController',  'setPaymentMethod']);
 $router->post('admin/naprawa/{id}/oplacone',        ['AdminController',  'markPaid']);
+$router->post('admin/naprawa/{id}/dodaj-zdjecie',     ['AdminController',   'addPhoto']);
+$router->post('admin/naprawa/{id}/usun-zdjecie/{pid}', ['AdminController',   'deleteAdminPhoto']);
 $router->post('admin/naprawa/{id}/zwrot',           ['AdminController',  'markReturning']);
 $router->post('admin/naprawa/{id}/usun',            ['AdminController',  'deleteRepair']);
 $router->get('admin/statystyki',                   ['AdminController',   'statistics']);
