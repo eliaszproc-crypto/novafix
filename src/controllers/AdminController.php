@@ -59,9 +59,6 @@ class AdminController {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
         $repairs  = $stmt->fetchAll();
-        $admin_photos = $pdo->prepare('SELECT * FROM admin_photos WHERE repair_id=? ORDER BY created_at ASC');
-        $admin_photos->execute([(int)$id]);
-        $admin_photos = $admin_photos->fetchAll();
         $statuses = $pdo->query('SELECT * FROM repair_statuses ORDER BY sort_order')->fetchAll();
         $success  = $_GET['success'] ?? '';
         $pageTitle = 'Zgłoszenia';
