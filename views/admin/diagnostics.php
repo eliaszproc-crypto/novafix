@@ -208,12 +208,14 @@ function buildFromDB() {
     edges = [];
     var cols = 4, xGap = 260, yGap = 160, startX = 60, startY = 60;
     DB_NODES.forEach(function(d, i) {
-        // Pozycja siatki jeśli nie ma zapisanej
         var col = i % cols, row = Math.floor(i / cols);
+        // Użyj zapisanej pozycji jeśli istnieje
+        var x = (d.pos_x && d.pos_x !== '0') ? parseInt(d.pos_x) : startX + col * xGap;
+        var y = (d.pos_y && d.pos_y !== '0') ? parseInt(d.pos_y) : startY + row * yGap;
         nodes.push({
             id:   parseInt(d.id),
-            x:    startX + col * xGap,
-            y:    startY + row * yGap,
+            x:    x,
+            y:    y,
             data: d
         });
         if (d.parent_id) {
@@ -492,7 +494,21 @@ function onMouseUp(e) {
         return;
     }
 
+    if (dragging) {
+        savePositions();
+    }
     dragging = null;
+}
+
+function savePositions() {
+    var positions = nodes.map(function(n) {
+        return { id: n.id, x: Math.round(n.x), y: Math.round(n.y) };
+    });
+    fetch('/admin/diagnostyka/pozycje', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(positions)
+    }).catch(function(){});
 }
 
 function onDblClick(e) {

@@ -333,6 +333,21 @@ class AdminController {
         include VIEW_PATH.'/admin/layout.php';
     }
 
+
+    public function diagSavePositions(): void {
+        requireAdmin(); global $pdo;
+        $positions = json_decode(file_get_contents('php://input'), true) ?? [];
+        $stmt = $pdo->prepare('UPDATE diag_nodes SET pos_x=?, pos_y=? WHERE id=?');
+        foreach ($positions as $pos) {
+            if (isset($pos['id'], $pos['x'], $pos['y'])) {
+                $stmt->execute([(int)$pos['x'], (int)$pos['y'], (int)$pos['id']]);
+            }
+        }
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
     public function diagAdd(): void {
         requireAdmin(); global $pdo;
         $parent_id   = (int)($_POST['parent_id'] ?? 0) ?: null;
