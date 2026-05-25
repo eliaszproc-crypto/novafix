@@ -56,7 +56,7 @@
 
     <?php if (!empty($photos)): ?>
     <div class="admin-card">
-        <h3>Zdjęcia</h3>
+        <h3>Zdjęcia od klienta</h3>
         <div class="photos-grid">
             <?php foreach ($photos as $p): ?>
                 <a href="/uploads/<?= $p['filename'] ?>" target="_blank"><img src="/uploads/<?= $p['filename'] ?>" alt=""></a>
@@ -64,6 +64,42 @@
         </div>
     </div>
     <?php endif; ?>
+
+    <!-- Zdjęcia admina dla klienta -->
+    <div class="admin-card">
+        <h3>📷 Zdjęcia dla klienta</h3>
+        <p style="font-size:13px;color:var(--tm);margin-bottom:16px">Zdjęcia widoczne dla klienta — np. po diagnostyce lub naprawie.</p>
+        <?php if (!empty($admin_photos)): ?>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+            <?php foreach ($admin_photos as $ap): ?>
+            <div style="position:relative">
+                <a href="/uploads/<?= $ap['filename'] ?>" target="_blank">
+                    <img src="/uploads/<?= $ap['filename'] ?>" style="width:90px;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--bd)" alt="">
+                </a>
+                <?php if ($ap['caption']): ?>
+                    <p style="font-size:10px;color:var(--tm);margin:3px 0 0;max-width:90px"><?= sanitize($ap['caption']) ?></p>
+                <?php endif; ?>
+                <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/usun-zdjecie/<?= $ap['id'] ?>" style="position:absolute;top:-6px;right:-6px" onsubmit="return confirm('Usunąć?')">
+                    <button type="submit" style="width:20px;height:20px;border-radius:50%;background:#ef4444;border:2px solid #0f1929;color:#fff;cursor:pointer;font-size:10px;padding:0">✕</button>
+                </form>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+        <form method="POST" action="/admin/naprawa/<?= $repair['id'] ?>/dodaj-zdjecie" enctype="multipart/form-data" class="admin-form">
+            <div class="f-row">
+                <div class="f-group">
+                    <label>Zdjęcie</label>
+                    <input type="file" name="photo" accept="image/*" required>
+                </div>
+                <div class="f-group">
+                    <label>Opis (opcjonalnie)</label>
+                    <input type="text" name="caption" placeholder="np. Stan po naprawie...">
+                </div>
+            </div>
+            <button type="submit" class="a-btn a-btn-secondary">Dodaj zdjęcie dla klienta</button>
+        </form>
+    </div>
 
     <!-- Komentarze klienta przy odrzuceniu -->
     <?php if ($repair['initial_quote_rejection_note']): ?>

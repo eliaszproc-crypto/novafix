@@ -495,7 +495,10 @@ function onMouseUp(e) {
     }
 
     if (dragging) {
+        var _node = dragging;
+        dragging = null;
         savePositions();
+        return;
     }
     dragging = null;
 }
