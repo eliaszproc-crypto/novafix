@@ -115,9 +115,8 @@ if ($history) {
     </div>
     <?php endif; ?>
 
-    <div class="panel-card" style="margin-top:24px;text-align:center">
-        <p style="color:var(--tm);font-size:14px;margin-bottom:16px">Diagnoza ma charakter poglądowy. Nie zastąpi oceny specjalisty po otrzymaniu sprzętu.</p>
-        <a href="/panel/nowe-zgloszenie" class="btn btn--primary">Zgłoś urządzenie →</a>
+    <div style="text-align:center;padding:16px 0;color:var(--tm);font-size:13px">
+        Diagnoza ma charakter poglądowy. Nie zastąpi oceny specjalisty po otrzymaniu sprzętu.
     </div>
 
 </div>

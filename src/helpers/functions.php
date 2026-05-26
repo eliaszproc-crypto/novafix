@@ -183,7 +183,17 @@ function notifyClientStatusChange(int $repair_id, string $status_code, string $s
         'return_in_progress'     => ['Zwrot sprzętu w toku', "Twój sprzęt jest pakowany do odesłania na wskazany adres zwrotny."],
     ];
 
-    if (!isset($messages[$status_code])) return;
+    // Debug log
+    file_put_contents(ROOT_PATH.'/email_debug.log',
+        date('Y-m-d H:i:s').' status='.$status_code.' to='.$to."\n",
+        FILE_APPEND);
+
+    if (!isset($messages[$status_code])) {
+        file_put_contents(ROOT_PATH.'/email_debug.log',
+            date('Y-m-d H:i:s').' SKIP - status not in messages list'."\n",
+            FILE_APPEND);
+        return;
+    }
 
     [$subject_part, $body_msg] = $messages[$status_code];
     $subject = "NovaFix — $rma — $subject_part";
@@ -219,5 +229,8 @@ function notifyClientStatusChange(int $repair_id, string $status_code, string $s
         "Reply-To: eliasz.proc@gmail.com",
     ]);
 
-    @mail($to, $subject, $body, $headers);
+    $sent = mail($to, $subject, $body, $headers);
+    file_put_contents(ROOT_PATH.'/email_debug.log',
+        date('Y-m-d H:i:s').' mail result='.($sent?'OK':'FAIL').' to='.$to."\n",
+        FILE_APPEND);
 }
