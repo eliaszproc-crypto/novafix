@@ -57,7 +57,7 @@ if ($history) {
                 <div class="diag-question__icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 </div>
-                <h2><?= sanitize($node['question']) ?></h2>
+                <h2><?= sanitize(lang()==='en' && $node['question_en'] ? $node['question_en'] : $node['question']) ?></h2>
             </div>
             <div class="diag-answers">
                 <?php foreach ($children as $child): ?>
@@ -66,7 +66,7 @@ if ($history) {
                     $url = '/panel/diagnostyka?node='.$child['id'].'&history='.$new_history;
                 ?>
                 <a href="<?= $url ?>" class="diag-answer">
-                    <div class="diag-answer__text"><?= sanitize($child['answer']) ?></div>
+                    <div class="diag-answer__text"><?= sanitize(lang()==='en' && $child['answer_en'] ? $child['answer_en'] : $child['answer']) ?></div>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                 </a>
                 <?php endforeach; ?>
@@ -92,7 +92,7 @@ if ($history) {
                     <?php endif; ?>
                 </div>
                 <h3>Wstępna diagnoza</h3>
-                <p><?= nl2br(sanitize($node['result'])) ?></p>
+                <p><?= nl2br(sanitize(lang()==='en' && $node['result_en'] ? $node['result_en'] : $node['result'])) ?></p>
 
                 <?php if ($node['result_type'] === 'repair'): ?>
                 <div class="diag-result__actions">

@@ -9,6 +9,15 @@ class HomeController {
         include VIEW_PATH . '/layout.php';
     }
 
+
+    public function setLang(string $code): void {
+        if (in_array($code, ['pl', 'en'])) {
+            $_SESSION['lang'] = $code;
+        }
+        $ref = $_SERVER['HTTP_REFERER'] ?? '/';
+        redirect($ref);
+    }
+
     public function index(): void {
         $this->render('index', 'Strona główna');
     }
@@ -55,5 +64,11 @@ class HomeController {
     public function checkStatus(string $rma): void {
         header('Location: /status?rma=' . urlencode($rma));
         exit;
+    }
+
+    public function setLanguage(string $code): void {
+        setLang($code);
+        $ref = $_SERVER['HTTP_REFERER'] ?? '/';
+        redirect($ref);
     }
 }

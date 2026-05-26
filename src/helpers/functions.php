@@ -257,3 +257,26 @@ function notifyClientStatusChange(int $repair_id, string $status_code, string $s
 
     sendEmailNotification($to, $subject, $body);
 }
+
+// ---- SYSTEM TŁUMACZEŃ ----
+function getLang(): string {
+    return $_SESSION['lang'] ?? 'pl';
+}
+
+function t(string $key, array $vars = []): string {
+    static $translations = null;
+    if ($translations === null) {
+        $lang = getLang();
+        $file = ROOT_PATH . '/lang/' . $lang . '.php';
+        $translations = file_exists($file) ? require $file : require ROOT_PATH . '/lang/pl.php';
+    }
+    $val = $translations[$key] ?? $key;
+    foreach ($vars as $k => $v) {
+        $val = str_replace('{' . $k . '}', $v, $val);
+    }
+    return $val;
+}
+
+function setLang(string $lang): void {
+    $_SESSION['lang'] = in_array($lang, ['pl', 'en']) ? $lang : 'pl';
+}

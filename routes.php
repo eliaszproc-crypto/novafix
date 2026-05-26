@@ -10,6 +10,12 @@ $router->get('status/{rma}',                        ['HomeController',   'checkS
 // ---- API ----
 $router->get('api/stats',  ['ApiController', 'stats']);
 
+// ---- Język ----
+\$router->get('lang/{code}', ['HomeController', 'setLanguage']);
+
+// ---- Język ----
+\$router->get('lang/{code}', ['HomeController', 'setLang']);
+
 // ---- Autoryzacja ----
 $router->get('login',                               ['AuthController',   'loginForm']);
 $router->post('login',                              ['AuthController',   'login']);
@@ -61,6 +67,7 @@ $router->post('admin/naprawa/{id}/usun',            ['AdminController',  'delete
 $router->get('admin/statystyki',                   ['AdminController',   'statistics']);
 $router->get('admin/kalendarz',                     ['AdminController',  'calendar']);
 $router->get('admin/diagnostyka',                   ['AdminController',   'diagnostics']);
+$router->post('admin/diagnostyka/edytuj-en/{id}',  ['AdminController',   'diagEditEn']);
 $router->post('admin/diagnostyka/pozycje',          ['AdminController',   'diagSavePositions']);
 $router->post('admin/diagnostyka/dodaj',            ['AdminController',   'diagAdd']);
 $router->post('admin/diagnostyka/edytuj/{id}',      ['AdminController',   'diagEdit']);

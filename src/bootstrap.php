@@ -14,6 +14,7 @@ define('SRC_PATH',  ROOT_PATH . '/src');
 define('VIEW_PATH', ROOT_PATH . '/views');
 
 require_once SRC_PATH . '/helpers/functions.php';
+require_once SRC_PATH . '/helpers/lang.php';
 require_once SRC_PATH . '/helpers/ImageHelper.php';
 require_once SRC_PATH . '/config/database.php';
 require_once SRC_PATH . '/Router.php';
