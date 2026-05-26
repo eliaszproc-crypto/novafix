@@ -227,9 +227,13 @@ function notifyClientStatusChange(int $repair_id, string $status_code, string $s
         'Content-Type: text/html; charset=UTF-8',
         "From: $from_name <$from>",
         "Reply-To: eliasz.proc@gmail.com",
+        "X-Mailer: NovaFix",
+        "X-Priority: 3",
+        "Message-ID: <" . uniqid('novafix_') . "@host201211.xce.pl>",
     ]);
 
-    $sent = mail($to, $subject, $body, $headers);
+    // Dodaj parametr -f żeby ustawić envelope sender
+    $sent = mail($to, $subject, $body, $headers, "-f$from");
     file_put_contents(ROOT_PATH.'/email_debug.log',
         date('Y-m-d H:i:s').' mail result='.($sent?'OK':'FAIL').' to='.$to."\n",
         FILE_APPEND);
