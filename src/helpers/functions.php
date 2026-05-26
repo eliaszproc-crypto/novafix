@@ -95,7 +95,7 @@ function sendEmailNotification(string $to, string $subject, string $body): bool 
     $config = require ROOT_PATH . '/config/config.php';
     $mc = $config['mail'];
 
-    $mailerPath = ROOT_PATH . '/vendor/phpmailer/src';
+    $mailerPath = '/home/host201211/domains/host201211.xce.pl/vendor/phpmailer/src';
     if (!file_exists($mailerPath . '/PHPMailer.php')) {
         // Fallback do mail()
         $headers = implode("\r\n", [
