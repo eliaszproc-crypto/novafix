@@ -92,13 +92,46 @@ function formatDateFull(string $datetime): string {
 }
 
 function sendEmailNotification(string $to, string $subject, string $body): bool {
-    $headers = [
-        'MIME-Version: 1.0',
-        'Content-Type: text/html; charset=UTF-8',
-        'From: NovaFix <service@host201211.xce.pl>',
-        'X-Mailer: PHP/' . PHP_VERSION,
-    ];
-    return @mail($to, $subject, $body, implode("\r\n", $headers));
+    $config = require ROOT_PATH . '/config/config.php';
+    $mc = $config['mail'];
+
+    $mailerPath = ROOT_PATH . '/vendor/phpmailer/src';
+    if (!file_exists($mailerPath . '/PHPMailer.php')) {
+        // Fallback do mail()
+        $headers = implode("\r\n", [
+            'MIME-Version: 1.0',
+            'Content-Type: text/html; charset=UTF-8',
+            'From: NovaFix <' . $mc['from'] . '>',
+        ]);
+        return @mail($to, $subject, $body, $headers, '-f' . $mc['from']);
+    }
+
+    require_once $mailerPath . '/Exception.php';
+    require_once $mailerPath . '/PHPMailer.php';
+    require_once $mailerPath . '/SMTP.php';
+
+    $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+    try {
+        $mail->isSMTP();
+        $mail->Host       = $mc['host'];
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $mc['user'];
+        $mail->Password   = $mc['password'];
+        $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = (int)$mc['port'];
+        $mail->CharSet    = 'UTF-8';
+        $mail->setFrom($mc['from'], $mc['from_name'] ?? 'NovaFix');
+        $mail->addAddress($to);
+        $mail->Subject    = $subject;
+        $mail->isHTML(true);
+        $mail->Body       = $body;
+        $mail->send();
+        file_put_contents(ROOT_PATH.'/email_debug.log', date('Y-m-d H:i:s')." SMTP OK to=$to\n", FILE_APPEND);
+        return true;
+    } catch (\Exception $e) {
+        file_put_contents(ROOT_PATH.'/email_debug.log', date('Y-m-d H:i:s')." SMTP FAIL: ".$mail->ErrorInfo."\n", FILE_APPEND);
+        return false;
+    }
 }
 
 function notifyNewRepair(array $repair, string $rma, string $device, string $problem): void {
