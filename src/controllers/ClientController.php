@@ -348,6 +348,32 @@ class ClientController {
         }
         $pdo->prepare('INSERT INTO repair_messages (repair_id, user_id, message) VALUES (?,?,?)')
             ->execute([(int)$id, $_SESSION['user_id'], $msg]);
+
+        // Powiadomienie email do admina
+        $config = require ROOT_PATH.'/config/config.php';
+        $repair_stmt = $pdo->prepare('SELECT rma_number FROM repairs WHERE id=?');
+        $repair_stmt->execute([(int)$id]);
+        $rma = $repair_stmt->fetchColumn();
+        $user_name = $_SESSION['user_name'] ?? 'Klient';
+        $notify_to = $config['notify_email'] ?? 'eliasz.proc@gmail.com';
+        $url = rtrim($config['app']['url'] ?? '', '/');
+        $subject = "NovaFix — Nowa wiadomość w zleceniu $rma";
+        $body = "<html><body style='font-family:Arial,sans-serif;background:#070d1a;color:#e2e8f4;padding:20px'>
+        <div style='max-width:500px;margin:0 auto;background:#0f1929;border-radius:14px;overflow:hidden'>
+            <div style='background:linear-gradient(135deg,#003ca0,#001450);padding:20px 24px'>
+                <h2 style='margin:0;color:#fff;font-size:18px'>💬 Nowa wiadomość</h2>
+                <p style='margin:4px 0 0;color:rgba(255,255,255,0.6);font-size:13px'>Zlecenie: <strong style="color:#00e5ff">$rma</strong></p>
+            </div>
+            <div style='padding:20px 24px'>
+                <p style='color:#94a3b8;font-size:13px;margin-bottom:8px'>Od: <strong style="color:#fff">$user_name</strong></p>
+                <div style='background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;font-size:14px;color:#e2e8f4;border-left:3px solid #00e5ff'>".htmlspecialchars($msg)."</div>
+                <div style='text-align:center;margin-top:20px'>
+                    <a href='$url/admin/naprawa/$id' style='display:inline-block;background:linear-gradient(135deg,#0050d0,#0070ff);color:#fff;padding:11px 28px;border-radius:8px;text-decoration:none;font-weight:600;font-size:13px'>Odpowiedz →</a>
+                </div>
+            </div>
+        </div></body></html>";
+        sendEmailNotification($notify_to, $subject, $body);
+
         header('Content-Type: application/json');
         echo json_encode(['ok' => true]);
         exit;
