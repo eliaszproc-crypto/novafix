@@ -345,19 +345,6 @@ class AdminController {
         exit;
     }
 
-
-    public function diagEditEn(string $id): void {
-        requireAdmin(); global $pdo;
-        $question_en = trim($_POST['question_en'] ?? '') ?: null;
-        $answer_en   = trim($_POST['answer_en'] ?? '') ?: null;
-        $result_en   = trim($_POST['result_en'] ?? '') ?: null;
-        $pdo->prepare('UPDATE diag_nodes SET question_en=?, answer_en=?, result_en=? WHERE id=?')
-            ->execute([$question_en, $answer_en, $result_en, (int)$id]);
-        header('Content-Type: application/json');
-        echo json_encode(['ok' => true]);
-        exit;
-    }
-
     public function diagAdd(): void {
         requireAdmin(); global $pdo;
         $parent_id   = (int)($_POST['parent_id'] ?? 0) ?: null;
@@ -386,16 +373,12 @@ class AdminController {
             redirect('/admin/diagnostyka?error=Pytanie jest wymagane');
         }
 
-        $question_en = trim($_POST['question_en'] ?? '') ?: null;
-        $answer_en   = trim($_POST['answer_en'] ?? '') ?: null;
-        $result_en   = trim($_POST['result_en'] ?? '') ?: null;
-
         if (isset($_POST['parent_id'])) {
-            $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,question_en=?,answer_en=?,result_en=?,result_type=?,sort_order=?,parent_id=? WHERE id=?')
-                ->execute([$question,$answer,$result,$question_en,$answer_en,$result_en,$result_type,$sort_order,$parent_id,(int)$id]);
+            $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,result_type=?,sort_order=?,parent_id=? WHERE id=?')
+                ->execute([$question,$answer,$result,$result_type,$sort_order,$parent_id,(int)$id]);
         } else {
-            $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,question_en=?,answer_en=?,result_en=?,result_type=?,sort_order=? WHERE id=?')
-                ->execute([$question,$answer,$result,$question_en,$answer_en,$result_en,$result_type,$sort_order,(int)$id]);
+            $pdo->prepare('UPDATE diag_nodes SET question=?,answer=?,result=?,result_type=?,sort_order=? WHERE id=?')
+                ->execute([$question,$answer,$result,$result_type,$sort_order,(int)$id]);
         }
 
         // Jeśli żądanie AJAX - zwróć 200

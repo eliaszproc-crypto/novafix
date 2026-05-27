@@ -44,37 +44,17 @@ $error   = $_GET['error'] ?? '';
             <button onclick="closePanel()" class="ne-panel__close">✕</button>
         </div>
         <div class="ne-panel__body">
-            <div style="display:flex;gap:8px;margin-bottom:12px">
-                <button type="button" onclick="switchLangTab('pl')" id="tabPL" class="a-btn a-btn-primary" style="padding:4px 12px;font-size:12px">PL</button>
-                <button type="button" onclick="switchLangTab('en')" id="tabEN" class="a-btn a-btn-secondary" style="padding:4px 12px;font-size:12px">EN</button>
+            <div class="f-group">
+                <label>Odpowiedź (tekst przycisku u klienta)</label>
+                <input type="text" id="neAnswer" placeholder="np. Lampa LED, Nie świeci wcale...">
             </div>
-            <div id="tabContentPL">
-                <div class="f-group">
-                    <label>Odpowiedź PL (tekst przycisku)</label>
-                    <input type="text" id="neAnswer" placeholder="np. Lampa LED, Nie świeci wcale...">
-                </div>
-                <div class="f-group">
-                    <label>Pytanie PL *</label>
-                    <textarea id="neQuestion" rows="3" placeholder="np. Co się dzieje z lampą?"></textarea>
-                </div>
-                <div class="f-group">
-                    <label>Wynik diagnozy PL</label>
-                    <textarea id="neResult" rows="3" placeholder="Opis usterki i zalecenie..."></textarea>
-                </div>
+            <div class="f-group">
+                <label>Pytanie / treść węzła *</label>
+                <textarea id="neQuestion" rows="3" placeholder="np. Co się dzieje z lampą?"></textarea>
             </div>
-            <div id="tabContentEN" style="display:none">
-                <div class="f-group">
-                    <label>Answer EN (button text)</label>
-                    <input type="text" id="neAnswerEN" placeholder="e.g. LED Light, Not turning on...">
-                </div>
-                <div class="f-group">
-                    <label>Question EN *</label>
-                    <textarea id="neQuestionEN" rows="3" placeholder="e.g. What is happening with the light?"></textarea>
-                </div>
-                <div class="f-group">
-                    <label>Diagnosis result EN</label>
-                    <textarea id="neResultEN" rows="3" placeholder="Issue description and recommendation..."></textarea>
-                </div>
+            <div class="f-group">
+                <label>Wynik diagnozy <span style="color:var(--tm);font-weight:400">(dla węzłów końcowych)</span></label>
+                <textarea id="neResult" rows="4" placeholder="Opis usterki i zalecenie..."></textarea>
             </div>
             <div class="f-group">
                 <label>Typ wyniku</label>
@@ -632,29 +612,13 @@ function onWheel(e) {
 // ====== PANEL EDYCJI ======
 var editingNode = null;
 
-function switchLangTab(lang) {
-    document.getElementById('tabContentPL').style.display = lang === 'pl' ? 'block' : 'none';
-    document.getElementById('tabContentEN').style.display = lang === 'en' ? 'block' : 'none';
-    document.getElementById('tabPL').className = 'a-btn ' + (lang === 'pl' ? 'a-btn-primary' : 'a-btn-secondary');
-    document.getElementById('tabEN').className = 'a-btn ' + (lang === 'en' ? 'a-btn-primary' : 'a-btn-secondary');
-    document.getElementById('tabPL').style.cssText = 'padding:4px 12px;font-size:12px';
-    document.getElementById('tabEN').style.cssText = 'padding:4px 12px;font-size:12px';
-}
-
 function openPanel(n) {
     editingNode = n;
     document.getElementById('nePanelTitle').textContent = 'Węzeł #' + n.id;
     document.getElementById('neAnswer').value     = n.data.answer || '';
     document.getElementById('neQuestion').value   = n.data.question || '';
     document.getElementById('neResult').value     = n.data.result || '';
-    document.getElementById('neAnswerEN').value   = n.data.answer_en || '';
-    document.getElementById('neQuestionEN').value = n.data.question_en || '';
-    document.getElementById('neResultEN').value   = n.data.result_en || '';
     document.getElementById('neResultType').value = n.data.result_type || 'continue';
-    document.getElementById('neAnswerEN').value   = n.data.answer_en || '';
-    document.getElementById('neQuestionEN').value = n.data.question_en || '';
-    document.getElementById('neResultEN').value   = n.data.result_en || '';
-    switchTab('pl');
     document.getElementById('nePanel').style.display = 'flex';
 }
 
@@ -663,45 +627,12 @@ function closePanel() {
     editingNode = null;
 }
 
-function switchTab(lang) {
-    document.getElementById('tabContentPL').style.display = lang === 'pl' ? 'block' : 'none';
-    document.getElementById('tabContentEN').style.display = lang === 'en' ? 'block' : 'none';
-    document.getElementById('tabPL').style.borderBottomColor = lang === 'pl' ? 'var(--c)' : 'transparent';
-    document.getElementById('tabPL').style.color = lang === 'pl' ? 'var(--c)' : 'var(--tm)';
-    document.getElementById('tabPL').style.background = lang === 'pl' ? 'rgba(0,229,255,0.1)' : 'none';
-    document.getElementById('tabEN').style.borderBottomColor = lang === 'en' ? 'var(--c)' : 'transparent';
-    document.getElementById('tabEN').style.color = lang === 'en' ? 'var(--c)' : 'var(--tm)';
-    document.getElementById('tabEN').style.background = lang === 'en' ? 'rgba(0,229,255,0.1)' : 'none';
-}
-
-function saveNodeEN() {
-    if (!editingNode) return;
-    var data = {
-        answer_en:   document.getElementById('neAnswerEN').value.trim(),
-        question_en: document.getElementById('neQuestionEN').value.trim(),
-        result_en:   document.getElementById('neResultEN').value.trim(),
-    };
-    setStatus('Saving EN...');
-    fetch('/admin/diagnostyka/edytuj-en/' + editingNode.id, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data)
-    }).then(function() {
-        Object.assign(editingNode.data, data);
-        setStatus('EN saved ✓');
-        setTimeout(function() { setStatus(''); }, 2000);
-    });
-}
-
 function saveNode() {
     if (!editingNode) return;
     var data = {
         answer:      document.getElementById('neAnswer').value.trim(),
         question:    document.getElementById('neQuestion').value.trim(),
         result:      document.getElementById('neResult').value.trim(),
-        answer_en:   document.getElementById('neAnswerEN').value.trim(),
-        question_en: document.getElementById('neQuestionEN').value.trim(),
-        result_en:   document.getElementById('neResultEN').value.trim(),
         result_type: document.getElementById('neResultType').value,
     };
     if (!data.question) { alert('Pytanie jest wymagane'); return; }
