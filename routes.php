@@ -10,10 +10,6 @@ $router->get('status/{rma}',                        ['HomeController',   'checkS
 // ---- API ----
 $router->get('api/stats',  ['ApiController', 'stats']);
 
-// ---- Język ----
-\$router->get('lang/{code}', ['HomeController', 'setLanguage']);
-
-// ---- Język ----
 \$router->get('lang/{code}', ['HomeController', 'setLang']);
 
 // ---- Autoryzacja ----
