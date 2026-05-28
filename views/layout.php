@@ -55,7 +55,6 @@ $appName = $config['app']['name'];
     <script src="/js/main.js"></script>
     <script src="/js/upload.js"></script>
     <script src="/js/hero-stats.js"></script>
-    <script src="/js/upload.js"></script>
     <script src="/js/lightbox.js"></script>
 </body>
 </html>
