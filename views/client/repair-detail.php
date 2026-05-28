@@ -144,7 +144,21 @@
                 </div>
                 <p class="detail-text">Paczka nadana — czekam na jej odbiór. Możesz zaktualizować numer jeśli podałeś błędny.</p>
             <?php else: ?>
-                <p class="detail-text" style="margin-bottom:16px">Zapakuj starannie sprzęt i nadaj na paczkomat <strong style="color:var(--c)">SCZ04M</strong> w Szczecinku. Podaj numer przesyłki żeby automatycznie zaktualizować status.</p>
+                <p class="detail-text" style="margin-bottom:16px">Zapakuj starannie sprzęt i wyślij na jeden z poniższych adresów — wybierz który Ci odpowiada:</p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+                    <div style="background:rgba(0,229,255,0.05);border:1px solid rgba(0,229,255,0.15);border-radius:10px;padding:12px 14px;font-size:13px">
+                        <div style="font-size:11px;color:var(--c);font-weight:700;text-transform:uppercase;margin-bottom:6px">📦 Paczkomat InPost</div>
+                        <strong>SCZ04M</strong><br>
+                        <span style="color:var(--tm)">78-400 Szczecinek</span>
+                    </div>
+                    <div style="background:rgba(139,92,246,0.05);border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:12px 14px;font-size:13px">
+                        <div style="font-size:11px;color:#8b5cf6;font-weight:700;text-transform:uppercase;margin-bottom:6px">🏠 Kurier / Poczta</div>
+                        <strong>Eliasz Proć — NovaFix</strong><br>
+                        ul. Wyszyńskiego 14a/1<br>
+                        <span style="color:var(--tm)">78-400 Szczecinek</span>
+                    </div>
+                </div>
+                <p class="detail-text" style="margin-bottom:16px;font-size:12px;color:var(--tm)">⚠ Pamiętaj dołączyć do paczki kartkę z numerem zlecenia: <strong style="color:var(--c)"><?= sanitize($repair['rma_number']) ?></strong>. Po nadaniu wpisz numer przesyłki poniżej.</p>
             <?php endif; ?>
             <form method="POST" action="/panel/naprawa/<?= $repair['id'] ?>/nadanie-paczki">
                 <div class="form-row">
