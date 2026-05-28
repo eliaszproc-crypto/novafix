@@ -13,7 +13,13 @@
             <tr style="<?= !$r['is_visible'] ? 'opacity:0.45' : '' ?>">
                 <td><strong style="color:#fff"><?= sanitize($r['author']) ?></strong></td>
                 <td><span style="color:#eab308"><?= str_repeat('★', $r['rating']) ?></span></td>
-                <td style="font-size:12px;color:var(--tm);max-width:280px"><?= sanitize(mb_substr($r['content'],0,100)).'...' ?></td>
+                <td style="font-size:12px;color:var(--tm);max-width:280px">
+                    <?= sanitize(mb_substr($r['content'],0,80)) ?><?= mb_strlen($r['content'])>80 ? '...' : '' ?>
+                    <?php if (mb_strlen($r['content']) > 80): ?>
+                    <button onclick="showReview(<?= $r['id'] ?>, <?= htmlspecialchars(json_encode($r['author'])) ?>, <?= htmlspecialchars(json_encode($r['content'])) ?>)" 
+                            class="a-btn a-btn-secondary" style="padding:2px 8px;font-size:11px;margin-left:4px">Zobacz</button>
+                    <?php endif; ?>
+                </td>
                 <td style="font-size:12px;color:var(--c)"><?= $r['rma_number'] ? sanitize($r['rma_number']) : '—' ?></td>
                 <td style="font-size:12px;color:var(--tm)"><?= formatDate($r['created_at']) ?></td>
                 <td>
@@ -42,3 +48,27 @@
     </div>
     <?php endif; ?>
 </div>
+
+<!-- Modal podglądu opinii -->
+<div id="reviewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center">
+    <div style="background:var(--bg3);border:1px solid var(--bdc);border-radius:16px;padding:28px;max-width:500px;width:calc(100% - 32px);position:relative">
+        <button onclick="closeReview()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--tm);cursor:pointer;font-size:20px">✕</button>
+        <div style="color:#eab308;font-size:20px;margin-bottom:8px">★★★★★</div>
+        <h3 id="reviewModalAuthor" style="color:#fff;margin-bottom:16px"></h3>
+        <p id="reviewModalContent" style="color:var(--t);font-size:15px;line-height:1.7"></p>
+    </div>
+</div>
+<script>
+function showReview(id, author, content) {
+    document.getElementById('reviewModalAuthor').textContent = author;
+    document.getElementById('reviewModalContent').textContent = content;
+    var modal = document.getElementById('reviewModal');
+    modal.style.display = 'flex';
+}
+function closeReview() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+document.getElementById('reviewModal').addEventListener('click', function(e) {
+    if (e.target === this) closeReview();
+});
+</script>
