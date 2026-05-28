@@ -10,8 +10,6 @@ $router->get('status/{rma}',                        ['HomeController',   'checkS
 // ---- API ----
 $router->get('api/stats',  ['ApiController', 'stats']);
 
-\$router->get('lang/{code}', ['HomeController', 'setLang']);
-
 // ---- Autoryzacja ----
 $router->get('login',                               ['AuthController',   'loginForm']);
 $router->post('login',                              ['AuthController',   'login']);
