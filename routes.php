@@ -68,6 +68,8 @@ $router->get('admin/statystyki',                   ['AdminController',   'statis
 $router->get('admin/kalendarz',                     ['AdminController',  'calendar']);
 $router->get('admin/diagnostyka',                   ['AdminController',   'diagnostics']);
 $router->post('admin/diagnostyka/edytuj-en/{id}',  ['AdminController',   'diagEditEn']);
+$router->post('admin/diagnostyka/polacz',           ['AdminController',   'diagConnect']);
+$router->post('admin/diagnostyka/rozlacz',          ['AdminController',   'diagDisconnect']);
 $router->post('admin/diagnostyka/pozycje',          ['AdminController',   'diagSavePositions']);
 $router->post('admin/diagnostyka/dodaj',            ['AdminController',   'diagAdd']);
 $router->post('admin/diagnostyka/edytuj/{id}',      ['AdminController',   'diagEdit']);

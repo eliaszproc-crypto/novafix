@@ -331,6 +331,32 @@ class AdminController {
     }
 
 
+
+    public function diagConnect(): void {
+        requireAdmin(); global $pdo;
+        $parent = (int)($_POST['parent_id'] ?? 0);
+        $child  = (int)($_POST['child_id'] ?? 0);
+        if (!$parent || !$child || $parent === $child) {
+            http_response_code(400); echo json_encode(['error'=>'Invalid']); exit;
+        }
+        $pdo->prepare('INSERT IGNORE INTO diag_edges (parent_id, child_id) VALUES (?,?)')
+            ->execute([$parent, $child]);
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    public function diagDisconnect(): void {
+        requireAdmin(); global $pdo;
+        $parent = (int)($_POST['parent_id'] ?? 0);
+        $child  = (int)($_POST['child_id'] ?? 0);
+        $pdo->prepare('DELETE FROM diag_edges WHERE parent_id=? AND child_id=?')
+            ->execute([$parent, $child]);
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
     public function diagSavePositions(): void {
         requireAdmin(); global $pdo;
         $positions = json_decode(file_get_contents('php://input'), true) ?? [];

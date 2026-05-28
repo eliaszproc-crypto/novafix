@@ -156,7 +156,8 @@ $error   = $_GET['error'] ?? '';
 
 <script>
 // ====== DANE Z PHP ======
-var DB_NODES = <?= $nodes_json ?>;
+var DB_NODES  = <?= $nodes_json ?>;
+var DB_EDGES  = <?= json_encode($pdo->query('SELECT parent_id as `from`, child_id as `to` FROM diag_edges')->fetchAll()) ?>;
 
 // ====== STAŁE ======
 var NODE_W = 220, NODE_H_BASE = 70, PORT_R = 10;
@@ -205,19 +206,11 @@ window.addEventListener('load', function() {
                 // Usuń połączenie - ustaw parent_id dziecka na null
                 var childNode = nodeById(edge.to);
                 if (childNode) {
-                    fetch('/admin/diagnostyka/edytuj/' + edge.to, {
+                    fetch('/admin/diagnostyka/rozlacz', {
                         method: 'POST',
                         headers: {'Content-Type':'application/x-www-form-urlencoded'},
-                        body: new URLSearchParams({
-                            parent_id:   '',
-                            question:    childNode.data.question || '',
-                            answer:      childNode.data.answer || '',
-                            result:      childNode.data.result || '',
-                            result_type: childNode.data.result_type || 'continue',
-                            sort_order:  childNode.data.sort_order || 0
-                        })
+                        body: new URLSearchParams({ parent_id: edge.from, child_id: edge.to })
                     }).then(function() {
-                        childNode.data.parent_id = null;
                         edges.splice(edgeIdx, 1);
                         render();
                         setStatus('Połączenie usunięte ✓');
@@ -248,18 +241,13 @@ function buildFromDB() {
     var cols = 4, xGap = 260, yGap = 160, startX = 60, startY = 60;
     DB_NODES.forEach(function(d, i) {
         var col = i % cols, row = Math.floor(i / cols);
-        // Użyj zapisanej pozycji jeśli istnieje
         var x = (d.pos_x && d.pos_x !== '0') ? parseInt(d.pos_x) : startX + col * xGap;
         var y = (d.pos_y && d.pos_y !== '0') ? parseInt(d.pos_y) : startY + row * yGap;
-        nodes.push({
-            id:   parseInt(d.id),
-            x:    x,
-            y:    y,
-            data: d
-        });
-        if (d.parent_id) {
-            edges.push({ from: parseInt(d.parent_id), to: parseInt(d.id) });
-        }
+        nodes.push({ id: parseInt(d.id), x: x, y: y, data: d });
+    });
+    // Połączenia z dedykowanej tabeli
+    DB_EDGES.forEach(function(e) {
+        edges.push({ from: parseInt(e.from), to: parseInt(e.to) });
     });
 }
 
@@ -686,32 +674,19 @@ window.deleteSelected = function() {
 
 // ====== POŁĄCZENIE ======
 function saveConnection(parentId, childId) {
-    // Sprawdź czy już nie istnieje
-    var exists = edges.some(function(e) { return e.to === childId; });
-    if (exists) {
-        // Aktualizuj istniejące połączenie
-        edges = edges.filter(function(e) { return e.to !== childId; });
-    }
+    // Sprawdź czy połączenie już istnieje
+    var exists = edges.some(function(e) { return e.from === parentId && e.to === childId; });
+    if (exists) { setStatus('Połączenie już istnieje'); setTimeout(function(){setStatus('');},2000); return; }
+
     edges.push({ from: parentId, to: childId });
     render();
 
-    // Zapisz w bazie - zmień parent_id dziecka
     setStatus('Łączenie...');
-    var childNode = nodeById(childId);
-    if (!childNode) return;
-    fetch('/admin/diagnostyka/edytuj/' + childId, {
+    fetch('/admin/diagnostyka/polacz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-            parent_id:   parentId,
-            question:    childNode.data.question || '',
-            answer:      childNode.data.answer || '',
-            result:      childNode.data.result || '',
-            result_type: childNode.data.result_type || 'continue',
-            sort_order:  childNode.data.sort_order || 0
-        })
+        body: new URLSearchParams({ parent_id: parentId, child_id: childId })
     }).then(function() {
-        childNode.data.parent_id = parentId;
         setStatus('Połączono ✓');
         setTimeout(function() { setStatus(''); }, 2000);
     });

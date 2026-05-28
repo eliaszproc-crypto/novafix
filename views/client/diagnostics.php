@@ -10,7 +10,12 @@ $node = $node->fetch();
 
 $children = [];
 if ($node && $node['result_type'] === 'continue') {
-    $stmt = $pdo->prepare('SELECT * FROM diag_nodes WHERE parent_id=? ORDER BY sort_order');
+    $stmt = $pdo->prepare('
+        SELECT n.* FROM diag_nodes n
+        JOIN diag_edges e ON e.child_id = n.id
+        WHERE e.parent_id = ?
+        ORDER BY n.sort_order
+    ');
     $stmt->execute([$node_id]);
     $children = $stmt->fetchAll();
 }
