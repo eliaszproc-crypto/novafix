@@ -3,7 +3,7 @@ $config = require ROOT_PATH . '/config/config.php';
 $appName = $config['app']['name'];
 ?>
 <!DOCTYPE html>
-<html lang="<?= lang() ?>">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -55,6 +55,6 @@ $appName = $config['app']['name'];
     <script src="/js/main.js"></script>
     <script src="/js/upload.js"></script>
     <script src="/js/hero-stats.js"></script>
-    <script src="/js/lightbox.js"></script>
+    <script src="/js/upload.js"></script>
 </body>
 </html>

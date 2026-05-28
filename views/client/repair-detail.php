@@ -96,7 +96,7 @@
             <div class="photos-grid-editable">
                 <?php foreach ($photos as $p): ?>
                 <div class="photo-thumb">
-                    <a href="/uploads/<?= $p['filename'] ?>" target="_blank">
+                    <a href="/uploads/<?= $p['filename'] ?>">
                         <img src="/uploads/<?= $p['filename'] ?>" alt="">
                     </a>
                     <?php if ($repair['status_code'] === 'new'): ?>
@@ -121,7 +121,7 @@
             <div class="photos-grid-editable">
                 <?php foreach ($admin_photos as $ap): ?>
                 <div class="photo-thumb">
-                    <a href="/uploads/<?= $ap['filename'] ?>" target="_blank">
+                    <a href="/uploads/<?= $ap['filename'] ?>">
                         <img src="/uploads/<?= $ap['filename'] ?>" alt="<?= sanitize($ap['caption'] ?? '') ?>">
                     </a>
                     <?php if ($ap['caption']): ?>

@@ -59,7 +59,7 @@
         <h3>Zdjęcia od klienta</h3>
         <div class="photos-grid">
             <?php foreach ($photos as $p): ?>
-                <a href="/uploads/<?= $p['filename'] ?>" target="_blank"><img src="/uploads/<?= $p['filename'] ?>" alt=""></a>
+                <a href="/uploads/<?= $p['filename'] ?>"><img src="/uploads/<?= $p['filename'] ?>" alt=""></a>
             <?php endforeach; ?>
         </div>
     </div>
@@ -73,7 +73,7 @@
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
             <?php foreach ($admin_photos as $ap): ?>
             <div style="position:relative">
-                <a href="/uploads/<?= $ap['filename'] ?>" target="_blank">
+                <a href="/uploads/<?= $ap['filename'] ?>">
                     <img src="/uploads/<?= $ap['filename'] ?>" style="width:90px;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--bd)" alt="">
                 </a>
                 <?php if ($ap['caption']): ?>

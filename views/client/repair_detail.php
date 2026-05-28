@@ -56,7 +56,7 @@
                     <h3>Zdjęcia</h3>
                     <div class="photo-grid">
                         <?php foreach ($photos as $p): ?>
-                            <a href="/uploads/repairs/<?= $repair['id'] ?>/<?= $p['filename'] ?>" target="_blank" class="photo-thumb">
+                            <a href="/uploads/repairs/<?= $repair['id'] ?>/<?= $p['filename'] ?>" class="photo-thumb">
                                 <img src="/uploads/repairs/<?= $repair['id'] ?>/<?= $p['filename'] ?>" alt="Zdjęcie">
                             </a>
                         <?php endforeach; ?>
