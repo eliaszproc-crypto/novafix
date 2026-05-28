@@ -1,5 +1,5 @@
 (function() {
-    var overlay, img, scale = 1, px = 0, py = 0;
+    var overlay, img, scale = 1, px = 0, py = 0, rot = 0;
     var drag = false, sx, sy, spx, spy;
 
     function build() {
@@ -15,6 +15,7 @@
             '<button id="lbZI" style="'+bs()+'">＋</button>' +
             '<button id="lbZO" style="'+bs()+'">－</button>' +
             '<button id="lbRE" style="'+bs()+'">↺</button>' +
+            '<button id="lbRO" style="'+bs()+'">⟳</button>' +
             '<button id="lbCL" style="'+bs()+'background:rgba(200,0,0,0.5);">✕</button>';
 
         overlay.appendChild(img);
@@ -26,6 +27,7 @@
         document.getElementById('lbZI').addEventListener('click', function() { doZoom(1.3); });
         document.getElementById('lbZO').addEventListener('click', function() { doZoom(0.75); });
         document.getElementById('lbRE').addEventListener('click', reset);
+        document.getElementById('lbRO').addEventListener('click', function() { rot = (rot + 90) % 360; apply(); });
 
         img.addEventListener('wheel', function(e) { e.preventDefault(); doZoom(e.deltaY < 0 ? 1.15 : 0.87); }, {passive:false});
         img.addEventListener('mousedown', function(e) { drag=true; sx=e.clientX-px; sy=e.clientY-py; img.style.cursor='grabbing'; e.preventDefault(); });
@@ -66,12 +68,12 @@
         overlay.style.display = 'none';
         document.body.style.overflow = '';
         img.src = '';
-        scale=1; px=0; py=0;
+        scale=1; px=0; py=0; rot=0;
     }
 
     function doZoom(f) { scale=Math.min(Math.max(scale*f,0.3),10); apply(); }
-    function reset() { scale=1; px=0; py=0; apply(); }
-    function apply() { img.style.transform='translate('+px+'px,'+py+'px) scale('+scale+')'; }
+    function reset() { scale=1; px=0; py=0; rot=0; apply(); }
+    function apply() { img.style.transform='translate('+px+'px,'+py+'px) scale('+scale+') rotate('+rot+'deg)'; }
 
     document.addEventListener('click', function(e) {
         var a = e.target.closest('a');
